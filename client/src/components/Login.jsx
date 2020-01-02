@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Login.css";
+import { Container, Row, Col } from "react-bootstrap";
 import Signup from "./Signup";
 import Signin from "./Signin";
 
@@ -23,12 +24,10 @@ const Login = () => {
   };
 
   return (
-    <div className="login">
-      <div className="">
-        <button onClick={handleShowSignUp}>Sign up</button>
-        <button onClick={handleShowSignIn}>Sign in</button>
-        {sign()}
-      </div>
+    <div className="container column-md-8 offset-md-auto">
+      <button onClick={handleShowSignUp}>Sign up</button>
+      <button onClick={handleShowSignIn}>Sign in</button>
+      {sign()}
     </div>
   );
 };
