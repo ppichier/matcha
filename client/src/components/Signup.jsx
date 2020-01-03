@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { signup } from "../api/auth";
 import "./Signup.css";
 
 const Signup = () => {
@@ -7,9 +8,25 @@ const Signup = () => {
     pseudo: "",
     firstName: "",
     lastName: "",
-    password: ""
+    password: "",
+    error: "",
+    msg: ""
   });
-
+  const msg_error = () => {
+    if (values.error) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          {values.error}
+        </div>
+      );
+    } else if (values.msg) {
+      return (
+        <div className="alert alert-success" role="alert">
+          {values.msg}
+        </div>
+      );
+    }
+  };
   const handleChange = name => event => {
     const tmp = { ...values, [name]: event.target.value };
     setValues(tmp);
@@ -17,6 +34,22 @@ const Signup = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
+    signup({ ...values }).then(res => {
+      if (res.error) {
+        setValues({ ...values, error: res.error });
+      } else if (res.msg) {
+        setValues({
+          ...values,
+          email: "",
+          pseudo: "",
+          firstName: "",
+          lastName: "",
+          password: "",
+          error: "",
+          msg: res.msg
+        });
+      }
+    });
   };
   return (
     <div className="signup">
@@ -64,6 +97,7 @@ const Signup = () => {
         <button onClick={handleSubmit} className="btn btn-primary">
           S'inscrire
         </button>
+        {msg_error()}
       </form>
       {JSON.stringify(values)}
     </div>
