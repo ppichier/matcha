@@ -10,8 +10,8 @@ const Signup = () => {
     password: ""
   });
 
-  const handleChange = event => {
-    const tmp = { ...values, email: event.target.value };
+  const handleChange = name => event => {
+    const tmp = { ...values, [name]: event.target.value };
     setValues(tmp);
   };
 
@@ -24,7 +24,7 @@ const Signup = () => {
         <div className="form-group">
           <label>Email</label>
           <input
-            onChange={handleChange}
+            onChange={handleChange("email")}
             type="email"
             className="form-control"
           ></input>
@@ -32,7 +32,7 @@ const Signup = () => {
         <div className="form-group">
           <label>Pseudo</label>
           <input
-            onChange={handleChange}
+            onChange={handleChange("pseudo")}
             type="text"
             className="form-control"
           ></input>
@@ -40,7 +40,7 @@ const Signup = () => {
         <div className="form-group">
           <label>Nom</label>
           <input
-            onChange={handleChange}
+            onChange={handleChange("firstName")}
             type="text"
             className="form-control"
           ></input>
@@ -48,7 +48,7 @@ const Signup = () => {
         <div className="form-group">
           <label>Prenom</label>
           <input
-            onChange={handleChange}
+            onChange={handleChange("lastName")}
             type="text"
             className="form-control"
           ></input>
@@ -56,7 +56,7 @@ const Signup = () => {
         <div className="form-group">
           <label>Mot de passe</label>
           <input
-            onChange={handleChange}
+            onChange={handleChange("password")}
             type="password"
             className="form-control"
           ></input>

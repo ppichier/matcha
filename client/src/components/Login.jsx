@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./Login.css";
-import { Container, Row, Col } from "react-bootstrap";
+// import { Container, Row, Col } from "react-bootstrap";
 import Signup from "./Signup";
 import Signin from "./Signin";
+import ForgotPassword from "./ForgotPasword";
 
 const Login = () => {
   const [isShow, setIsShow] = useState("signup");
@@ -15,11 +16,18 @@ const Login = () => {
     setIsShow("signin");
   };
 
+  const forgotPassword = event => {
+    event.preventDefault();
+    setIsShow("passwordReset");
+  };
+
   const sign = () => {
     if (isShow === "signup") {
       return <Signup />;
-    } else {
-      return <Signin />;
+    } else if (isShow === "signin") {
+      return <Signin forgotPassword={forgotPassword} />;
+    } else if (isShow === "passwordReset") {
+      return <ForgotPassword />;
     }
   };
 
