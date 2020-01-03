@@ -1,5 +1,5 @@
 export const signup = data => {
-  return fetch("path", {
+  return fetch("http://localhost:8000/signup", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -7,8 +7,6 @@ export const signup = data => {
     },
     body: JSON.stringify(data)
   })
-    .then(res => {
-      return { error: "Mail envoyé" };
-    })
-    .catch(error => console.log(error));
+    .then(res => res.json())
+    .catch(err => console.log(err));
 };

@@ -9,14 +9,14 @@ const Signup = () => {
     firstName: "",
     lastName: "",
     password: "",
-    error: "",
+    err: "",
     msg: ""
   });
   const msg_error = () => {
-    if (values.error) {
+    if (values.err) {
       return (
         <div className="alert alert-danger" role="alert">
-          {values.error}
+          {values.err}
         </div>
       );
     } else if (values.msg) {
@@ -34,22 +34,30 @@ const Signup = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    signup({ ...values }).then(res => {
-      if (res.error) {
-        setValues({ ...values, error: res.error });
-      } else if (res.msg) {
-        setValues({
-          ...values,
-          email: "",
-          pseudo: "",
-          firstName: "",
-          lastName: "",
-          password: "",
-          error: "",
-          msg: res.msg
-        });
-      }
-    });
+    signup({
+      email: values.email,
+      pseudo: values.pseudo,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      password: values.password
+    })
+      .then(data => {
+        if (data.err) {
+          setValues({ ...values, err: data.err });
+        } else if (data.msg) {
+          setValues({
+            ...values,
+            email: "",
+            pseudo: "",
+            firstName: "",
+            lastName: "",
+            password: "",
+            err: "",
+            msg: data.msg
+          });
+        }
+      })
+      .catch(err => console.log(err));
   };
   return (
     <div className="signup">
