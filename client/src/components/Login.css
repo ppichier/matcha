@@ -1,0 +1,27 @@
+.login-main {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  background-image: url("https://womenhelp.org/en/media/inline/2019/8/25/beach_couple_daylight_2549082.jpg");
+  /* background-repeat: no-repeat; */
+  background-size: cover;
+  background-position: center;
+}
+
+.login-btn {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.login-btn:focus {
+  box-shadow: none !important;
+}
+
+.login-btn:hover {
+  background-color: #fad5c0;
+  color: #fff !important;
+}
+
+.active-btn {
+  border-bottom: 5px solid #fad5c0 !important;
+}

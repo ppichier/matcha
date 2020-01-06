@@ -27,6 +27,33 @@ const Signup = () => {
       );
     }
   };
+  const verifValited = () => {
+    let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
+    let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let i = values.password.length;
+
+    if (i < 6) {
+      const tmp = {
+        ...values,
+        err: "Le code d'accès doit etre composé d'au moins 6 caractères"
+      };
+      setValues(tmp);
+      return 1;
+    } else if (!rgxpassword.test(values.password)) {
+      const tmp = {
+        ...values,
+        err:
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
+      };
+      setValues(tmp);
+      return 1;
+    } else if (!rgxmail.test(values.email)) {
+      const tmp = { ...values, err: "votre adresse email n'est pas valide." };
+      setValues(tmp);
+      return 1;
+    }
+    return 0;
+  };
   const handleChange = name => event => {
     const tmp = { ...values, [name]: event.target.value };
     setValues(tmp);
@@ -34,41 +61,44 @@ const Signup = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    signup({
-      email: values.email,
-      pseudo: values.pseudo,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      password: values.password
-    })
-      .then(data => {
-        if (data.err) {
-          setValues({ ...values, err: data.err });
-        } else if (data.msg) {
-          setValues({
-            ...values,
-            email: "",
-            pseudo: "",
-            firstName: "",
-            lastName: "",
-            password: "",
-            err: "",
-            msg: data.msg
-          });
-        }
+    if (verifValited() === 0) {
+      signup({
+        email: values.email,
+        pseudo: values.pseudo,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        password: values.password
       })
-      .catch(err => console.log(err));
+        .then(data => {
+          if (data.err) {
+            setValues({ ...values, err: data.err });
+          } else if (data.msg) {
+            setValues({
+              ...values,
+              email: "",
+              pseudo: "",
+              firstName: "",
+              lastName: "",
+              password: "",
+              err: "",
+              msg: data.msg
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    }
   };
   return (
     <div className="signup">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Email</label>
           <input
             onChange={handleChange("email")}
             type="email"
             className="form-control"
-          ></input>
+            required
+          />
         </div>
         <div className="form-group">
           <label>Pseudo</label>
@@ -76,7 +106,8 @@ const Signup = () => {
             onChange={handleChange("pseudo")}
             type="text"
             className="form-control"
-          ></input>
+            required
+          />
         </div>
         <div className="form-group">
           <label>Nom</label>
@@ -84,7 +115,8 @@ const Signup = () => {
             onChange={handleChange("firstName")}
             type="text"
             className="form-control"
-          ></input>
+            required
+          />
         </div>
         <div className="form-group">
           <label>Prenom</label>
@@ -92,7 +124,8 @@ const Signup = () => {
             onChange={handleChange("lastName")}
             type="text"
             className="form-control"
-          ></input>
+            required
+          />
         </div>
         <div className="form-group">
           <label>Mot de passe</label>
@@ -100,14 +133,18 @@ const Signup = () => {
             onChange={handleChange("password")}
             type="password"
             className="form-control"
-          ></input>
+            required
+          />
         </div>
-        <button onClick={handleSubmit} className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn btn-primary mt-5 btn-block text-uppercase signup-btn"
+        >
           S'inscrire
         </button>
         {msg_error()}
       </form>
-      {JSON.stringify(values)}
+      {/* {JSON.stringify(values)} */}
     </div>
   );
 };

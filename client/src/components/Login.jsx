@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Login.css";
-// import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import Signup from "./Signup";
 import Signin from "./Signin";
 import ForgotPassword from "./ForgotPasword";
@@ -10,15 +10,21 @@ const Login = () => {
 
   const handleShowSignUp = () => {
     setIsShow("signup");
+    document.getElementById("signin-btn").classList.remove("active-btn");
+    document.getElementById("signup-btn").classList.add("active-btn");
   };
 
   const handleShowSignIn = () => {
     setIsShow("signin");
+    document.getElementById("signup-btn").classList.remove("active-btn");
+    document.getElementById("signin-btn").classList.add("active-btn");
   };
 
   const forgotPassword = event => {
     event.preventDefault();
     setIsShow("passwordReset");
+    document.getElementById("signup-btn").classList.remove("active-btn");
+    document.getElementById("signin-btn").classList.remove("active-btn");
   };
 
   const sign = () => {
@@ -32,10 +38,30 @@ const Login = () => {
   };
 
   return (
-    <div className="container column-md-8 offset-md-auto">
-      <button onClick={handleShowSignUp}>Sign up</button>
-      <button onClick={handleShowSignIn}>Sign in</button>
-      {sign()}
+    <div className="login-main text-muted">
+      <Container>
+        <Row>
+          <Col></Col>
+          <Col md={6}>
+            <button
+              id="signup-btn"
+              className="login-btn btn btn-sm col-6 text-nowrap mb-4 font-weight-bold"
+              onClick={handleShowSignUp}
+            >
+              S'enregistrer
+            </button>
+            <button
+              id="signin-btn"
+              className="login-btn btn btn-sm col-6 text-nowrap mb-4 font-weight-bold"
+              onClick={handleShowSignIn}
+            >
+              Connexion
+            </button>
+            {sign()}
+          </Col>
+          <Col></Col>
+        </Row>
+      </Container>
     </div>
   );
 };

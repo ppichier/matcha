@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 app.post("/signup", (req, res) => {
   console.log(req.body);
-  res.json({});
+  res.json({err: "test"});
 });
 
 app.listen(8000, () => {

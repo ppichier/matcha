@@ -11,7 +11,7 @@ const ForgotPassword = () => {
   };
   return (
     <div className="forgot-password">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Email</label>
           <input
@@ -20,8 +20,15 @@ const ForgotPassword = () => {
             className="form-control"
           ></input>
         </div>
-        <button onClick={handleSubmit} className="btn btn-primary">
-          S'inscrire
+        <button
+          type="submit"
+          className="btn btn-primary text-uppercase "
+          style={{
+            backgroundColor: "#fad5c0",
+            borderColor: "#fad5c0"
+          }}
+        >
+          Valider
         </button>
       </form>
     </div>
