@@ -18,7 +18,7 @@ const Signin = ({ forgotPassword }) => {
   };
   return (
     <div className="signin">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Pseudo</label>
           <input
@@ -35,13 +35,20 @@ const Signin = ({ forgotPassword }) => {
             className="form-control"
           ></input>
         </div>
-        <button onClick={handleSubmit} className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn btn-primary mt-5  btn-block text-uppercase signin-btn"
+        >
           S'inscrire
         </button>
-        <button onClick={forgotPassword}>Forgot Password?</button>{" "}
-        {/* TODO // Change style of button to look like a link */}
+        <button
+          className="btn btn-link btn-block mt-4"
+          onClick={forgotPassword}
+        >
+          Mot de passe oublie?
+        </button>{" "}
+        {/* TODO ERROR // Error msg forgot password then return browser */}
       </form>
-      {JSON.stringify(values)}
     </div>
   );
 };
