@@ -39,24 +39,26 @@ const Login = () => {
 
   return (
     <div className="login-main text-muted">
-      <Container>
+      <Container className="login-container">
         <Row>
           <Col></Col>
           <Col md={6}>
-            <button
-              id="signup-btn"
-              className="login-btn btn btn-sm col-6 text-nowrap mb-4 font-weight-bold"
-              onClick={handleShowSignUp}
-            >
-              S'enregistrer
-            </button>
-            <button
-              id="signin-btn"
-              className="login-btn btn btn-sm col-6 text-nowrap mb-4 font-weight-bold"
-              onClick={handleShowSignIn}
-            >
-              Connexion
-            </button>
+            <div className="login-container-login-btn">
+              <button
+                id="signup-btn"
+                className="login-btn btn btn-sm  text-nowrap mb-4 font-weight-bold"
+                onClick={handleShowSignUp}
+              >
+                S'enregistrer
+              </button>
+              <button
+                id="signin-btn"
+                className="login-btn btn btn-sm text-nowrap mb-4 font-weight-bold"
+                onClick={handleShowSignIn}
+              >
+                Connexion
+              </button>
+            </div>
             {sign()}
           </Col>
           <Col></Col>

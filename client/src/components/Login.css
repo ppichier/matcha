@@ -1,11 +1,22 @@
 .login-main {
   display: flex;
   height: 100%;
-  align-items: center;
+  /* align-items: center; */
   background-image: url("https://womenhelp.org/en/media/inline/2019/8/25/beach_couple_daylight_2549082.jpg");
   /* background-repeat: no-repeat; */
   background-size: cover;
   background-position: center;
+}
+
+.login-container {
+  top: 20%;
+  position: absolute;
+}
+
+.login-container-login-btn {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .login-btn {

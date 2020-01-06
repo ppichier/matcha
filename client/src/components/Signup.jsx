@@ -119,7 +119,7 @@ const Signup = () => {
           />
         </div>
         <div className="form-group">
-          <label>Prenom</label>
+          <label>Prénom</label>
           <input
             onChange={handleChange("lastName")}
             type="text"
@@ -138,7 +138,7 @@ const Signup = () => {
         </div>
         <button
           type="submit"
-          className="btn btn-primary mt-5 btn-block text-uppercase signup-btn"
+          className="btn btn-primary  mt-5 btn-block text-uppercase signup-btn"
         >
           S'inscrire
         </button>

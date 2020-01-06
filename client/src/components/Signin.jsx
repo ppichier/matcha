@@ -37,15 +37,15 @@ const Signin = ({ forgotPassword }) => {
         </div>
         <button
           type="submit"
-          className="btn btn-primary mt-5  btn-block text-uppercase signin-btn"
+          className="btn btn-primary  mt-5  btn-block text-uppercase signin-btn"
         >
-          S'inscrire
+          Se connecter
         </button>
         <button
           className="btn btn-link btn-block mt-4"
           onClick={forgotPassword}
         >
-          Mot de passe oublie?
+          Mot de passe oublié?
         </button>{" "}
         {/* TODO ERROR // Error msg forgot password then return browser */}
       </form>

@@ -20,16 +20,22 @@ const ForgotPassword = () => {
             className="form-control"
           ></input>
         </div>
-        <button
-          type="submit"
-          className="btn btn-primary text-uppercase "
-          style={{
-            backgroundColor: "#fad5c0",
-            borderColor: "#fad5c0"
-          }}
-        >
-          Valider
-        </button>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button
+            type="submit"
+            className="btn btn-primary text-uppercase "
+            style={{
+              backgroundColor: "#fad5c0",
+              borderColor: "#fad5c0",
+              letterSpacing: "2px",
+              textTransform: "uppercase",
+              fontWeight: "bold",
+              boxShadow: "none"
+            }}
+          >
+            Valider
+          </button>
+        </div>
       </form>
     </div>
   );

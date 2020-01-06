@@ -1,4 +1,8 @@
 .signup-btn {
   background-color: #fad5c0 !important;
   border-color: #fad5c0 !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: bold !important;
+  box-shadow: none !important;
 }
