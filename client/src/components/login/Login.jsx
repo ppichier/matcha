@@ -46,7 +46,7 @@ const Login = () => {
             <div className="login-container-login-btn">
               <button
                 id="signup-btn"
-                className="login-btn btn btn-sm  text-nowrap mb-4 font-weight-bold"
+                className="login-btn btn btn-sm  text-nowrap mb-4 font-weight-bold active-btn"
                 onClick={handleShowSignUp}
               >
                 S'enregistrer

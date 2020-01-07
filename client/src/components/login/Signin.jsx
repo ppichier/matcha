@@ -1,13 +1,23 @@
 import React, { useState } from "react";
+import { signin } from "../../api/auth";
 import "./Signin.css";
 
 const Signin = ({ forgotPassword }) => {
   const [values, setValues] = useState({
     pseudo: "",
     password: "",
-    redirect: false
+    err: ""
+    // redirect: false
   });
-
+  const msg_error = () => {
+    if (values.err) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          {values.err}
+        </div>
+      );
+    }
+  };
   const handleChange = name => event => {
     const tmp = { ...values, [name]: event.target.value };
     setValues(tmp);
@@ -15,6 +25,18 @@ const Signin = ({ forgotPassword }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
+    signin({
+      pseudo: values.pseudo,
+      password: values.password
+    })
+      .then(data => {
+        if (data.err) {
+          setValues({ ...values, err: data.err });
+        } else {
+          // redirect to /profile or /discover
+        }
+      })
+      .catch(err => console.log(err));
   };
   return (
     <div className="signin">
@@ -42,12 +64,12 @@ const Signin = ({ forgotPassword }) => {
           Se connecter
         </button>
         <button
-          className="btn btn-link btn-block mt-4"
+          className="btn btn-link btn-block mt-4 text-dark"
           onClick={forgotPassword}
         >
           Mot de passe oublié?
-        </button>{" "}
-        {/* TODO ERROR // Error msg forgot password then return browser */}
+        </button>
+        {msg_error()}
       </form>
     </div>
   );

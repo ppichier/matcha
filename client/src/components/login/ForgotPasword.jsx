@@ -1,13 +1,48 @@
 import React, { useState } from "react";
+import { forgotPassword } from "../../api/auth";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-
+  const [values, setValues] = useState({
+    email: "",
+    err: "",
+    msg: ""
+  });
+  const msg_error = () => {
+    if (values.err) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          {values.err}
+        </div>
+      );
+    } else if (values.msg) {
+      return (
+        <div className="alert alert-success" role="alert">
+          {values.msg}
+        </div>
+      );
+    }
+  };
   const handleChange = event => {
-    setEmail({ ...email, email: event.target.value });
+    setValues({ ...values, email: event.target.value });
   };
   const handleSubmit = event => {
     event.preventDefault();
+    forgotPassword({
+      email: values.email
+    })
+      .then(data => {
+        if (data.err) {
+          setValues({ ...values, err: data.err });
+        } else if (data.msg) {
+          setValues({
+            ...values,
+            email: "",
+            err: "",
+            msg: data.msg
+          });
+        }
+      })
+      .catch(err => console.log(err));
   };
   return (
     <div className="forgot-password">
@@ -35,6 +70,7 @@ const ForgotPassword = () => {
           >
             Valider
           </button>
+          {msg_error()}
         </div>
       </form>
     </div>
