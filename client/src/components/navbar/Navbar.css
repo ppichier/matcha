@@ -1,0 +1,6 @@
+.navbar .dropdown-menu::after {
+  display: none;
+}
+.notifications-badge {
+  margin: top;
+}
