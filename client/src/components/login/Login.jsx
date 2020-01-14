@@ -4,7 +4,6 @@ import { Container, Row, Col } from "react-bootstrap";
 import Signup from "./Signup";
 import Signin from "./Signin";
 import ForgotPassword from "./ForgotPasword";
-
 const Login = () => {
   const [isShow, setIsShow] = useState("signup");
 

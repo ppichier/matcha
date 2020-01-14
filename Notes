@@ -1,6 +1,7 @@
 
 
 ## alert login page style
+## navbar one time
 
 -------------------------------------------
 ## Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
@@ -8,4 +9,5 @@
 ## spinner loading
 
 ## Img Login style full height xs
+## Profile.jsx on XS navbar padding right?? 
 -----------------------------
