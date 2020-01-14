@@ -47,6 +47,7 @@ const Signin = ({ forgotPassword }) => {
             onChange={handleChange("pseudo")}
             type="text"
             className="form-control"
+            value={values.pseudo}
           ></input>
         </div>
         <div className="form-group">
@@ -55,6 +56,7 @@ const Signin = ({ forgotPassword }) => {
             onChange={handleChange("password")}
             type="password"
             className="form-control"
+            value={values.password}
           ></input>
         </div>
         <button

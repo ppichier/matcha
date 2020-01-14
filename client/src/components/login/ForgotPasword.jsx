@@ -53,6 +53,7 @@ const ForgotPassword = () => {
             onChange={handleChange}
             type="email"
             className="form-control"
+            values={values.msg}
           ></input>
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
