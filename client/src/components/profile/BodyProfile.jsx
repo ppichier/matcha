@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import FormCheck from "react-bootstrap/FormCheck";
+import Badge from "react-bootstrap/Badge";
+
 const BodyProfile = () => {
+  const [values, setValues] = useState({
+    tags: []
+  });
+  const handlePress = event => {
+    console.log(event.target.value);
+    console.log(values.tags);
+    if (event.key === "Enter") {
+      const tmp = { ...values, tags: [...values.tags, event.target.value] };
+      setValues(tmp);
+    }
+  };
+
+  const handleDeleteTag = () => {};
+
+  const handleSubmit = () => {};
   return (
     <Form>
       <Form.Row>
@@ -85,13 +102,23 @@ const BodyProfile = () => {
       <Form.Group>
         <Form.Label>Centres d'intérêt</Form.Label>
         <Form.Control
+          onKeyPress={handlePress}
           type="text"
           placeholder="Tags"
           name="tags"
-          ng-model="ctrl.insert"
         />
+        <div>
+          {values.tags.map((tag, i) => {
+            return (
+              <Badge key={i} variant="secondary">
+                <div dangerouslySetInnerHTML={{ __html: "#" + tag }} />
+                <Badge>x</Badge>
+              </Badge>
+            );
+          })}
+        </div>
       </Form.Group>
-      <Button type="submit">Submit</Button>
+      <Button onClick={handleSubmit}>Valider</Button>
     </Form>
   );
 };
