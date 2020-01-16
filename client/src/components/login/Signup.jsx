@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { signup } from "../../api/auth";
+import { Toast } from "react-bootstrap";
 import "./Signup.css";
 
 const Signup = () => {
@@ -11,7 +12,9 @@ const Signup = () => {
     password: "",
     err: "",
     msg: "",
-    success: false
+    success: false,
+    showErrorToast: false,
+    showSuccessToast: false
   });
 
   const verifValited = () => {
@@ -42,7 +45,12 @@ const Signup = () => {
     return 0;
   };
   const handleChange = name => event => {
-    const tmp = { ...values, [name]: event.target.value };
+    const tmp = {
+      ...values,
+      [name]: event.target.value,
+      showSuccessToast: false,
+      showErrorToast: false
+    };
     setValues(tmp);
   };
 
@@ -58,7 +66,13 @@ const Signup = () => {
     })
       .then(data => {
         if (data.err) {
-          setValues({ ...values, err: data.err, success: false });
+          setValues({
+            ...values,
+            err: data.err,
+            success: false,
+            showErrorToast: true,
+            showSuccessToast: false
+          });
         } else {
           // console.log(data);
           setValues({
@@ -68,10 +82,12 @@ const Signup = () => {
             lastName: "",
             password: "",
             err: "",
-            msg: "",
+            msg: data.msg,
             success: true,
             emailConfirm: values.email,
-            email: ""
+            email: "",
+            showSuccessToast: true,
+            showErrorToast: false
           });
         }
       })
@@ -81,24 +97,41 @@ const Signup = () => {
 
   const showSuccess = () => {
     return (
-      <div
-        className="alert alert-info"
-        style={{ display: values.success ? "" : "none" }}
+      <Toast
+        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showSuccessToast: false })}
+        show={values.showSuccessToast}
+        className="mt-2"
       >
-        Un email de confirmation avec un lien été envoyé à {values.emailConfirm}
-        . Veuillez cliquer sur ce lien afin de continuer`
-      </div>
+        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
+      </Toast>
+      // {/* <div
+      //   className="alert alert-info"
+      //   style={{ display: values.success ? "" : "none" }}
+      // >
+      //   {values.msg}
+      // </div> */}
     );
   };
 
   const msg_error = () => {
-    if (values.err) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          {values.err}
-        </div>
-      );
-    } /* else if (values.msg) {
+    return (
+      <Toast
+        style={{ backgroundColor: "red", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showErrorToast: false })}
+        show={values.showErrorToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
+      </Toast>
+    );
+    // <div className="alert alert-danger" role="alert">
+    //   {values.err}
+    // </div>
+
+    /* else if (values.msg) {
       return (
         <div className="alert alert-success" role="alert">
           {values.msg}

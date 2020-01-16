@@ -11,6 +11,7 @@
 .login-container {
   top: 20%;
   position: absolute;
+  animation: fadein 4s;
 }
 
 .login-container-login-btn {
@@ -35,4 +36,13 @@
 
 .active-btn {
   border-bottom: 5px solid #fad5c0 !important;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
