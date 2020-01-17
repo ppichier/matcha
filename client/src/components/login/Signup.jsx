@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { signup } from "../../api/auth";
+import { Toast } from "react-bootstrap";
 import "./Signup.css";
 
 const Signup = () => {
@@ -10,23 +11,12 @@ const Signup = () => {
     lastName: "",
     password: "",
     err: "",
-    msg: ""
+    msg: "",
+    success: false,
+    showErrorToast: false,
+    showSuccessToast: false
   });
-  const msg_error = () => {
-    if (values.err) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          {values.err}
-        </div>
-      );
-    } else if (values.msg) {
-      return (
-        <div className="alert alert-success" role="alert">
-          {values.msg}
-        </div>
-      );
-    }
-  };
+
   const verifValited = () => {
     let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
     let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -55,39 +45,84 @@ const Signup = () => {
     return 0;
   };
   const handleChange = name => event => {
-    const tmp = { ...values, [name]: event.target.value };
+    const tmp = {
+      ...values,
+      [name]: event.target.value,
+      showSuccessToast: false,
+      showErrorToast: false
+    };
     setValues(tmp);
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    if (verifValited() === 0) {
-      signup({
-        email: values.email,
-        pseudo: values.pseudo,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        password: values.password
+    // if (verifValited() === 0) {
+    signup({
+      email: values.email,
+      pseudo: values.pseudo,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      password: values.password
+    })
+      .then(data => {
+        if (data.err) {
+          setValues({
+            ...values,
+            err: data.err,
+            success: false,
+            showErrorToast: true,
+            showSuccessToast: false
+          });
+        } else {
+          // console.log(data);
+          setValues({
+            ...values,
+            pseudo: "",
+            firstName: "",
+            lastName: "",
+            password: "",
+            err: "",
+            msg: data.msg,
+            success: true,
+            emailConfirm: values.email,
+            email: "",
+            showSuccessToast: true,
+            showErrorToast: false
+          });
+        }
       })
-        .then(data => {
-          if (data.err) {
-            setValues({ ...values, err: data.err });
-          } else if (data.msg) {
-            setValues({
-              ...values,
-              email: "",
-              pseudo: "",
-              firstName: "",
-              lastName: "",
-              password: "",
-              err: "",
-              msg: data.msg
-            });
-          }
-        })
-        .catch(err => console.log(err));
-    }
+      .catch(err => console.log(err));
+    // }
   };
+
+  const showSuccess = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showSuccessToast: false })}
+        show={values.showSuccessToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
+      </Toast>
+    );
+  };
+
+  const msg_error = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "red", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showErrorToast: false })}
+        show={values.showErrorToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
+      </Toast>
+    );
+  };
+
   return (
     <div className="signup">
       <form onSubmit={handleSubmit}>
@@ -97,6 +132,7 @@ const Signup = () => {
             onChange={handleChange("email")}
             type="email"
             className="form-control"
+            value={values.email}
             required
           />
         </div>
@@ -106,6 +142,7 @@ const Signup = () => {
             onChange={handleChange("pseudo")}
             type="text"
             className="form-control"
+            value={values.pseudo}
             required
           />
         </div>
@@ -115,6 +152,7 @@ const Signup = () => {
             onChange={handleChange("firstName")}
             type="text"
             className="form-control"
+            value={values.firstName}
             required
           />
         </div>
@@ -124,6 +162,7 @@ const Signup = () => {
             onChange={handleChange("lastName")}
             type="text"
             className="form-control"
+            value={values.lastName}
             required
           />
         </div>
@@ -133,6 +172,7 @@ const Signup = () => {
             onChange={handleChange("password")}
             type="password"
             className="form-control"
+            value={values.password}
             required
           />
         </div>
@@ -142,6 +182,7 @@ const Signup = () => {
         >
           S'inscrire
         </button>
+        {showSuccess()}
         {msg_error()}
       </form>
       {/* {JSON.stringify(values)} */}
