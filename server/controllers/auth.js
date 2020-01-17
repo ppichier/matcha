@@ -39,13 +39,14 @@ exports.signup = (req, res) => {
         });
       } else {
         con.query(
-          "INSERT INTO User (Email, Password, UserName, FirstName, LastName) VALUES (?, ?, ?, ?, ?)",
+          "INSERT INTO User (Email, Password, UserName, FirstName, LastName, EmailValidate) VALUES (?, ?, ?, ?, ?, ?)",
           [
             req.body.email,
             req.body.password,
             req.body.pseudo,
             req.body.firstName,
-            req.body.lastName
+            req.body.lastName,
+            0
           ],
           (err, result) => {
             if (err) {

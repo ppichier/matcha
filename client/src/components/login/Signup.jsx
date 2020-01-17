@@ -25,7 +25,7 @@ const Signup = () => {
     if (i < 6) {
       const tmp = {
         ...values,
-        err: "Le code d'accès doit etre composé d'au moins 6 caractères"
+        err: "Le mot de passe doit etre composé d'au moins 6 caractères."
       };
       setValues(tmp);
       return 1;
@@ -33,7 +33,7 @@ const Signup = () => {
       const tmp = {
         ...values,
         err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial."
       };
       setValues(tmp);
       return 1;

@@ -1,13 +1,13 @@
-exports.userSignupValidator = (req, res, next) => {
-  function escapeHtml(unsafe) {
-    return unsafe
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
+exports.userSignupValidator = (req, res, next) => {
   // check if variable is undefined
   if (
     typeof req.body.email === "undefined" ||
@@ -35,14 +35,21 @@ exports.userSignupValidator = (req, res, next) => {
   }
 
   // check if email is valid
-  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (!re.test(String(req.body.email).toLowerCase())) {
+  const rgxEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (!rgxEmail.test(String(req.body.email).toLowerCase())) {
     return res.status(400).json({
       err: "Email is not valid"
     });
   }
 
   //check if pseudo is valid (letter , number, certains special chars)
+
+  const regexPwd = /^(?=.*\d)(?=.*\&)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/;
+  if (!regexPwd.test(String(req.body.password))) {
+    return res.status(400).json({
+      err: "Password is not valid"
+    });
+  }
 
   // check if password is valid (length, contains only Letter and number and certains special chars)
 
