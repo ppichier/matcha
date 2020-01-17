@@ -1,4 +1,5 @@
 const con = require("../db");
+const path = require("path");
 const transporter = require("../utility/mail");
 const template = require("../utility/template/mail");
 
@@ -9,7 +10,14 @@ exports.signup = (req, res) => {
     from: process.env.NODEMAILER_USER,
     to: "pierantonio.pichierri@gmail.com", //req.body.email
     subject: template.templateMailSignUpHeader,
-    html: template.templateMailSignUpBody
+    html: template.templateMailSignUpBody,
+    attachments: [
+      {
+        filename: "Logo.png",
+        path: path.join(__dirname, "../utility/template/matchaMail.png"),
+        cid: "logo"
+      }
+    ]
   };
 
   con.query(
