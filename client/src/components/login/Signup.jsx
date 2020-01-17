@@ -106,12 +106,6 @@ const Signup = () => {
       >
         <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
       </Toast>
-      // {/* <div
-      //   className="alert alert-info"
-      //   style={{ display: values.success ? "" : "none" }}
-      // >
-      //   {values.msg}
-      // </div> */}
     );
   };
 
@@ -127,17 +121,6 @@ const Signup = () => {
         <Toast.Header closeButton={false}>{values.err}</Toast.Header>
       </Toast>
     );
-    // <div className="alert alert-danger" role="alert">
-    //   {values.err}
-    // </div>
-
-    /* else if (values.msg) {
-      return (
-        <div className="alert alert-success" role="alert">
-          {values.msg}
-        </div>
-      );
-    } */
   };
 
   return (
