@@ -10,7 +10,10 @@ exports.signup = (req, res) => {
     from: process.env.NODEMAILER_USER,
     to: "pierantonio.pichierri@gmail.com", //req.body.email
     subject: template.templateMailSignUpHeader,
-    html: template.templateMailSignUpBody,
+    html: template.templateMailSignUpBody(
+      req.body.pseudo,
+      "http://localhost/uuid"
+    ),
     attachments: [
       {
         filename: "Logo.png",

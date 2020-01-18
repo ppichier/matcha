@@ -42,35 +42,40 @@ exports.userSignupValidator = (req, res, next) => {
     });
   }
 
-  //check if pseudo is valid (letter , number, certains special chars)
-
-  const regexPwd = /^(?=.*\d)(?=.*\&)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/;
+  // check if password is valid
+  const regexPwd = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[&#($_);.+!-])[0-9a-zA-Z&#($_);.+!-]{6,}$/;
   if (!regexPwd.test(String(req.body.password))) {
     return res.status(400).json({
       err: "Password is not valid"
     });
   }
 
-  // check if password is valid (length, contains only Letter and number and certains special chars)
+  //check if pseudo is valid (letter , number, certains special chars)
+
+  const regexPseudo = /^[0-9a-zA-Z&#($_);.+!-']{1,}$/;
+  if (!regexPseudo.test(String(req.body.pseudo))) {
+    return res.status(400).json({
+      err: "Pseudo is not valid"
+    });
+  }
 
   // check length of variable
+  req.body.firstName = escapeHtml(req.body.firstName);
+  req.body.lastName = escapeHtml(req.body.lastName);
+
   if (
     req.body.email.length > 255 ||
     req.body.pseudo.length > 40 ||
-    req.body.pseudo.length === 0 ||
+    req.body.password.length > 30 ||
     req.body.firstName.length > 255 ||
     req.body.firstName.length === 0 ||
     req.body.lastName.length > 255 ||
-    req.body.lastName.length === 0 ||
-    req.body.password.length > 30
+    req.body.lastName.length === 0
   ) {
     return res.status(400).json({
       err: "Error value Min-Max length"
     });
   }
-
-  req.body.firstName = escapeHtml(req.body.firstName);
-  req.body.lastName = escapeHtml(req.body.lastName);
 
   next();
 };
