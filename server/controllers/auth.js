@@ -124,16 +124,58 @@ exports.signin = async (req, res) => {
   //verif que user exist sinon
   //error: "User with that pseudo does not exist. Please signup" 400
 
+  pool.getConnection((err, connection) => {
+    if (err) {
+      HandleError(res, err, "Erreur. Veuillez réesayer", 500, connection);
+    } else {
+      connection.query(
+        "SELECT UserName, Password FROM User WHERE UserName = ?",
+        [pseudo],
+        async (err, result) => {
+          if (err) {
+            handleError(res, err, "Internal error", 500, connection);
+          } else if (!result[0]) {
+            //Check if pseudo exists.
+            handleError(
+              res,
+              err,
+              "User with that pseudo does not exist. Please signup",
+              400,
+              connection
+            );
+          } else if (result.length === 1) {
+            try {
+              const match = await bcrypt.compare(
+                password,
+                result[0].Password.toString()
+              );
+              if (match) {
+                //renvoyer token jwt
+                connection.release();
+                return res.json({
+                  msg: "login success"
+                });
+              } else {
+                handleError(
+                  res,
+                  err,
+                  "Pseudo and password don't match",
+                  401,
+                  connection
+                );
+              }
+            } catch (err) {
+              handleError(res, err, "Internal error", 500, connection);
+            }
+          } else {
+            // duplicate data
+            handleError(res, err, "Internal error", 500, connection);
+          }
+        }
+      );
+    }
+  });
+
   //si exist mais password not match
   // res.status(401).json({ error: "Email and password don't match" });
-  const match = await bcrypt.compare(password, passwordHash);
-  if (match) {
-    return res.json({
-      msg: "login ok"
-    });
-  } else {
-    return res.json({
-      msg: "login NOT ok"
-    });
-  }
 };

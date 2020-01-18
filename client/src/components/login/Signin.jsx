@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { signin } from "../../api/auth";
+import { Redirect } from "react-router-dom";
 import "./Signin.css";
 
 const Signin = ({ forgotPassword }) => {
   const [values, setValues] = useState({
     pseudo: "",
     password: "",
-    err: ""
-    // redirect: false
+    err: "",
+    redirect: false
   });
   const msg_error = () => {
     if (values.err) {
@@ -33,11 +34,22 @@ const Signin = ({ forgotPassword }) => {
         if (data.err) {
           setValues({ ...values, err: data.err });
         } else {
+          // set jwt on localstorage sent by the server
           // redirect to /profile or /discover
+          setValues({ ...values, redirect: true });
         }
       })
       .catch(err => console.log(err));
   };
+
+  const redirectUser = () => {
+    if (values.redirect) {
+      // and check valid token ??
+      // fake loader ??
+      return <Redirect to="/profile" />;
+    }
+  };
+
   return (
     <div className="signin">
       <form onSubmit={handleSubmit}>
@@ -72,6 +84,7 @@ const Signin = ({ forgotPassword }) => {
           Mot de passe oublié?
         </button>
         {msg_error()}
+        {redirectUser()}
       </form>
     </div>
   );
