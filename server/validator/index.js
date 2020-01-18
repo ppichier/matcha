@@ -79,3 +79,20 @@ exports.userSignupValidator = (req, res, next) => {
 
   next();
 };
+
+exports.userSigninValidator = (req, res, next) => {
+  if (
+    typeof req.body.pseudo === "undefined" ||
+    typeof req.body.password === "undefined" ||
+    req.body.pseudo === null ||
+    req.body.password === null ||
+    req.body.pseudo.trim().length === 0 ||
+    req.body.password.trim().length === 0
+  ) {
+    return res.status(400).json({
+      err: "All fields are required"
+    });
+  }
+
+  next();
+};
