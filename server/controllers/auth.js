@@ -61,12 +61,28 @@ exports.signup = (req, res) => {
               transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                   console.log(error);
-                  return res.status(500).json({
-                    err:
-                      "Erreur lors de l'envoi du mail de confirmation. Veuillez réesayer."
-                  });
-                  //delete Row in db if user don't receiver the message
-                  con.query("");
+                  //delete Row in db if the message was not sent
+                  con.query(
+                    "DELETE FROM User WHERE UserName = ?",
+                    [req.body.pseudo],
+                    (err,
+                    result => {
+                      if (err) {
+                        console.log(
+                          "Erreur lors de l'envoi du mail de confirmation. Delete row in DB failed: ",
+                          err
+                        );
+                        return res.status(500).json({
+                          err: "Internal error"
+                        });
+                      } else {
+                        return res.status(500).json({
+                          err:
+                            "Erreur lors de l'envoi du mail de confirmation. Veuillez réesayer."
+                        });
+                      }
+                    })
+                  );
                 } else {
                   return res.json({
                     msg: `Un email de confirmation avec un lien été envoyé à ${req.body.email}. Veuillez cliquer sur ce lien afin de valider votre compte`
