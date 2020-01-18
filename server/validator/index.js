@@ -52,7 +52,7 @@ exports.userSignupValidator = (req, res, next) => {
 
   //check if pseudo is valid (letter , number, certains special chars)
 
-  const regexPseudo = /^[0-9a-zA-Z&#($_);.+!-']{1,}$/;
+  const regexPseudo = /^[0-9a-zA-Z&#($_);.+!-]{1,}$/;
   if (!regexPseudo.test(String(req.body.pseudo))) {
     return res.status(400).json({
       err: "Pseudo is not valid"

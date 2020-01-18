@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const chalk = require("chalk");
 const con = require("./db");
 require("dotenv").config();
 
@@ -14,7 +15,7 @@ const app = express();
 
 con.connect(err => {
   if (err) throw err;
-  console.log("Connected!");
+  console.log(chalk.blue("Connected to SQL server"));
 });
 
 //middlewares
@@ -28,5 +29,5 @@ app.use("/api", authRoutes);
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
-  console.log(`App listen on port ${port}`);
+  console.log(chalk.blue(`App listen on port ${port}`));
 });
