@@ -1,10 +1,11 @@
 # Matcha
 
-This project is about  creating a dating website
+This project is about  creating a dating website.
+A user will be able to register, connect, fill his/her profile, search and look into the profile of other users, chat with those that "liked" back and more !
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
+These instructions will get you a copy of the project up and running on your local machine for development.
 
 ### Prerequisites
 
@@ -22,7 +23,8 @@ script create db + seed
 
 
 
-C
+
+
 
 Finally, they are two main folders. You have to download all dependencies and then run the start script.
 
@@ -40,7 +42,7 @@ npm i
 npm start
 ```
 
-And that's it ! Now Y=you can try to match people and maybe find the true love ;)
+And that's it ! Now you can try to match people and maybe find the true love ;)
 
 
 
