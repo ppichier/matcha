@@ -1,6 +1,7 @@
 const pool = require("../db");
 const path = require("path");
 const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
 const transporter = require("../utility/mail");
 const template = require("../utility/template/mail");
 
@@ -9,6 +10,12 @@ const handleError = (res, err, displayErr, code, connection) => {
   console.log(err);
   return res.status(code).json({
     err: displayErr
+  });
+};
+
+const generateJwt = () => {
+  return jwt.sign({ id: "id of user" }, process.env.JWT_SECRET, {
+    expiresIn: 86400 // expires in 24 hours
   });
 };
 
@@ -126,7 +133,9 @@ exports.signin = async (req, res) => {
 
   pool.getConnection((err, connection) => {
     if (err) {
-      HandleError(res, err, "Erreur. Veuillez réesayer", 500, connection);
+      return res.status(500).json({
+        err: "Internal error - Db down"
+      });
     } else {
       connection.query(
         "SELECT UserName, Password FROM User WHERE UserName = ?",
@@ -150,19 +159,20 @@ exports.signin = async (req, res) => {
                 result[0].Password.toString()
               );
               if (match) {
-                //renvoyer token jwt
+                const token = generateJwt();
                 connection.release();
                 return res.json({
-                  msg: "login success"
+                  auth: true,
+                  token: token,
+                  msg: "Login success"
                 });
               } else {
-                handleError(
-                  res,
-                  err,
-                  "Pseudo and password don't match",
-                  401,
-                  connection
-                );
+                connection.release();
+                return res.status(401).json({
+                  auth: false,
+                  token: null,
+                  err: "Pseudo and password don't match"
+                });
               }
             } catch (err) {
               handleError(res, err, "Internal error", 500, connection);
