@@ -1,7 +1,6 @@
 import React, { useState, Fragment } from "react";
 import NavbarHeader from "../navbar/Navbar";
-import Picture from "./Picture";
-import { Row, Col, Form, Button, Badge } from "react-bootstrap";
+import { Row, Col, Form, Button, Badge, Carousel } from "react-bootstrap";
 import "./Profile.css";
 
 const Profile = () => {
@@ -13,13 +12,17 @@ const Profile = () => {
     firstName: "",
     lastName: "",
     dateOfBirth: "",
-    password: "",
+    newPassword: "",
+    oldPassword: "",
     gender: "N",
     sexualPreference: "N",
     description: "",
     adress: "",
     city: "",
     postalCode: "",
+    indexPecture: 0,
+    direction: null,
+    image: "",
     err: ""
   });
   const handleChange = name => event => {
@@ -40,12 +43,47 @@ const Profile = () => {
   };
   const handleSubmit = () => {};
 
+  const handleSelect = (selectedIndex, e) => {
+    const tmp = {
+      ...values,
+      indexPecture: selectedIndex,
+      direction: e.direction
+    };
+    setValues(tmp);
+  };
   return (
     <Fragment>
       <NavbarHeader />
       <Row className="pt-5 px-3">
         <Col md={4}>
-          <Picture />
+          <Carousel
+            activeIndex={values.indexPecture}
+            direction={values.direction}
+            onSelect={handleSelect}
+          >
+            <Carousel.Item>
+              <input type="file" name="file" onChange={e => onchange(e)} />{" "}
+              <img
+                className="test"
+                src="https://img.myloview.fr/images/icone-de-profil-d-espace-reserve-par-defaut-400-81929628.jpg?text=First slide&bg=373940"
+                alt="First slide"
+              />
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="test"
+                src="https://img.myloview.fr/images/icone-de-profil-d-espace-reserve-par-defaut-400-81929628.jpg?text=Second slide&bg=282c34"
+                alt="Second slide"
+              />
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="test"
+                src="https://img.myloview.fr/images/icone-de-profil-d-espace-reserve-par-defaut-400-81929628.jpg?text=Third slide&bg=20232a"
+                alt="Third slide"
+              />
+            </Carousel.Item>
+          </Carousel>
         </Col>
         <Col md={8}>
           <Form>
@@ -85,14 +123,34 @@ const Profile = () => {
                 ></Form.Control>
               </Form.Group>
               <Form.Group as={Col} md="6">
-                <Form.Label>Mot de Passe</Form.Label>
+                <Form.Label>Date de naissance</Form.Label>
                 <Form.Control
-                  type="password"
-                  placeholder="Mot de Passe"
-                  onChange={handleChange("password")}
+                  type="date"
+                  placeholder="date de naissance"
+                  name="date"
+                  onChange={handleChange("dateOfBirth")}
                 ></Form.Control>
               </Form.Group>
             </Form.Row>
+            <Form.Row>
+              <Form.Group as={Col} md="6">
+                <Form.Label>Ancien Mot de Passe</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Ancien mot de passe"
+                  onChange={handleChange("oldPassword")}
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group as={Col} md="6">
+                <Form.Label>Nouveau Mot de Passe</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Nouveau Mot de Passe"
+                  onChange={handleChange("newPassword")}
+                ></Form.Control>
+              </Form.Group>
+            </Form.Row>
+
             <Form.Row>
               <Form.Group as={Col} md="6">
                 <Form.Label>Je suis </Form.Label>
@@ -120,15 +178,6 @@ const Profile = () => {
                 </Form.Control>
               </Form.Group>
             </Form.Row>
-            <Form.Group md="12">
-              <Form.Label>Date de naissance</Form.Label>
-              <Form.Control
-                type="date"
-                placeholder="date de naissance"
-                name="date"
-                onChange={handleChange("dateOfBirth")}
-              />
-            </Form.Group>
             <Form.Group md="12">
               <Form.Label>Adresse postale</Form.Label>
               <Form.Control
