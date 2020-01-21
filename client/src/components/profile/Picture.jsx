@@ -1,17 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import "./Picture.css";
-import { Form } from "react-bootstrap";
+import { Col } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faImages,
+  faImage,
+  faTimesCircle,
+  faBowlingBall,
+  faFileImage
+} from "@fortawesome/free-solid-svg-icons";
 
 const Picture = () => {
   const [values, setValues] = useState({
     images: [],
     path: [
-      "https://cdn.radiofrance.fr/s3/cruiser-production/2019/04/ae78a4d3-fcd4-46ea-8973-72862c001d6d/838_lelivreimage_18_casa_azul_films-ecran_noir_productions-jpg.webp",
-      "https://www.bigstockphoto.com/images/homepage/module-6.jpg"
+      "https://miro.medium.com/max/700/1*-e9ggCgUcu3_9OdKhX9g5g.jpeg",
+      "https://www.bigstockphoto.com/images/homepage/module-6.jpg",
+      "https://miro.medium.com/max/700/1*eukbB4_M_hFVlARuE_EaTQ.jpeg",
+      "https://miro.medium.com/max/1600/1*F5TxJsQZ9QDfPKeyw7ClTA.jpeg",
+      "https://miro.medium.com/max/700/1*0dWe2qDwWKQt9wuVnMXJ-w.jpeg"
     ],
     uploading: false
   });
-  console.log(values.path[0]);
   const handleChange = event => {
     event.preventDefault();
 
@@ -27,51 +37,72 @@ const Picture = () => {
     setValues(tmp);
   };
 
-  const removeImage = id => {
-    const image = {
-      ...values,
-      images: [...values.images, values.images.filter()]
-    };
-    setValues(image);
+  const removeImage = id => () => {
+    console.log(id);
+    const path_image = [...values.path];
+    path_image.splice(id, 1);
+    setValues({ ...values, path: path_image });
   };
   const content = () => {
     switch (true) {
-      // case values.uploading:
-      //   return (
-      //     <div>
-      //       <i
-      //         className="fa fa-bowling-ball"
-      //         style={{ color: "red", size: "50x" }}
-      //       ></i>
-      //     </div>
-      //   );
+      case values.uploading:
+        return (
+          <div>
+            <FontAwesomeIcon icon={faBowlingBall} size="5x" color="#3B5998" />
+          </div>
+        );
       case values.images.length > 0:
         return values.path.map((image, i) => (
           <div key={i} className="fadein">
-            <div
-              onClick={() => removeImage(image.public_id)}
-              className="delete"
-            >
-              <i className="fa fa-times-circle" style={{ size: "2x" }}></i>
+            <div onClick={removeImage(i)} className="delete">
+              <FontAwesomeIcon icon={faTimesCircle} size="2x" />
             </div>
-            <img src={values.path} alt="" />
+            {console.log(i)}
+            <img src={values.path[i]} alt="" />
           </div>
         ));
       default:
         return (
-          <div>
-            <label htmlFor="single">
-              <i
-                className="fa fa-image"
-                style={{ color: "#3B5998", size: "10px" }}
-              ></i>
-            </label>
-            <input type="file" id="single" onChange={handleChange} />
-          </div>
+          <Fragment>
+            <Col style={{}}>
+              <div className="buttons fadein py-5">
+                <div className="button">
+                  <label htmlFor="single">
+                    <FontAwesomeIcon
+                      className="download-picture-icon"
+                      icon={faImage}
+                      color="#fad5c0"
+                    />
+                  </label>
+                  <input
+                    type="file"
+                    name="file"
+                    id="single"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="button">
+                  <label htmlFor="multi">
+                    <FontAwesomeIcon
+                      className="download-picture-icon"
+                      icon={faImages}
+                      color="#fad5c0"
+                    />
+                  </label>
+                  <input
+                    type="file"
+                    name="file"
+                    id="multi"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </Col>
+          </Fragment>
         );
     }
   };
-  return <div>{content()}</div>;
+  return <div className="buttons">{content()}</div>;
 };
 
 export default Picture;

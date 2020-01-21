@@ -1,3 +1,16 @@
+.row-picture {
+  font-family: Roboto, sans-serif;
+  background-color: white !important;
+  border-radius: 3px;
+  margin: 0px;
+  /* justify-content: center !important; */
+  min-height: 239px;
+}
+
+.row-infos {
+  /* justify-content: center !important; */
+}
+
 .badge-delete {
   align-self: center !important;
   color: red !important;
@@ -10,7 +23,6 @@
   max-height: 150px !important;
 }
 .mytags {
-  display: flex !important;
   background-color: #aaa !important;
   border-radius: 4px !important;
   color: #fff !important;

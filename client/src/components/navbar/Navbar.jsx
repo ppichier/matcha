@@ -4,6 +4,8 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Nav from "react-bootstrap/Nav";
 import Badge from "react-bootstrap/Badge";
 import "./Navbar.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
 
 const NavbarHeader = () => {
   return (
@@ -41,14 +43,14 @@ const NavbarHeader = () => {
         <Nav>
           <Nav.Link href="#home">
             <div>
-              <i className="fa fa-bell fa-lg mr-2 "></i>
+              <FontAwesomeIcon icon={faBell} className="fa-lg mr-2" />
               <sup className="sup-notification-icon">
                 <Badge variant="danger">4</Badge>
               </sup>
             </div>
           </Nav.Link>
           <NavDropdown
-            title={<i className="fa fa-cog fa-lg " />}
+            title={<FontAwesomeIcon icon={faCog} className="fa-lg" />}
             id="basic-nav-dropdown"
             alignRight
           >
