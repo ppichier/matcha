@@ -2,15 +2,18 @@
   font-family: Roboto, sans-serif;
   background-color: white !important;
   border-radius: 3px;
-  margin: 0px;
-  /* justify-content: center !important; */
+  flex-wrap: wrap !important;
+  justify-content: center;
   min-height: 239px;
 }
-
-.row-infos {
-  /* justify-content: center !important; */
+.row-pictureProfile {
+  background-color: white !important;
+  max-height: 330px !important;
+  border-radius: 3px;
+  display: flex !important;
+  line-height: 1.7px;
+  flex-wrap: wrap !important;
 }
-
 .badge-delete {
   align-self: center !important;
   color: red !important;
