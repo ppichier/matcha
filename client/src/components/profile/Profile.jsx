@@ -29,6 +29,7 @@ const Profile = () => {
     setValues(tmp);
   };
   const handlePress = event => {
+    event.preventDefault();
     if (event.key === "Enter") {
       const tmp = { ...values, myTags: [...values.myTags, event.target.value] };
       setValues(tmp);
@@ -46,16 +47,16 @@ const Profile = () => {
       <NavbarHeader />
       <Container>
         <Row style={{ flexWrap: "wrap" }}>
-          <Col md={4} className="mt-5 row-pictureProfile">
+          <Col md={4} className="mt-5  row-pictureProfile">
             <CardPicture />
           </Col>
           <Col md={8} className="pl-5">
-            <Row className="mt-5 row-picture">
+            <Row className="mt-5 mb-1 row-picture">
               <Picture />
             </Row>
             <Row className="pt-4 row-infos">
               <Col>
-                <Row style={{ backgroundColor: "white", marginBottom: "60px" }}>
+                <Row className="mb-4 pt-3 pb-3 Row">
                   <Col>
                     <Form>
                       <Form.Row>
@@ -124,7 +125,7 @@ const Profile = () => {
                     </Form>
                   </Col>
                 </Row>
-                <Row style={{ backgroundColor: "white", marginBottom: "60px" }}>
+                <Row className="mb-4 pt-3 pb-3 Row">
                   <Col>
                     <Form>
                       <Form.Row>
@@ -189,21 +190,42 @@ const Profile = () => {
                     </Form>
                   </Col>
                 </Row>
-                <Row style={{ backgroundColor: "white", marginBottom: "60px" }}>
+                <Row className="mb-4 pt-3 pb-3 Row">
                   <Col>
                     <Form>
                       <Form.Group
                         controlId="exampleForm.ControlTextarea1"
                         md="12"
                       >
-                        <Form.Label>A propos de vous</Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows="4"
-                          placeholder="A propos de vous"
-                          name="bio"
-                          onChange={handleChange("description")}
-                        />
+                        <Form.Label>
+                          Veuillez sélectionner vos intérêts :
+                        </Form.Label>
+                        <Row>
+                          <Col>
+                            <Form.Check
+                              type="checkbox"
+                              id="musique"
+                              label="Musique"
+                              name="interset"
+                            />
+                          </Col>
+                          <Col>
+                            <Form.Check
+                              type="checkbox"
+                              id="musique"
+                              label="Musique"
+                              name="interset"
+                            />
+                          </Col>
+                          <Col>
+                            <Form.Check
+                              type="checkbox"
+                              id="musique"
+                              label="Musique"
+                              name="interset"
+                            />
+                          </Col>
+                        </Row>
                       </Form.Group>
                       <Form.Group>
                         <Form.Label>Centres d'intérêt</Form.Label>
@@ -233,12 +255,34 @@ const Profile = () => {
                           })}
                         </div>
                       </Form.Group>
-                      <Button onClick={() => handleSubmit(values)}>
-                        Valider
-                      </Button>
                     </Form>
                   </Col>
                 </Row>
+                <Row className="mb-4 pt-3 pb-3 Row">
+                  <Col>
+                    <Form>
+                      <Form.Group
+                        controlId="exampleForm.ControlTextarea1"
+                        md="12"
+                      >
+                        <Form.Label>A propos de vous</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows="4"
+                          placeholder="A propos de vous"
+                          name="bio"
+                          onChange={handleChange("description")}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </Row>
+                <Button
+                  onClick={() => handleSubmit(values)}
+                  className=" mb-5 btn-primary  btn-block text-uppercase profile-btn"
+                >
+                  Valider
+                </Button>
               </Col>
             </Row>
           </Col>
