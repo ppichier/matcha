@@ -1,7 +1,16 @@
 import React, { useState, Fragment } from "react";
 import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
-const CardPicture = () => {
+const CardPicture = ({ firstName, lastName, city, birthday }) => {
+  const age = birthday => {
+    birthday = new Date(birthday);
+    return new Number(
+      (new Date().getTime() - birthday.getTime()) / 31536000000
+    ).toFixed(0);
+  };
+  const isShow = birthday => {
+    if (birthday) return <div>Age: {age(birthday)}</div>;
+  };
   return (
     <Fragment>
       <Container>
@@ -26,9 +35,11 @@ const CardPicture = () => {
                 // onChange={handleChange}
               />
               <div className="info">
-                <a>Wafae Meddah</a>
-                <div className="desc">Age: 30 ans</div>
-                <div className="desc">Paris</div>
+                <a>
+                  {firstName} {lastName}
+                </a>
+                <div className="desc">{isShow(birthday)}</div>
+                <div className="desc">{city}</div>
               </div>
             </div>
           </div>

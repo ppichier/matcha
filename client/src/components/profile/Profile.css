@@ -20,7 +20,7 @@
 }
 .badge-delete {
   align-self: center !important;
-  color: red !important;
+  color: white !important;
   cursor: pointer !important;
 }
 .mytags-main {
@@ -30,7 +30,7 @@
   max-height: 150px !important;
 }
 .mytags {
-  background-color: #aaa !important;
+  background-color: #fad5c0 !important;
   border-radius: 6px !important;
   color: #fff !important;
 }

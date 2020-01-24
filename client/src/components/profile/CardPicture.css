@@ -60,8 +60,9 @@ a {
   padding: 4px 8px 10px;
   margin-bottom: 9px;
   font-size: 18px;
-  /* line-height: 1 !important; */
-  display: flex !important;
+  text-transform: capitalize;
+  line-height: 2 !important;
+  */display: flex !important;
   justify-content: center;
 }
 .desc {
@@ -69,6 +70,7 @@ a {
   line-height: 15px;
   display: flex !important;
   justify-content: center;
+  text-transform: capitalize;
 }
 .info {
   padding: 6px 11px 12px;

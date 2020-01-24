@@ -4,8 +4,9 @@ import Picture from "./Picture";
 import CardPicture from "./CardPicture";
 import { Row, Col, Form, Button, Badge, Container } from "react-bootstrap";
 import "./Profile.css";
+import { profile } from "../../api/auth";
 
-const Profile = () => {
+const Profile = props => {
   const [values, setValues] = useState({
     myTags: [],
     commonTags: [],
@@ -41,14 +42,44 @@ const Profile = () => {
     tab.splice(i, 1);
     setValues({ ...values, myTags: tab });
   };
-  const handleSubmit = () => {};
+  const handleSubmit = event => {
+    profile({
+      myTags: values.myTags,
+      email: values.email,
+      pseudo: values.pseudo,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      dateOfBirth: values.dateOfBirth,
+      newPassword: values.newPassword,
+      oldPassword: values.oldPassword,
+      gender: values.gender,
+      sexualPreference: values.sexualPreference,
+      description: values.description,
+      adress: values.adress,
+      city: values.city,
+      postalCode: values.postalCode
+    })
+      .then(data => {
+        if (data.err) {
+          setValues({ ...values, err: data.err });
+        } else {
+          // redirect to /profile or /discover
+        }
+      })
+      .catch(err => console.log(err));
+  };
   return (
     <Fragment>
       <NavbarHeader />
       <Container>
         <Row style={{ flexWrap: "wrap" }}>
           <Col md={4} className="mt-5  row-pictureProfile">
-            <CardPicture />
+            <CardPicture
+              firstName={values.firstName}
+              lastName={values.lastName}
+              city={values.city}
+              birthday={values.dateOfBirth}
+            />
           </Col>
           <Col md={8} className="pl-5">
             <Row className="mt-5 mb-1 row-picture">
@@ -206,7 +237,7 @@ const Profile = () => {
                               type="checkbox"
                               id="musique"
                               label="Musique"
-                              name="interset"
+                              name="commonTags"
                             />
                           </Col>
                           <Col>
@@ -214,7 +245,7 @@ const Profile = () => {
                               type="checkbox"
                               id="musique"
                               label="Musique"
-                              name="interset"
+                              name="commonTags"
                             />
                           </Col>
                           <Col>
@@ -222,7 +253,7 @@ const Profile = () => {
                               type="checkbox"
                               id="musique"
                               label="Musique"
-                              name="interset"
+                              name="commonTags"
                             />
                           </Col>
                         </Row>
