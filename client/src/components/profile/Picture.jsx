@@ -1,5 +1,6 @@
 import React, { useState, Fragment } from "react";
 import "./Picture.css";
+import { picture } from "../../api/auth";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,7 +34,14 @@ const Picture = () => {
     files.forEach((file, i) => {
       formData.append(i, files);
     });
-
+    //   profile({
+    //     formData
+    //   })
+    //     .then(images => {
+    //         setValues({ ...values, images: images, uploading: false })
+    //       })
+    //     .catch(err => console.log(err));
+    // };
     setValues(tmp);
   };
 
@@ -58,7 +66,7 @@ const Picture = () => {
               <FontAwesomeIcon icon={faTimesCircle} size="2x" />
             </div>
             {console.log(i)}
-            <img src={values.path[i]} alt="" />
+            <img className="img" src={values.path[i]} alt="" />
           </div>
         ));
       default:
@@ -66,21 +74,6 @@ const Picture = () => {
           <Fragment>
             <Col style={{}}>
               <div className="buttons fadein py-5">
-                <div className="button">
-                  <label htmlFor="single">
-                    <FontAwesomeIcon
-                      className="download-picture-icon"
-                      icon={faImage}
-                      color="#fad5c0"
-                    />
-                  </label>
-                  <input
-                    type="file"
-                    name="file"
-                    id="single"
-                    onChange={handleChange}
-                  />
-                </div>
                 <div className="button">
                   <label htmlFor="multi">
                     <FontAwesomeIcon

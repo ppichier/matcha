@@ -54,7 +54,7 @@ const NavbarHeader = () => {
             id="basic-nav-dropdown"
             alignRight
           >
-            <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/ProfileUser">Profile</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="#action/3.4">Déconnexion</NavDropdown.Item>
           </NavDropdown>

@@ -1,0 +1,50 @@
+.row-picture {
+  font-family: Roboto, sans-serif;
+  background-color: white !important;
+  border-radius: 6px;
+  flex-wrap: wrap !important;
+  justify-content: center;
+  min-height: 239px;
+}
+.Row {
+  background-color: white;
+  border-radius: 6px;
+}
+.row-pictureProfile {
+  background-color: white !important;
+  max-height: 330px !important;
+  border-radius: 6px;
+  display: flex !important;
+  line-height: 1.7px;
+  flex-wrap: wrap !important;
+}
+.badge-delete {
+  align-self: center !important;
+  color: white !important;
+  cursor: pointer !important;
+}
+.mytags-main {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  overflow-y: auto;
+  max-height: 150px !important;
+}
+.mytags {
+  background-color: #fad5c0 !important;
+  border-radius: 6px !important;
+  color: #fff !important;
+}
+.label {
+  color: black;
+  border-bottom: 2px solid transparent;
+  font-weight: bold;
+  font-family: Helvetica, sans empattement;
+}
+.profile-btn {
+  background-color: #fad5c0 !important;
+  border-color: #fad5c0 !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: bold !important;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
