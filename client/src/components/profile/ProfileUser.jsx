@@ -5,6 +5,10 @@ import CardPicture from "./CardPicture";
 import { Row, Col, Form, Button, Badge, Container } from "react-bootstrap";
 import "./ProfileUser.css";
 import { profileUser } from "../../api/auth";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ProgressBar from "react-bootstrap/ProgressBar";
+
+import { faToggleOn } from "@fortawesome/free-solid-svg-icons";
 
 const ProfileUser = props => {
   const [values, setValues] = useState({
@@ -73,13 +77,25 @@ const ProfileUser = props => {
       <NavbarHeader />
       <Container>
         <Row style={{ flexWrap: "wrap" }}>
-          <Col md={4} className="mt-5  row-pictureProfile">
-            <CardPicture
-              firstName={values.firstName}
-              lastName={values.lastName}
-              city={values.city}
-              birthday={values.dateOfBirth}
-            />
+          <Col md={4} className="mt-5 ">
+            <Row>
+              <Col>
+                <Row className="row-pictureProfile">
+                  <CardPicture
+                    pseudo={values.pseudo}
+                    lastName={values.lastName}
+                    city={values.city}
+                    birthday={values.dateOfBirth}
+                  />
+                </Row>
+                <Row
+                  className="Row mt-4 py-3"
+                  style={{ justifyContent: "center" }}
+                >
+                  <FontAwesomeIcon icon={faToggleOn} className="fa-2x mr-5" />
+                </Row>
+              </Col>
+            </Row>
           </Col>
           <Col md={8} className="pl-5">
             <Row className="mt-5 mb-1 row-picture">
@@ -307,6 +323,7 @@ const ProfileUser = props => {
                         />
                       </Form.Group>
                     </Form>
+                    <ProgressBar striped variant="info" label="50" now={50} />
                   </Col>
                 </Row>
                 <Button

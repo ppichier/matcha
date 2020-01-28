@@ -2,8 +2,14 @@ import React, { useState, Fragment } from "react";
 import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { cardPicture } from "../../api/auth";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBirthdayCake,
+  faMapMarked,
+  faMapMarker
+} from "@fortawesome/free-solid-svg-icons";
 
-const CardPicture = ({ firstName, lastName, city, birthday }) => {
+const CardPicture = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({
     image: [],
     uploading: false
@@ -61,11 +67,20 @@ const CardPicture = ({ firstName, lastName, city, birthday }) => {
                 onChange={handleChange}
               />
               <div className="info">
-                <a>
-                  {firstName} {lastName}
-                </a>
-                <div className="desc">{isShow(birthday)}</div>
-                <div className="desc">{city}</div>
+                <a>{lastName}</a>
+                <div className="desc">{pseudo}</div>
+                <div className="desc">
+                  {" "}
+                  {/* <FontAwesomeIcon
+                    icon={faBirthdayCake}
+                    className="fa-lg mr-2"
+                  /> */}
+                  {isShow(birthday)}
+                </div>
+                <div className="desc">
+                  {/* <FontAwesomeIcon icon={faMapMarker} className="fa-lg mr-2" /> */}
+                  {city}
+                </div>
               </div>
             </div>
           </div>

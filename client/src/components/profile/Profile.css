@@ -1,8 +1,14 @@
-/* .image {
-  width: 800px;
-  height: 400px;
-} */
-.Row {
+.image {
+  border-radius: 6px;
+}
+/* .row {
   background-color: white;
   border-radius: 6px;
+  display: flex;
+} */
+.descp {
+  font-size: 20px;
+  line-height: 15px;
+  display: flex !important;
+  justify-content: center;
 }
