@@ -1,5 +1,13 @@
 import React, { useState, Fragment } from "react";
-import { Carousel, Container, Row, Col, Badge } from "react-bootstrap";
+import {
+  Carousel,
+  Container,
+  Row,
+  Col,
+  Badge,
+  Form,
+  FormCheck
+} from "react-bootstrap";
 import "./Profile.css";
 import "./ProfileUser.css";
 import CardPicture from "./CardPicture";
@@ -9,22 +17,80 @@ import {
   faHeart,
   faComment,
   faUserSlash,
-  faExclamationTriangle
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
 
 const Profile = () => {
-  const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(null);
-
+  const [values, setValues] = useState({
+    indexImages: 0,
+    directionImages: null,
+    fakeCount: false,
+    like: 0
+  });
+  console.log(values.fakeCount);
   const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-    setDirection(e.direction);
+    const tmp = {
+      ...values,
+      indexImages: selectedIndex,
+      directionImages: e.direction
+    };
+    setValues(tmp);
+  };
+  const handleFakeCount = () => {
+    console.log("je rentre ici");
+
+    let tmp;
+    if (values.fakeCount === false) tmp = { ...values, fakeCount: true };
+    else tmp = { ...values, fakeCount: false };
+    setValues(tmp);
+  };
+  const handleLike = () => {
+    let tmp;
+    if (values.like === 0) tmp = { ...values, like: 1 };
+    else tmp = { ...values, like: 0 };
+    setValues(tmp);
+  };
+  const handleiconLike = () => {
+    if (values.like === 0)
+      return (
+        <FontAwesomeIcon
+          icon={faHeart}
+          className="fa-2x mr-5 faHeart"
+          onClick={handleLike}
+        />
+      );
+    else
+      return (
+        <FontAwesomeIcon
+          icon={faHeart}
+          className="fa-2x mr-5 faHeartliked"
+          onClick={handleLike}
+        />
+      );
+  };
+  const handleiconfakeCount = () => {
+    if (values.fakeCount === true)
+      return (
+        <FontAwesomeIcon
+          icon={faUserSlash}
+          className="fa-2x mr-5 faHeartliked"
+          onClick={handleFakeCount}
+        />
+      );
+    else
+      return (
+        <FontAwesomeIcon
+          icon={faUser}
+          className="fa-2x mr-5"
+          onClick={handleFakeCount}
+        />
+      );
   };
   return (
     <Fragment>
       <NavbarHeader />
       <Container>
-        <Row style={{ flexWrap: "wrap" }}>
+        <Row>
           <Col md={4} className="mt-5 ">
             <Row>
               <Col>
@@ -38,25 +104,19 @@ const Profile = () => {
                 </Row>
                 <Row
                   className="Row mt-4 py-3"
-                  style={{ justifyContent: "center" }}
+                  style={{ justifyContent: "center", flexWrap: "wrap" }}
                 >
-                  <FontAwesomeIcon icon={faHeart} className="fa-2x mr-5" />
+                  {handleiconLike()}
                   <FontAwesomeIcon icon={faComment} className="fa-2x mr-5" />
-                  <FontAwesomeIcon icon={faUserSlash} className="fa-2x mr-5" />
-
-                  <FontAwesomeIcon
-                    icon={faExclamationTriangle}
-                    className="fa-2x"
-                  />
+                  {handleiconfakeCount()}
                 </Row>
               </Col>
             </Row>
           </Col>
           <Col md={8} className="pl-5">
-            {/* <Row className="mt-5"> */}
             <Carousel
-              activeIndex={index}
-              direction={direction}
+              activeIndex={values.indexImages}
+              direction={values.directionImages}
               onSelect={handleSelect}
               className="mt-5"
             >
@@ -106,6 +166,16 @@ const Profile = () => {
                 <h3 className="descp">A propos de moi</h3>
               </Col>
             </Row>
+            <Form>
+              <Form.Check
+                style={{ color: "red" }}
+                type="checkbox"
+                id="fake account"
+                label="Signaler un faux compte"
+                name="fake_account"
+                onChange={handleFakeCount}
+              />
+            </Form>
           </Col>
         </Row>
       </Container>

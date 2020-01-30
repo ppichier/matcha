@@ -2,13 +2,18 @@ import React, { useState, Fragment } from "react";
 import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import CardPicture from "./CardPicture";
-import { Row, Col, Form, Button, Badge, Container } from "react-bootstrap";
-import "./ProfileUser.css";
+import {
+  Row,
+  Col,
+  Form,
+  Button,
+  Badge,
+  Container,
+  Toast
+} from "react-bootstrap";
 import { profileUser } from "../../api/auth";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProgressBar from "react-bootstrap/ProgressBar";
-
-import { faToggleOn } from "@fortawesome/free-solid-svg-icons";
+import "./ProfileUser.css";
 
 const ProfileUser = props => {
   const [values, setValues] = useState({
@@ -27,10 +32,74 @@ const ProfileUser = props => {
     adress: "",
     city: "",
     postalCode: "",
-    err: ""
+    width: 0,
+    err: "",
+    success: false,
+    showErrorToast: false,
+    showSuccessToast: true
   });
+  console.log(values.err);
+  const verifValited = () => {
+    console.log("je renter pas ici");
+    let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
+    let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let i = values.newPassword.length;
+    let lenFirstName = values.firstName.length;
+    let lenLastName = values.lastName.length;
+    let lenPseudo = values.pseudo.length;
+    if (i < 6 && i > 30) {
+      const tmp = {
+        ...values,
+        err: "Le code d'accès doit etre composé min de 6 caractères et max 30 "
+      };
+      setValues(tmp);
+      return 1;
+    } else if (!rgxpassword.test(values.newPassword)) {
+      const tmp = {
+        ...values,
+        err:
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
+      };
+      setValues(tmp);
+      return 1;
+    } else if (!rgxmail.test(values.email)) {
+      const tmp = { ...values, err: "votre adresse email n'est pas valide." };
+      setValues(tmp);
+      return 1;
+    } else if (
+      (lenFirstName < 3 && lenFirstName > 30) ||
+      (lenLastName < 3 && lenLastName > 30) ||
+      (lenPseudo < 3 && lenPseudo > 30)
+    ) {
+      const tmp = {
+        ...values,
+        err: " votre nom ou prenom ..."
+      };
+      setValues(tmp);
+      return 1;
+    }
+    return 0;
+  };
+  const msg_error = () => {
+    console.log("je renter");
+    return (
+      <Toast
+        style={{ backgroundColor: "red", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showErrorToast: false })}
+        show={values.showErrorToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
+      </Toast>
+    );
+  };
   const handleChange = name => event => {
-    const tmp = { ...values, [name]: event.target.value };
+    const tmp = {
+      ...values,
+      [name]: event.target.value,
+      width: values.width + 1
+    };
     setValues(tmp);
   };
   const handlePress = event => {
@@ -47,30 +116,32 @@ const ProfileUser = props => {
     setValues({ ...values, myTags: tab });
   };
   const handleSubmit = event => {
-    profileUser({
-      myTags: values.myTags,
-      email: values.email,
-      pseudo: values.pseudo,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      dateOfBirth: values.dateOfBirth,
-      newPassword: values.newPassword,
-      oldPassword: values.oldPassword,
-      gender: values.gender,
-      sexualPreference: values.sexualPreference,
-      description: values.description,
-      adress: values.adress,
-      city: values.city,
-      postalCode: values.postalCode
-    })
-      .then(data => {
-        if (data.err) {
-          setValues({ ...values, err: data.err });
-        } else {
-          // redirect to /profile or /discover
-        }
+    if (verifValited() === 0) {
+      profileUser({
+        myTags: values.myTags,
+        email: values.email,
+        pseudo: values.pseudo,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        dateOfBirth: values.dateOfBirth,
+        newPassword: values.newPassword,
+        oldPassword: values.oldPassword,
+        gender: values.gender,
+        sexualPreference: values.sexualPreference,
+        description: values.description,
+        adress: values.adress,
+        city: values.city,
+        postalCode: values.postalCode
       })
-      .catch(err => console.log(err));
+        .then(data => {
+          if (data.err) {
+            setValues({ ...values, err: data.err });
+          } else {
+            // redirect to /profile or /discover
+          }
+        })
+        .catch(err => console.log(err));
+    }
   };
   return (
     <Fragment>
@@ -92,7 +163,11 @@ const ProfileUser = props => {
                   className="Row mt-4 py-3"
                   style={{ justifyContent: "center" }}
                 >
-                  <FontAwesomeIcon icon={faToggleOn} className="fa-2x mr-5" />
+                  <Form.Check
+                    type="switch"
+                    id="custom-switch"
+                    label="Activer la localisation"
+                  />
                 </Row>
               </Col>
             </Row>
@@ -323,7 +398,18 @@ const ProfileUser = props => {
                         />
                       </Form.Group>
                     </Form>
-                    <ProgressBar striped variant="info" label="50" now={50} />
+                  </Col>
+                </Row>
+                <Row className="mb-4 pt-3 pb-3 Row">
+                  <Col>
+                    <Form>
+                      <ProgressBar
+                        striped
+                        variant="info"
+                        label="50"
+                        now={values.width}
+                      />
+                    </Form>
                   </Col>
                 </Row>
                 <Button
@@ -332,6 +418,7 @@ const ProfileUser = props => {
                 >
                   Valider
                 </Button>
+                {msg_error()}
               </Col>
             </Row>
           </Col>

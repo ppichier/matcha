@@ -22,10 +22,11 @@ const Signup = () => {
     let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let i = values.password.length;
 
-    if (i < 6) {
+    if (i < 6 && i > 30) {
       const tmp = {
         ...values,
-        err: "Le code d'accès doit etre composé d'au moins 6 caractères"
+        err:
+          "Le code d'accès doit etre composé d'au moins 6 caractères et max 30  caracteres"
       };
       setValues(tmp);
       return 1;
