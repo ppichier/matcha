@@ -1,0 +1,24 @@
+.style_row {
+  background-color: white;
+  border-radius: 6px;
+}
+.style_menu {
+  /* position: fixed; */
+  display: table-cell;
+  vertical-align: top;
+  background-color: white;
+  border-radius: 6px;
+  width: calc(100% - 10px);
+}
+.custom-slider {
+  -webkit-appearance: none;
+  padding: 0;
+  font: inherit;
+  outline: none;
+  color: #069; /* sert pour couleur de référence, via currentColor, pour le curseur */
+  opacity: 0.8;
+  background: red; /* sert pour couleur de fond de la zone de déplacement */
+  box-sizing: border-box; /* même modèle de boîte pour tous */
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
