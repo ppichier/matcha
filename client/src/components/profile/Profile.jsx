@@ -100,6 +100,7 @@ const Profile = () => {
                     pseudo="Ppichier"
                     city="Paris"
                     birthday="05/18/1992"
+                    nb={1}
                   />
                 </Row>
                 <Row

@@ -1,24 +1,25 @@
 .style_row {
   background-color: white;
   border-radius: 6px;
+  width: 100%;
+  flex-wrap: wrap;
 }
 .style_menu {
-  /* position: fixed; */
+  float: left;
+  position: fixed;
+  height: 100%;
   display: table-cell;
   vertical-align: top;
   background-color: white;
   border-radius: 6px;
-  width: calc(100% - 10px);
+  width: 30%;
+  flex-wrap: wrap;
 }
-.custom-slider {
-  -webkit-appearance: none;
-  padding: 0;
-  font: inherit;
-  outline: none;
-  color: #069; /* sert pour couleur de référence, via currentColor, pour le curseur */
-  opacity: 0.8;
-  background: red; /* sert pour couleur de fond de la zone de déplacement */
-  box-sizing: border-box; /* même modèle de boîte pour tous */
-  transition: opacity 0.2s;
-  cursor: pointer;
+.styleCard {
+  background-color: white;
+  border-radius: 6px;
+
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: centre;
 }

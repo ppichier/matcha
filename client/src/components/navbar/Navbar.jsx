@@ -22,7 +22,7 @@ const NavbarHeader = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav>
-          <Nav.Link href="#home">Match Moi !</Nav.Link>
+          <Nav.Link href="/match">Match Moi !</Nav.Link>
           <Nav.Link href="#home">
             Popularite
             <sup className="sup-notification-text">
@@ -56,7 +56,7 @@ const NavbarHeader = () => {
           >
             <NavDropdown.Item href="/ProfileUser">Profile</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Déconnexion</NavDropdown.Item>
+            <NavDropdown.Item href="/login">Déconnexion</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
