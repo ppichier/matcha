@@ -38,16 +38,18 @@ const ProfileUser = props => {
     showErrorToast: false,
     showSuccessToast: true
   });
+
   console.log(values.err);
+
   const verifValited = () => {
     console.log("je renter pas ici");
     let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
     let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let i = values.newPassword.length;
+    let lenPassword = values.newPassword.length;
     let lenFirstName = values.firstName.length;
     let lenLastName = values.lastName.length;
     let lenPseudo = values.pseudo.length;
-    if (i < 6 && i > 30) {
+    if (lenPassword < 6 && lenPassword > 30) {
       const tmp = {
         ...values,
         err: "Le code d'accès doit etre composé min de 6 caractères et max 30 "
