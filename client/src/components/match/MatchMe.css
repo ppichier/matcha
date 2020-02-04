@@ -1,0 +1,25 @@
+.style_row {
+  background-color: white;
+  border-radius: 6px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.style_menu {
+  float: left;
+  position: fixed;
+  height: 100%;
+  display: table-cell;
+  vertical-align: top;
+  background-color: white;
+  border-radius: 6px;
+  width: 30%;
+  flex-wrap: wrap;
+}
+.styleCard {
+  background-color: white;
+  border-radius: 6px;
+
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: centre;
+}

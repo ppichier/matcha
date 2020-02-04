@@ -1,17 +1,16 @@
-.badge-delete {
-  align-self: center !important;
-  color: red !important;
+.image {
+  border-radius: 6px;
+}
+.descp {
+  font-size: 20px;
+  line-height: 15px;
+  display: flex !important;
+  justify-content: center;
+}
+body icon {
   cursor: pointer !important;
 }
-.mytags-main {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  overflow-y: auto;
-  max-height: 150px !important;
-}
-.mytags {
-  display: flex !important;
-  background-color: #aaa !important;
-  border-radius: 4px !important;
-  color: #fff !important;
+body .faHeartliked {
+  cursor: pointer !important;
+  color: rgb(161, 7, 7) !important;
 }

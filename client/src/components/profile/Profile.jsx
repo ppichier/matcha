@@ -1,202 +1,180 @@
 import React, { useState, Fragment } from "react";
-import NavbarHeader from "../navbar/Navbar";
-import Picture from "./Picture";
-import { Row, Col, Form, Button, Badge } from "react-bootstrap";
+import { Carousel, Container, Row, Col, Badge, Form } from "react-bootstrap";
 import "./Profile.css";
+import "./ProfileUser.css";
+import CardPicture from "./CardPicture";
+import NavbarHeader from "../navbar/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHeart,
+  faComment,
+  faUserSlash,
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
 
 const Profile = () => {
   const [values, setValues] = useState({
-    myTags: [],
-    commonTags: [],
-    email: "",
-    pseudo: "",
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
-    password: "",
-    gender: "N",
-    sexualPreference: "N",
-    description: "",
-    adress: "",
-    city: "",
-    postalCode: "",
-    err: ""
+    indexImages: 0,
+    directionImages: null,
+    fakeCount: false,
+    like: 0
   });
-  const handleChange = name => event => {
-    const tmp = { ...values, [name]: event.target.value };
+  const handleSelect = (selectedIndex, e) => {
+    const tmp = {
+      ...values,
+      indexImages: selectedIndex,
+      directionImages: e.direction
+    };
     setValues(tmp);
   };
-  const handlePress = event => {
-    if (event.key === "Enter") {
-      const tmp = { ...values, myTags: [...values.myTags, event.target.value] };
-      setValues(tmp);
-    }
+  const handleFakeCount = () => {
+    let tmp;
+    if (values.fakeCount === false) tmp = { ...values, fakeCount: true };
+    else tmp = { ...values, fakeCount: false };
+    setValues(tmp);
   };
-
-  const handleDeleteTag = i => () => {
-    const tab = [...values.myTags];
-    tab.splice(i, 1);
-    setValues({ ...values, myTags: tab });
+  const handleLike = () => {
+    let tmp;
+    if (values.like === 0) tmp = { ...values, like: 1 };
+    else tmp = { ...values, like: 0 };
+    setValues(tmp);
   };
-  const handleSubmit = () => {};
-
+  const handleiconLike = () => {
+    if (values.like === 0)
+      return (
+        <FontAwesomeIcon
+          icon={faHeart}
+          className="fa-2x faHeart"
+          onClick={handleLike}
+        />
+      );
+    else
+      return (
+        <FontAwesomeIcon
+          icon={faHeart}
+          className="fa-2x faHeartliked"
+          onClick={handleLike}
+        />
+      );
+  };
+  const handleiconfakeCount = () => {
+    if (values.fakeCount === true)
+      return (
+        <FontAwesomeIcon
+          icon={faUserSlash}
+          className="fa-2x faHeartliked"
+          onClick={handleFakeCount}
+        />
+      );
+    else
+      return (
+        <FontAwesomeIcon
+          icon={faUser}
+          className="fa-2x"
+          onClick={handleFakeCount}
+        />
+      );
+  };
   return (
     <Fragment>
       <NavbarHeader />
-      <Row className="pt-5 px-3">
-        <Col md={4}>
-          <Picture />
-        </Col>
-        <Col md={8}>
-          <Form>
-            <Form.Row>
-              <Form.Group as={Col} md="4">
-                <Form.Label>Nom</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Nom"
-                  onChange={handleChange("firstName")}
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group as={Col} md="4">
-                <Form.Label>Prenom</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Prenom"
-                  onChange={handleChange("lastName")}
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group as={Col} md="4">
-                <Form.Label>Pseudo</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Pseudo"
-                  onChange={handleChange("pseudo")}
-                ></Form.Control>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} md="6">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Email"
-                  onChange={handleChange("email")}
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group as={Col} md="6">
-                <Form.Label>Mot de Passe</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Mot de Passe"
-                  onChange={handleChange("password")}
-                ></Form.Control>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} md="6">
-                <Form.Label>Je suis </Form.Label>
-                <Form.Control as="select" onChange={handleChange("gender")}>
-                  <option value="N"> Séléctionnez un genre</option>
-                  <option value="M"> Un Homme </option>
-                  <option value="F"> Une Femme </option>
-                  <option value="TF"> une Transféminine</option>
-                  <option value="TH"> une Transmasculin</option>
-                  <option value="B">Bigenre</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group as={Col} md="6">
-                <Form.Label>Je cherche </Form.Label>
-                <Form.Control
-                  as="select"
-                  onChange={handleChange("sexualPreference")}
+      <Container>
+        <Row>
+          <Col md={4} className="mt-5 ">
+            <Row>
+              <Col>
+                <Row className="row-pictureProfile">
+                  <CardPicture
+                    lastName="Pier'Antonio"
+                    pseudo="Ppichier"
+                    city="Paris"
+                    birthday="05/18/1995"
+                    nb={1}
+                  />
+                </Row>
+                <Row
+                  className="Row mt-4 py-3"
+                  style={{
+                    justifyContent: "space-around",
+                    flexWrap: "wrap",
+                    padding: "0 10%"
+                  }}
                 >
-                  <option value="N"> Séléctionnez un genre</option>
-                  <option value="M"> Un Homme </option>
-                  <option value="F"> Une Femme </option>
-                  <option value="TF"> une Transféminine</option>
-                  <option value="TH"> une Transmasculin</option>
-                  <option value="B">Bigenre</option>
-                </Form.Control>
-              </Form.Group>
-            </Form.Row>
-            <Form.Group md="12">
-              <Form.Label>Date de naissance</Form.Label>
-              <Form.Control
-                type="date"
-                placeholder="date de naissance"
-                name="date"
-                onChange={handleChange("dateOfBirth")}
-              />
-            </Form.Group>
-            <Form.Group md="12">
-              <Form.Label>Adresse postale</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Adresse"
-                name="Adresse"
-                onChange={handleChange("adress")}
-              />
-            </Form.Group>
-            <Form.Row>
-              <Form.Group as={Col} md="6">
-                <Form.Label>ville</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="ville"
-                  name="ville"
-                  onChange={handleChange("city")}
+                  {handleiconLike()}
+                  <FontAwesomeIcon icon={faComment} className="fa-2x" />
+                  {handleiconfakeCount()}
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+          <Col md={8} className="pl-5">
+            <Carousel
+              activeIndex={values.indexImages}
+              direction={values.directionImages}
+              onSelect={handleSelect}
+              className="mt-5"
+            >
+              <Carousel.Item>
+                <img
+                  className="d-block w-100 image"
+                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
+                  alt="First slide"
                 />
-              </Form.Group>
-              <Form.Group as={Col} md="6">
-                <Form.Label>Code postal</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Code postale"
-                  name="code postale"
-                  onChange={handleChange("postalCode")}
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100 image"
+                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
+                  alt="Second slide"
                 />
-              </Form.Group>
-            </Form.Row>
-            <Form.Group controlId="exampleForm.ControlTextarea1" md="12">
-              <Form.Label>A propos de vous</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows="4"
-                placeholder="A propos de vous"
-                name="bio"
-                onChange={handleChange("description")}
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100 image"
+                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
+                  alt="Third slide"
+                />
+              </Carousel.Item>
+            </Carousel>
+            {/* </Row> */}
+            <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+              <Col>
+                <h3 className="descp">Pier'Antonio</h3>
+                <p className="descp">
+                  Je suis un Homme, 28 ans, je cherche une femme pour la vie
+                </p>
+              </Col>
+            </Row>
+            <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+              <Col>
+                <h3 className="descp">Centres d'intérêt</h3>
+                <div className="descp">
+                  <Badge className="mytags mr-2 pl-2 mt-2">#Aventure</Badge>
+                  <Badge className="mytags mr-2 pl-2 mt-2">#Vegan</Badge>
+                  <Badge className="mytags mr-2 pl-2 mt-2">#bio</Badge>
+                </div>
+              </Col>
+            </Row>
+            <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+              <Col>
+                <h3 className="descp">A propos de moi</h3>
+              </Col>
+            </Row>
+            <Form>
+              <Form.Check
+                style={{ color: "red" }}
+                type="checkbox"
+                id="fake account"
+                label="Signaler un faux compte"
+                name="fake_account"
+                onChange={handleFakeCount}
               />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Centres d'intérêt</Form.Label>
-              <Form.Control
-                onKeyPress={handlePress}
-                type="text"
-                placeholder="Tags"
-                name="myTags"
-              />
-              <div className="mytags-main mt-2">
-                {values.myTags.map((tag, i) => {
-                  return (
-                    <div className=" mytags mr-2 pl-2 mt-2" key={i}>
-                      <div dangerouslySetInnerHTML={{ __html: "#" + tag }} />
-                      <Badge
-                        className="badge-delete"
-                        onClick={handleDeleteTag(i)}
-                      >
-                        x
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
-            </Form.Group>
-            <Button onClick={() => handleSubmit(values)}>Valider</Button>
-          </Form>
-        </Col>
-      </Row>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
     </Fragment>
   );
 };
+
 export default Profile;

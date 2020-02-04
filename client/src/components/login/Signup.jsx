@@ -25,7 +25,9 @@ const Signup = () => {
     if (i < 6) {
       const tmp = {
         ...values,
-        err: "Le mot de passe doit etre composé d'au moins 6 caractères."
+        err: "Le mot de passe doit etre composé d'au moins 6 caractères.",
+        showErrorToast: true,
+        showSuccessToast: false
       };
       setValues(tmp);
       return 1;
@@ -33,12 +35,19 @@ const Signup = () => {
       const tmp = {
         ...values,
         err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial."
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.",
+        showErrorToast: true,
+        showSuccessToast: false
       };
       setValues(tmp);
       return 1;
     } else if (!rgxmail.test(values.email)) {
-      const tmp = { ...values, err: "votre adresse email n'est pas valide." };
+      const tmp = {
+        ...values,
+        err: "votre adresse email n'est pas valide.",
+        showErrorToast: true,
+        showSuccessToast: false
+      };
       setValues(tmp);
       return 1;
     }
@@ -56,43 +65,42 @@ const Signup = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    // if (verifValited() === 0) {
-    signup({
-      email: values.email,
-      pseudo: values.pseudo,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      password: values.password
-    })
-      .then(data => {
-        if (data.err) {
-          setValues({
-            ...values,
-            err: data.err,
-            success: false,
-            showErrorToast: true,
-            showSuccessToast: false
-          });
-        } else {
-          // console.log(data);
-          setValues({
-            ...values,
-            pseudo: "",
-            firstName: "",
-            lastName: "",
-            password: "",
-            err: "",
-            msg: data.msg,
-            success: true,
-            emailConfirm: values.email,
-            email: "",
-            showSuccessToast: true,
-            showErrorToast: false
-          });
-        }
+    if (verifValited() === 0) {
+      signup({
+        email: values.email,
+        pseudo: values.pseudo,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        password: values.password
       })
-      .catch(err => console.log(err));
-    // }
+        .then(data => {
+          if (data.err) {
+            setValues({
+              ...values,
+              err: data.err,
+              success: false,
+              showErrorToast: true,
+              showSuccessToast: false
+            });
+          } else {
+            setValues({
+              ...values,
+              pseudo: "",
+              firstName: "",
+              lastName: "",
+              password: "",
+              err: "",
+              msg: data.msg,
+              success: true,
+              emailConfirm: values.email,
+              email: "",
+              showSuccessToast: true,
+              showErrorToast: false
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    }
   };
 
   const showSuccess = () => {

@@ -8,6 +8,7 @@
 ## [FRONT] - Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
 ## [BACK] - language msg -> french
 
+<<<<<<< HEAD
 
 
 -------------- Medium features ------------------
@@ -28,3 +29,18 @@
 
 ------------ Mobile Version ---------------
 ##
+=======
+## alert login page style
+## navbar one time
+## image size upload width
+-------------------------------------------
+## Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
+## Animation gradient color like ecommerce app
+## spinner loading
+
+## Img Login style full height xs
+## Profile.jsx on XS navbar padding right?? 
+-----------------------------
+##afficher la date de sa
+dernière visite page profile
+>>>>>>> wafa
