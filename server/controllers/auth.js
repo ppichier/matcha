@@ -47,12 +47,18 @@ exports.signup = (req, res) => {
         if (err) {
           handleError(res, err, "Internal error", 500, connection);
         } else if (result[0].length > 0) {
-          handleError(res, err, "This email is already used", 409, connection);
+          handleError(
+            res,
+            err,
+            "Cet email a déjà un compte associé.",
+            409,
+            connection
+          );
         } else if (result[1].length > 0) {
           handleError(
             res,
             err,
-            "This pseudo is not available",
+            "Ce pseudo n'est pas disponible.",
             409,
             connection
           );
@@ -108,7 +114,7 @@ exports.signup = (req, res) => {
                           } else {
                             connection.release();
                             return res.json({
-                              msg: `Un email de confirmation avec un lien été envoyé à ${email}. Veuillez cliquer sur ce lien afin de valider votre compte`
+                              msg: `Un email de confirmation avec un lien a été envoyé à ${email}. Veuillez cliquer sur ce lien afin de valider votre compte`
                             });
                           }
                         });
@@ -128,9 +134,6 @@ exports.signup = (req, res) => {
 exports.signin = async (req, res) => {
   const { pseudo, password } = req.body;
 
-  //verif que user exist sinon
-  //error: "User with that pseudo does not exist. Please signup" 400
-
   pool.getConnection((err, connection) => {
     if (err) {
       return res.status(500).json({
@@ -138,7 +141,7 @@ exports.signin = async (req, res) => {
       });
     } else {
       connection.query(
-        "SELECT UserName, Password FROM User WHERE UserName = ?",
+        "SELECT UserName, Password, EmailValidate  FROM User WHERE UserName = ?",
         [pseudo],
         async (err, result) => {
           if (err) {
@@ -148,7 +151,7 @@ exports.signin = async (req, res) => {
             handleError(
               res,
               err,
-              "User with that pseudo does not exist. Please signup",
+              "Ce pseudo ne correspond à aucun compte. Veuillez créer un compte",
               400,
               connection
             );
@@ -159,19 +162,28 @@ exports.signin = async (req, res) => {
                 result[0].Password.toString()
               );
               if (match) {
+                if (result[0].EmailValidate == 0) {
+                  handleError(
+                    res,
+                    err,
+                    "Votre compte n'a pas été activé. Veuillez cliquer sur le lien présent dans l'email d'inscription",
+                    400,
+                    connection
+                  );
+                }
                 const token = generateJwt();
                 connection.release();
                 return res.json({
                   auth: true,
                   token: token,
-                  msg: "Login success"
+                  msg: "Authentification réussie"
                 });
               } else {
                 connection.release();
                 return res.status(401).json({
                   auth: false,
                   token: null,
-                  err: "Pseudo and password don't match"
+                  err: "Le mot de passe entré est incorrect."
                 });
               }
             } catch (err) {
@@ -185,7 +197,4 @@ exports.signin = async (req, res) => {
       );
     }
   });
-
-  //si exist mais password not match
-  // res.status(401).json({ error: "Email and password don't match" });
 };

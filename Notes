@@ -6,9 +6,14 @@
 ## [FRONT] - changer logo navabar
 ## [FRONT] - selected item navabar bug 
 ## [FRONT] - Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
+## [FRONT / BACK] - if user go to / redirect to login if not auth or match if logged
+
+
 ## [BACK] - language msg -> french
 
-<<<<<<< HEAD
+
+
+
 
 
 -------------- Medium features ------------------
@@ -16,31 +21,29 @@
 ## [FRONT] - alert login page style
 ## [FRONT] - Profile.jsx on XS navbar padding right?? 
 
-
 ## [GLOBAL] - finish README.md
+
+
 
 
 
 
 -----------------Not important--------------
 ## [FRONT] Img Login style full height xs
+## [FRONT] spinner loading
+
 
 
 
 ------------ Mobile Version ---------------
 ##
-=======
 ## alert login page style
 ## navbar one time
 ## image size upload width
 -------------------------------------------
-## Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
-## Animation gradient color like ecommerce app
-## spinner loading
 
 ## Img Login style full height xs
 ## Profile.jsx on XS navbar padding right?? 
 -----------------------------
 ##afficher la date de sa
 dernière visite page profile
->>>>>>> wafa
