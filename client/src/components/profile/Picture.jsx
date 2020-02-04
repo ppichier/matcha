@@ -1,14 +1,12 @@
 import React, { useState, Fragment } from "react";
 import "./Picture.css";
-import { picture } from "../../api/auth";
+// import { picture } from "../../api/auth";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faImages,
-  faImage,
   faTimesCircle,
-  faBowlingBall,
-  faFileImage
+  faBowlingBall
 } from "@fortawesome/free-solid-svg-icons";
 
 const Picture = () => {
@@ -26,7 +24,6 @@ const Picture = () => {
   const handleChange = event => {
     event.preventDefault();
 
-    // this.setState({ uploading: true })
     const files = Array.from(event.target.files);
     const tmp = { ...values, images: [...values.images, files] };
     const formData = new FormData();

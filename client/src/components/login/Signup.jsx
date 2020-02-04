@@ -22,11 +22,10 @@ const Signup = () => {
     let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let i = values.password.length;
 
-    if (i < 6 && i > 30) {
+    if (i < 6) {
       const tmp = {
         ...values,
-        err:
-          "Le code d'accès doit etre composé d'au moins 6 caractères et max 30  caracteres"
+        err: "Le mot de passe doit etre composé d'au moins 6 caractères."
       };
       setValues(tmp);
       return 1;
@@ -34,7 +33,7 @@ const Signup = () => {
       const tmp = {
         ...values,
         err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial."
       };
       setValues(tmp);
       return 1;
@@ -57,43 +56,43 @@ const Signup = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    // if (verifValited() === 0) {
-    signup({
-      email: values.email,
-      pseudo: values.pseudo,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      password: values.password
-    })
-      .then(data => {
-        if (data.err) {
-          setValues({
-            ...values,
-            err: data.err,
-            success: false,
-            showErrorToast: true,
-            showSuccessToast: false
-          });
-        } else {
-          // console.log(data);
-          setValues({
-            ...values,
-            pseudo: "",
-            firstName: "",
-            lastName: "",
-            password: "",
-            err: "",
-            msg: data.msg,
-            success: true,
-            emailConfirm: values.email,
-            email: "",
-            showSuccessToast: true,
-            showErrorToast: false
-          });
-        }
+    if (verifValited() === 0) {
+      signup({
+        email: values.email,
+        pseudo: values.pseudo,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        password: values.password
       })
-      .catch(err => console.log(err));
-    // }
+        .then(data => {
+          if (data.err) {
+            setValues({
+              ...values,
+              err: data.err,
+              success: false,
+              showErrorToast: true,
+              showSuccessToast: false
+            });
+          } else {
+            // console.log(data);
+            setValues({
+              ...values,
+              pseudo: "",
+              firstName: "",
+              lastName: "",
+              password: "",
+              err: "",
+              msg: data.msg,
+              success: true,
+              emailConfirm: values.email,
+              email: "",
+              showSuccessToast: true,
+              showErrorToast: false
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    }
   };
 
   const showSuccess = () => {
@@ -111,6 +110,7 @@ const Signup = () => {
   };
 
   const msg_error = () => {
+    console.log("je rentre");
     return (
       <Toast
         style={{ backgroundColor: "red", maxWidth: "none" }}

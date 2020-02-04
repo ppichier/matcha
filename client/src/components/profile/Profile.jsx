@@ -1,13 +1,5 @@
 import React, { useState, Fragment } from "react";
-import {
-  Carousel,
-  Container,
-  Row,
-  Col,
-  Badge,
-  Form,
-  FormCheck
-} from "react-bootstrap";
+import { Carousel, Container, Row, Col, Badge, Form } from "react-bootstrap";
 import "./Profile.css";
 import "./ProfileUser.css";
 import CardPicture from "./CardPicture";

@@ -1,13 +1,9 @@
 import React, { useState, Fragment } from "react";
 import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
-import { cardPicture } from "../../api/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBirthdayCake,
-  faMapMarked,
-  faMapMarker
-} from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+// import { cardPicture } from "../../api/auth";
 
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
@@ -36,9 +32,9 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   };
   const age = birthday => {
     birthday = new Date(birthday);
-    return new Number(
-      (new Date().getTime() - birthday.getTime()) / 31536000000
-    ).toFixed(0);
+    return ((new Date().getTime() - birthday.getTime()) / 31536000000).toFixed(
+      0
+    );
   };
   const isShow = birthday => {
     if (birthday) return <div>Age: {age(birthday)}</div>;
@@ -51,19 +47,32 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
             <Row>
               <div className="profile-header-container">
                 <a href="/profile">
-                  <div className="profile-header-img">
+                  <div>
                     <Image
-                      src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120"
+                      className="profile-header-img"
+                      src="https://thumbs.dreamstime.com/b/beau-profil-du-c%C3%B4t%C3%A9-front-s-de-femme-109059081.jpg"
                       roundedCircle
                     />
                     <div className="rank-label-container">
                       <span className="label label-default rank-label">
-                        100♥️♥️♥️
+                        100{" "}
+                        <FontAwesomeIcon
+                          icon={faHeart}
+                          className="fa-lg mr-1 faHeartliked"
+                        />
+                        <FontAwesomeIcon
+                          icon={faHeart}
+                          className="fa-lg mr-1 faHeartliked"
+                        />
+                        <FontAwesomeIcon
+                          icon={faHeart}
+                          className="fa-lg mr-1 faHeartliked"
+                        />
                       </span>
                     </div>
 
                     <div className="info">
-                      <a>{lastName}</a>
+                      <div>{lastName}</div>
                       <div className="desc">{pseudo}</div>
                       <div className="desc">{isShow(birthday)}</div>
                       <div className="desc">{city}</div>
@@ -81,16 +90,29 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
           <Container>
             <Row>
               <div className="profile-header-container">
-                <div className="profile-header-img">
+                <div>
                   <label htmlFor="single">
                     <Image
-                      src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120"
+                      className="profile-header-img"
+                      src="https://thumbs.dreamstime.com/b/beau-profil-du-c%C3%B4t%C3%A9-front-s-de-femme-109059081.jpg"
                       roundedCircle
                     />
                   </label>
                   <div className="rank-label-container">
                     <span className="label label-default rank-label">
-                      100♥️♥️♥️
+                      100{" "}
+                      <FontAwesomeIcon
+                        icon={faHeart}
+                        className="fa-lg mr-1 faHeartliked"
+                      />
+                      <FontAwesomeIcon
+                        icon={faHeart}
+                        className="fa-lg mr-1 faHeartliked"
+                      />
+                      <FontAwesomeIcon
+                        icon={faHeart}
+                        className="fa-lg mr-1 faHeartliked"
+                      />
                     </span>
                   </div>
                   <input
@@ -100,20 +122,12 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
                     onChange={handleChange}
                   />
                   <div className="info">
-                    <a>{lastName}</a>
+                    <div className="pt-2">
+                      <h4>{lastName}</h4>
+                    </div>
                     <div className="desc">{pseudo}</div>
-                    <div className="desc">
-                      {" "}
-                      {/* <FontAwesomeIcon
-                    icon={faBirthdayCake}
-                    className="fa-lg mr-2"
-                  /> */}
-                      {isShow(birthday)}
-                    </div>
-                    <div className="desc">
-                      {/* <FontAwesomeIcon icon={faMapMarker} className="fa-lg mr-2" /> */}
-                      {city}
-                    </div>
+                    <div className="desc">{isShow(birthday)}</div>
+                    <div className="desc">{city}</div>
                   </div>
                 </div>
               </div>
