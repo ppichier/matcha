@@ -19,11 +19,7 @@
   line-height: 1.7px;
   flex-wrap: wrap !important;
 }
-.badge-delete {
-  align-self: center !important;
-  color: white !important;
-  cursor: pointer !important;
-}
+
 .mytags-main {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -34,7 +30,15 @@
   background-color: #fad5c0 !important;
   border-radius: 6px !important;
   color: #fff !important;
+  display: flex;
 }
+
+.mytags-delete {
+  cursor: pointer;
+  align-self: center;
+  font-size: 80%;
+}
+
 .label {
   color: black;
   border-bottom: 2px solid transparent;

@@ -19,7 +19,6 @@ const Profile = () => {
     fakeCount: false,
     like: 0
   });
-  console.log(values.fakeCount);
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
@@ -29,8 +28,6 @@ const Profile = () => {
     setValues(tmp);
   };
   const handleFakeCount = () => {
-    console.log("je rentre ici");
-
     let tmp;
     if (values.fakeCount === false) tmp = { ...values, fakeCount: true };
     else tmp = { ...values, fakeCount: false };
@@ -47,7 +44,7 @@ const Profile = () => {
       return (
         <FontAwesomeIcon
           icon={faHeart}
-          className="fa-2x mr-5 faHeart"
+          className="fa-2x faHeart"
           onClick={handleLike}
         />
       );
@@ -55,7 +52,7 @@ const Profile = () => {
       return (
         <FontAwesomeIcon
           icon={faHeart}
-          className="fa-2x mr-5 faHeartliked"
+          className="fa-2x faHeartliked"
           onClick={handleLike}
         />
       );
@@ -65,7 +62,7 @@ const Profile = () => {
       return (
         <FontAwesomeIcon
           icon={faUserSlash}
-          className="fa-2x mr-5 faHeartliked"
+          className="fa-2x faHeartliked"
           onClick={handleFakeCount}
         />
       );
@@ -73,7 +70,7 @@ const Profile = () => {
       return (
         <FontAwesomeIcon
           icon={faUser}
-          className="fa-2x mr-5"
+          className="fa-2x"
           onClick={handleFakeCount}
         />
       );
@@ -91,16 +88,20 @@ const Profile = () => {
                     lastName="Pier'Antonio"
                     pseudo="Ppichier"
                     city="Paris"
-                    birthday="05/18/1992"
+                    birthday="05/18/1995"
                     nb={1}
                   />
                 </Row>
                 <Row
                   className="Row mt-4 py-3"
-                  style={{ justifyContent: "center", flexWrap: "wrap" }}
+                  style={{
+                    justifyContent: "space-around",
+                    flexWrap: "wrap",
+                    padding: "0 10%"
+                  }}
                 >
                   {handleiconLike()}
-                  <FontAwesomeIcon icon={faComment} className="fa-2x mr-5" />
+                  <FontAwesomeIcon icon={faComment} className="fa-2x" />
                   {handleiconfakeCount()}
                 </Row>
               </Col>

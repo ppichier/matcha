@@ -13,7 +13,7 @@ const Routes = () => {
         {/* <Route path="/" exact component={Home}></Route>; */}
         <Route path="/login" exact component={Login}></Route>;
         <Route path="/match" exact component={MatchMe}></Route>;
-        <Route path="/profileUser" exact component={ProfileUser}></Route>;
+        <Route path="/profile/me" exact component={ProfileUser}></Route>;
         <Route path="/profile" exact component={Profile}></Route>;
         {/* <Route path="/nav" exact component={NavMenu}></Route>; */}
         {/* 404 error page */}

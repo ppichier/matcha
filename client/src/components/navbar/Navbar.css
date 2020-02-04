@@ -1,5 +1,4 @@
 .navbar-main {
-  color: #fff;
   background: linear-gradient(-45deg, #ee7752, #fad5c0, #23a6d5, #23d5ab);
   background-size: 400% 400%;
   -webkit-animation: Gradient 15s ease infinite;
@@ -7,6 +6,16 @@
   animation: Gradient 15s ease infinite;
   font-weight: 600;
 }
+
+.navbar-container > * {
+  margin-bottom: 0;
+}
+
+.navbar-tab {
+  color: #fff;
+  font-weight: bold;
+}
+
 @-webkit-keyframes Gradient {
   0% {
     background-position: 0% 50%;
@@ -45,8 +54,8 @@
 }
 
 .sup-notification-text {
-  top: -0.6em;
-  left: -0.12em !important;
+  top: -0.1em;
+  left: -0.1em !important;
 }
 .sup-notification-icon {
   top: -1em;
@@ -54,7 +63,4 @@
 }
 sup {
   font-size: 90% !important;
-}
-sup > * {
-  border-radius: 50% !important;
 }

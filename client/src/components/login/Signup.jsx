@@ -17,8 +17,6 @@ const Signup = () => {
     showSuccessToast: false
   });
 
-  console.log(values.err);
-
   const verifValited = () => {
     let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
     let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -27,7 +25,9 @@ const Signup = () => {
     if (i < 6) {
       const tmp = {
         ...values,
-        err: "Le mot de passe doit etre composé d'au moins 6 caractères."
+        err: "Le mot de passe doit etre composé d'au moins 6 caractères.",
+        showErrorToast: true,
+        showSuccessToast: false
       };
       setValues(tmp);
       return 1;
@@ -35,12 +35,19 @@ const Signup = () => {
       const tmp = {
         ...values,
         err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial."
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.",
+        showErrorToast: true,
+        showSuccessToast: false
       };
       setValues(tmp);
       return 1;
     } else if (!rgxmail.test(values.email)) {
-      const tmp = { ...values, err: "votre adresse email n'est pas valide." };
+      const tmp = {
+        ...values,
+        err: "votre adresse email n'est pas valide.",
+        showErrorToast: true,
+        showSuccessToast: false
+      };
       setValues(tmp);
       return 1;
     }
@@ -76,7 +83,6 @@ const Signup = () => {
               showSuccessToast: false
             });
           } else {
-            // console.log(data);
             setValues({
               ...values,
               pseudo: "",
@@ -112,7 +118,6 @@ const Signup = () => {
   };
 
   const msg_error = () => {
-    console.log("je rentre");
     return (
       <Toast
         style={{ backgroundColor: "red", maxWidth: "none" }}

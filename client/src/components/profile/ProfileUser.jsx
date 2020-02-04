@@ -13,6 +13,8 @@ import {
 } from "react-bootstrap";
 import { profileUser } from "../../api/auth";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import "./ProfileUser.css";
 
 const ProfileUser = props => {
@@ -26,12 +28,10 @@ const ProfileUser = props => {
     dateOfBirth: "",
     newPassword: "",
     oldPassword: "",
-    gender: "N",
-    sexualPreference: "N",
+    gender: "",
+    sexualPreference: "",
     description: "",
-    adress: "",
-    city: "",
-    postalCode: "",
+    userSize: "",
     width: 0,
     err: "",
     success: false,
@@ -39,10 +39,7 @@ const ProfileUser = props => {
     showSuccessToast: true
   });
 
-  console.log(values.err);
-
   const verifValited = () => {
-    console.log("je renter pas ici");
     let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
     let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let lenPassword = values.newPassword.length;
@@ -83,7 +80,6 @@ const ProfileUser = props => {
     return 0;
   };
   const msg_error = () => {
-    console.log("je renter");
     return (
       <Toast
         style={{ backgroundColor: "red", maxWidth: "none" }}
@@ -99,11 +95,55 @@ const ProfileUser = props => {
   const handleChange = name => event => {
     const tmp = {
       ...values,
-      [name]: event.target.value,
-      width: values.width + 1
+      [name]: event.target.value
     };
     setValues(tmp);
   };
+
+  const udpateProgressBar = () => {
+    const elements = [
+      "pseudo",
+      "email",
+      "firstName",
+      "lastName",
+      "dateOfBirth",
+      "gender",
+      "sexualPreference"
+    ];
+
+    let width = 0;
+    for (const element of elements) {
+      if (values[element].length != 0) {
+        width += 10;
+      }
+    }
+    //if //myTags.length != 0
+    setValues({ ...values, width: width });
+  };
+
+  // const [values, setValues] = useState({
+  //   myTags: [],
+  //   commonTags: [],
+  //   email: "",
+  //   pseudo: "",
+  //   firstName: "",
+  //   lastName: "",
+  //   dateOfBirth: "",
+  //   newPassword: "",
+  //   oldPassword: "",
+  //   gender: "N",
+  //   sexualPreference: "N",
+  //   description: "",
+  //   adress: "",
+  //   city: "",
+  //   postalCode: "",
+  //   width: 0,
+  //   err: "",
+  //   success: false,
+  //   showErrorToast: false,
+  //   showSuccessToast: true
+  // });
+
   const handlePress = event => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -190,6 +230,7 @@ const ProfileUser = props => {
                             type="text"
                             placeholder="Nom"
                             onChange={handleChange("firstName")}
+                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="4">
@@ -198,6 +239,7 @@ const ProfileUser = props => {
                             type="text"
                             placeholder="Prenom"
                             onChange={handleChange("lastName")}
+                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="4">
@@ -206,6 +248,7 @@ const ProfileUser = props => {
                             type="text"
                             placeholder="Pseudo"
                             onChange={handleChange("pseudo")}
+                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                       </Form.Row>
@@ -216,6 +259,7 @@ const ProfileUser = props => {
                             type="email"
                             placeholder="Email"
                             onChange={handleChange("email")}
+                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -225,6 +269,7 @@ const ProfileUser = props => {
                             placeholder="date de naissance"
                             name="date"
                             onChange={handleChange("dateOfBirth")}
+                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                       </Form.Row>
@@ -258,8 +303,9 @@ const ProfileUser = props => {
                           <Form.Control
                             as="select"
                             onChange={handleChange("gender")}
+                            onBlur={udpateProgressBar}
                           >
-                            <option value="N"> Séléctionnez un genre</option>
+                            <option value=""> Séléctionnez un genre</option>
                             <option value="M"> Un Homme </option>
                             <option value="F"> Une Femme </option>
                             <option value="TF"> une Transféminine</option>
@@ -272,8 +318,9 @@ const ProfileUser = props => {
                           <Form.Control
                             as="select"
                             onChange={handleChange("sexualPreference")}
+                            onBlur={udpateProgressBar}
                           >
-                            <option value="N"> Séléctionnez un genre</option>
+                            <option value=""> Séléctionnez un genre</option>
                             <option value="M"> Un Homme </option>
                             <option value="F"> Une Femme </option>
                             <option value="TF"> une Transféminine</option>
@@ -283,34 +330,15 @@ const ProfileUser = props => {
                         </Form.Group>
                       </Form.Row>
                       <Form.Group md="12">
-                        <Form.Label>Adresse postale</Form.Label>
+                        <Form.Label>Taille</Form.Label>
                         <Form.Control
                           type="text"
-                          placeholder="Adresse"
-                          name="Adresse"
+                          placeholder="1.67"
+                          name="userSize"
                           onChange={handleChange("adress")}
+                          onBlur={udpateProgressBar}
                         />
                       </Form.Group>
-                      <Form.Row>
-                        <Form.Group as={Col} md="6">
-                          <Form.Label>ville</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="ville"
-                            name="ville"
-                            onChange={handleChange("city")}
-                          />
-                        </Form.Group>
-                        <Form.Group as={Col} md="6">
-                          <Form.Label>Code postal</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="Code postale"
-                            name="code postale"
-                            onChange={handleChange("postalCode")}
-                          />
-                        </Form.Group>
-                      </Form.Row>
                     </Form>
                   </Col>
                 </Row>
@@ -362,19 +390,18 @@ const ProfileUser = props => {
                         <div className="mytags-main mt-2">
                           {values.myTags.map((tag, i) => {
                             return (
-                              <div className=" mytags mr-2 pl-2 mt-2" key={i}>
+                              <div className="mytags mr-2 pl-2 mt-2" key={i}>
                                 <div
                                   dangerouslySetInnerHTML={{
                                     __html: "#" + tag
                                   }}
                                 />
 
-                                <Badge
-                                  className="badge-delete"
+                                <FontAwesomeIcon
+                                  icon={faTrashAlt}
+                                  className=" mx-2 mytags-delete"
                                   onClick={handleDeleteTag(i)}
-                                >
-                                  <sup>x</sup>
-                                </Badge>
+                                />
                               </div>
                             );
                           })}
@@ -397,6 +424,7 @@ const ProfileUser = props => {
                           placeholder="A propos de vous"
                           name="bio"
                           onChange={handleChange("description")}
+                          onBlur={udpateProgressBar}
                         />
                       </Form.Group>
                     </Form>
@@ -408,8 +436,9 @@ const ProfileUser = props => {
                       <ProgressBar
                         striped
                         variant="info"
-                        label="50"
+                        label={values.width}
                         now={values.width}
+                        max={100}
                       />
                     </Form>
                   </Col>

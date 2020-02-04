@@ -43,7 +43,6 @@ const Picture = () => {
   };
 
   const removeImage = id => () => {
-    console.log(id);
     const path_image = [...values.path];
     path_image.splice(id, 1);
     setValues({ ...values, path: path_image });
@@ -62,7 +61,6 @@ const Picture = () => {
             <div onClick={removeImage(i)} className="delete">
               <FontAwesomeIcon icon={faTimesCircle} size="2x" />
             </div>
-            {console.log(i)}
             <img className="img" src={values.path[i]} alt="" />
           </div>
         ));
