@@ -55,6 +55,8 @@
 .profile-header-img {
   padding: 54px;
   line-height: 1 !important;
+  width: 280px;
+  height: 300px;
 }
 a {
   padding: 4px 8px 10px;
@@ -62,7 +64,7 @@ a {
   font-size: 18px;
   text-transform: capitalize;
   line-height: 2 !important;
-  */display: flex !important;
+  display: flex !important;
   justify-content: center;
 }
 .desc {
@@ -75,25 +77,12 @@ a {
 .info {
   padding: 6px 11px 12px;
 }
-/* .profile-header-img > img.img-circle {
-  width: 120px;
-  .card.hovercard .info .title {
-    margin-bottom: 4px;
-    font-size: 24px;
-    line-height: 1;
-    color: #262626;
-    vertical-align: middle;
-  }
-  height: 120px;
-  border: 2px solid #51d2b7;
-} */
-/*.profile-header {
-    margin-top: 43px;
-}*/
+
 .rank-label-container {
-  margin-top: -19px;
+  margin-top: -75px;
   text-align: center;
 }
+
 .label.label-default.rank-label {
   background-color: rgb(81, 210, 183);
   padding: 5px 10px 5px 10px;

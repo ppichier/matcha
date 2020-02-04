@@ -12,7 +12,8 @@
 }
 .row-pictureProfile {
   background-color: white !important;
-  max-height: 330px !important;
+  height: 400px !important;
+  /* max-height: 800px !important; */
   border-radius: 6px;
   display: flex !important;
   line-height: 1.7px;

@@ -4,7 +4,7 @@ import "../profile/CardPicture";
 import { Row, Col } from "react-bootstrap";
 import CardPicture from "../profile/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
-import Navbar from "react-bootstrap/Navbar";
+// import Navbar from "react-bootstrap/Navbar";
 import "./MatchMe.css";
 
 // import NWReactSlider from "nw-react-slider";
@@ -12,22 +12,21 @@ import "./MatchMe.css";
 const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({
     image: [],
-    uploading: false,
-    value: { min: 2, max: 10 }
+    uploading: false
   });
   const handleChange = event => {
     event.preventDefault();
 
     const files = Array.from(event.target.files);
     const tmp = { ...values, image: [...values.image, files] };
-    const formData = new FormData();
+    // const formData = new FormData();
     setValues(tmp);
   };
   const age = birthday => {
     birthday = new Date(birthday);
-    return new Number(
-      (new Date().getTime() - birthday.getTime()) / 31536000000
-    ).toFixed(0);
+    return ((new Date().getTime() - birthday.getTime()) / 31536000000).toFixed(
+      0
+    );
   };
   const isShow = birthday => {
     if (birthday) return <div>Age: {age(birthday)}</div>;

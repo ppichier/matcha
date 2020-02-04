@@ -10,7 +10,6 @@
   align-items: center;
   justify-content: space-around;
   flex-wrap: wrap;
-  /* height: 35vh; */
 }
 .img {
   max-height: 300px;

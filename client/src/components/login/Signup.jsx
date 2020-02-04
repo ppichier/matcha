@@ -24,11 +24,10 @@ const Signup = () => {
     let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let i = values.password.length;
 
-    if (i < 6 && i > 30) {
+    if (i < 6) {
       const tmp = {
         ...values,
-        err:
-          "Le code d'accès doit etre composé d'au moins 6 caractères et max 30  caracteres"
+        err: "Le mot de passe doit etre composé d'au moins 6 caractères."
       };
       setValues(tmp);
       return 1;
@@ -36,7 +35,7 @@ const Signup = () => {
       const tmp = {
         ...values,
         err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial."
       };
       setValues(tmp);
       return 1;
@@ -60,7 +59,6 @@ const Signup = () => {
   const handleSubmit = event => {
     event.preventDefault();
     if (verifValited() === 0) {
-      console.log("la");
       signup({
         email: values.email,
         pseudo: values.pseudo,
@@ -113,7 +111,8 @@ const Signup = () => {
     );
   };
 
-  const showError = () => {
+  const msg_error = () => {
+    console.log("je rentre");
     return (
       <Toast
         style={{ backgroundColor: "red", maxWidth: "none" }}
@@ -187,7 +186,7 @@ const Signup = () => {
           S'inscrire
         </button>
         {showSuccess()}
-        {showError()}
+        {msg_error()}
       </form>
       {/* {JSON.stringify(values)} */}
     </div>
