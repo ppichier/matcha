@@ -17,7 +17,7 @@ exports.userSignupValidator = (req, res, next) => {
     typeof req.body.password === "undefined"
   ) {
     return res.status(400).json({
-      err: "All fields are required"
+      err: "Tous les champs sont requis"
     });
   }
 
@@ -30,7 +30,7 @@ exports.userSignupValidator = (req, res, next) => {
     req.body.password === null
   ) {
     return res.status(400).json({
-      err: "Value cannot be null"
+      err: "Un champ ne peut être vide"
     });
   }
 
@@ -38,7 +38,7 @@ exports.userSignupValidator = (req, res, next) => {
   const rgxEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!rgxEmail.test(String(req.body.email).toLowerCase())) {
     return res.status(400).json({
-      err: "Email is not valid"
+      err: "L'email n'est pas valide"
     });
   }
 
@@ -46,7 +46,8 @@ exports.userSignupValidator = (req, res, next) => {
   const regexPwd = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[&#($_);.+!-])[0-9a-zA-Z&#($_);.+!-]{6,}$/;
   if (!regexPwd.test(String(req.body.password))) {
     return res.status(400).json({
-      err: "Password is not valid"
+      err:
+        "Le mot de passe doit contenir plus de 5 caractères, avoir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial ( &#($_);.+!- )"
     });
   }
 
