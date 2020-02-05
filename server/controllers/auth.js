@@ -1,9 +1,10 @@
 const pool = require("../db");
 const path = require("path");
 const bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const transporter = require("../utility/mail");
 const template = require("../utility/template/mail");
+const uuidv4 = require("uuid/v4");
 
 const handleError = (res, err, displayErr, code, connection) => {
   connection.release();
@@ -21,24 +22,13 @@ const generateJwt = () => {
 
 exports.signup = (req, res) => {
   const { email, pseudo, password, firstName, lastName } = req.body;
-
-  const mailOptions = {
-    from: process.env.NODEMAILER_USER,
-    to: "pierantonio.pichierri@gmail.com", //email
-    subject: template.templateMailSignUpHeader,
-    html: template.templateMailSignUpBody(pseudo, "http://localhost/uuid"),
-    attachments: [
-      {
-        filename: "Logo.png",
-        path: path.join(__dirname, "../utility/template/matchaMail.png"),
-        cid: "logo"
-      }
-    ]
-  };
+  let uuid = "";
 
   pool.getConnection((err, connection) => {
     if (err) {
-      handleError(res, err, "Internal error", 500, connection);
+      return res.status(500).json({
+        err: "Internal Error"
+      });
     }
     connection.query(
       "SELECT * FROM User WHERE Email = ?; SELECT * FROM User WHERE Username = ?",
@@ -85,39 +75,95 @@ exports.signup = (req, res) => {
                         );
                       } else {
                         console.log("1 record inserted");
-                        transporter.sendMail(mailOptions, (error, info) => {
-                          if (error) {
-                            connection.query(
-                              "DELETE FROM User WHERE UserName = ?",
-                              [pseudo],
-                              (err,
-                              result => {
-                                if (err) {
-                                  handleError(
-                                    res,
-                                    err,
-                                    "Internal error",
-                                    500,
-                                    connection
-                                  );
-                                } else {
-                                  handleError(
-                                    res,
-                                    err,
-                                    "Erreur. Veuillez réesayer",
-                                    500,
-                                    connection
-                                  );
+                        //connection release
+                        connection.query(
+                          "SELECT UserId FROM User WHERE UserName = ?",
+                          [pseudo],
+                          (err, result) => {
+                            if (err) {
+                              handleError(
+                                res,
+                                err,
+                                "Internal error",
+                                500,
+                                connection
+                              );
+                            } else {
+                              uuid = uuidv4();
+                              const mailOptions = {
+                                from: process.env.NODEMAILER_USER,
+                                to: "pierantonio.pichierri@gmail.com", //email
+                                subject: template.templateMailSignUpHeader,
+                                html: template.templateMailSignUpBody(
+                                  pseudo,
+                                  "http://localhost:3000/verifyAccount/?uuid=" +
+                                    uuid
+                                ),
+                                attachments: [
+                                  {
+                                    filename: "Logo.png",
+                                    path: path.join(
+                                      __dirname,
+                                      "../utility/template/matchaMail.png"
+                                    ),
+                                    cid: "logo"
+                                  }
+                                ]
+                              };
+                              connection.query(
+                                "INSERT INTO Validate_email (UserId, Uuid) VALUES (?, ?)",
+                                [result[0].UserId, uuid],
+                                (err, result) => {
+                                  if (err) {
+                                    handleError(
+                                      res,
+                                      err,
+                                      "Internal error",
+                                      500,
+                                      connection
+                                    );
+                                  } else {
+                                    transporter.sendMail(
+                                      mailOptions,
+                                      (error, info) => {
+                                        if (error) {
+                                          connection.query(
+                                            "DELETE FROM User WHERE UserName = ?",
+                                            [pseudo],
+                                            (err, result) => {
+                                              if (err) {
+                                                handleError(
+                                                  res,
+                                                  err,
+                                                  "Internal error",
+                                                  500,
+                                                  connection
+                                                );
+                                              } else {
+                                                handleError(
+                                                  res,
+                                                  err,
+                                                  "Erreur. Veuillez réesayer",
+                                                  500,
+                                                  connection
+                                                );
+                                              }
+                                            }
+                                          );
+                                        } else {
+                                          connection.release();
+                                          return res.json({
+                                            msg: `Un email de confirmation avec un lien a été envoyé à ${email}. Veuillez cliquer sur ce lien afin de valider votre compte`
+                                          });
+                                        }
+                                      }
+                                    );
+                                  }
                                 }
-                              })
-                            );
-                          } else {
-                            connection.release();
-                            return res.json({
-                              msg: `Un email de confirmation avec un lien a été envoyé à ${email}. Veuillez cliquer sur ce lien afin de valider votre compte`
-                            });
+                              );
+                            }
                           }
-                        });
+                        );
                       }
                     }
                   );
@@ -162,8 +208,6 @@ exports.signin = async (req, res) => {
                 result[0].Password.toString()
               );
               if (match) {
-<<<<<<< HEAD
-=======
                 if (result[0].EmailValidate == 0) {
                   handleError(
                     res,
@@ -173,28 +217,19 @@ exports.signin = async (req, res) => {
                     connection
                   );
                 }
->>>>>>> 5c4bd360de4ae1ce3929579896ae14495d655a53
                 const token = generateJwt();
                 connection.release();
                 return res.json({
                   auth: true,
                   token: token,
-<<<<<<< HEAD
-                  msg: "Login success"
-=======
                   msg: "Authentification réussie"
->>>>>>> 5c4bd360de4ae1ce3929579896ae14495d655a53
                 });
               } else {
                 connection.release();
                 return res.status(401).json({
                   auth: false,
                   token: null,
-<<<<<<< HEAD
-                  err: "Pseudo and password don't match"
-=======
                   err: "Le mot de passe entré est incorrect."
->>>>>>> 5c4bd360de4ae1ce3929579896ae14495d655a53
                 });
               }
             } catch (err) {
@@ -207,5 +242,33 @@ exports.signin = async (req, res) => {
         }
       );
     }
+  });
+};
+
+exports.verifyAccount = (req, res) => {
+  // const { uuid } = req.body;
+
+  // pool.getConnection((err, connection) => {
+  //   if (err) {
+  //     return res.status(500).json({
+  //       err: "Internal error - Db down"
+  //     });
+  //   } else {
+  //     connection.query(
+  //       "SELECT UserId FROM Validate_email WHERE Uuid = ?",
+  //       [uuid],
+  //       (err, result) => {
+  //         if (err) {
+  //           handleError(res, err, "Internal error", 500, connection);
+  //         } else {
+
+  //         }
+  //       }
+  //     );
+  //   }
+  // });
+
+  return res.status(200).json({
+    msg: "yes"
   });
 };

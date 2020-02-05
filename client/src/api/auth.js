@@ -25,6 +25,7 @@ export const signin = data => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+
 export const forgotPassword = data => {
   return fetch(`${API}/forgotPassword`, {
     method: "POST",
@@ -37,6 +38,7 @@ export const forgotPassword = data => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+
 export const profileUser = data => {
   return fetch(`${API}/profileUser`, {
     method: "POST",
@@ -49,6 +51,7 @@ export const profileUser = data => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+
 export const cardPicture = data => {
   return fetch(`${API}/cardPicture`, {
     method: "POST",
@@ -61,6 +64,7 @@ export const cardPicture = data => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+
 export const Picture = data => {
   return fetch(`${API}/Picture`, {
     method: "POST",
@@ -69,6 +73,19 @@ export const Picture = data => {
       "Content-Type": "application/json"
     },
     body: FormData
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
+export const verifyAccount = uuid => {
+  return fetch(`${API}/verifyAccount`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ uuid: uuid })
   })
     .then(res => res.json())
     .catch(err => console.log(err));
