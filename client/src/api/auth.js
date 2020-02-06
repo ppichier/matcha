@@ -1,7 +1,7 @@
 import { API } from "../config";
 
 export const signup = data => {
-  return fetch(`${API}/signup`, {
+  return fetch(`http://localhost:8000/api/signup`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -38,7 +38,6 @@ export const forgotPassword = data => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
-
 export const profileUser = data => {
   return fetch(`${API}/profileUser`, {
     method: "POST",
