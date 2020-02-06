@@ -78,14 +78,15 @@ export const Picture = data => {
     .catch(err => console.log(err));
 };
 
-export const verifyAccount = uuid => {
+export const verifyAccount = (uuid, signal) => {
   return fetch(`${API}/verifyAccount`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ uuid: uuid })
+    body: JSON.stringify({ uuid: uuid }),
+    signal: signal
   })
     .then(res => res.json())
     .catch(err => console.log(err));

@@ -216,14 +216,15 @@ exports.signin = async (req, res) => {
                     400,
                     connection
                   );
+                } else {
+                  const token = generateJwt();
+                  connection.release();
+                  return res.json({
+                    auth: true,
+                    token: token,
+                    msg: "Authentification réussie"
+                  });
                 }
-                const token = generateJwt();
-                connection.release();
-                return res.json({
-                  auth: true,
-                  token: token,
-                  msg: "Authentification réussie"
-                });
               } else {
                 connection.release();
                 return res.status(401).json({
@@ -246,29 +247,43 @@ exports.signin = async (req, res) => {
 };
 
 exports.verifyAccount = (req, res) => {
-  // const { uuid } = req.body;
+  const { uuid } = req.body;
 
-  // pool.getConnection((err, connection) => {
-  //   if (err) {
-  //     return res.status(500).json({
-  //       err: "Internal error - Db down"
-  //     });
-  //   } else {
-  //     connection.query(
-  //       "SELECT UserId FROM Validate_email WHERE Uuid = ?",
-  //       [uuid],
-  //       (err, result) => {
-  //         if (err) {
-  //           handleError(res, err, "Internal error", 500, connection);
-  //         } else {
-
-  //         }
-  //       }
-  //     );
-  //   }
-  // });
-
-  return res.status(200).json({
-    msg: "yes"
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({
+        err: "Internal error - Db down"
+      });
+    } else {
+      connection.query(
+        "SELECT * FROM User INNER JOIN Validate_email ON User.UserId = Validate_email.UserId WHERE Validate_email.Uuid = ?",
+        [uuid],
+        (err, result) => {
+          if (err) {
+            handleError(res, err, "Internal error", 500, connection);
+          } else if (result.length != 0) {
+            //uuid found
+            connection.query(
+              "UPDATE User SET EmailValidate = 1 WHERE UserId = ? ; DELETE FROM Validate_email WHERE UserId = ?",
+              [[result[0].UserId], [result[0].UserId]],
+              (err, result) => {
+                if (err) {
+                  handleError(res, err, "Internal error", 500, connection);
+                } else {
+                  connection.release();
+                  return res.json({ msg: "ok" });
+                }
+              }
+            );
+          } else {
+            //no uuid found
+            connection.release();
+            return res.status(401).json({
+              err: "Not authorized"
+            });
+          }
+        }
+      );
+    }
   });
 };
