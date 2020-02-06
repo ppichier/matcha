@@ -4,6 +4,7 @@ import Login from "./components/login/Login";
 import MatchMe from "./components/match/MatchMe";
 import Profile from "./components/profile/Profile";
 import ProfileUser from "./components/profile/ProfileUser";
+import VerifyAccount from "./components/login/VerifyAccount";
 // import NavMenu from "./components/match/NavMenu";
 
 const Routes = () => {
@@ -15,6 +16,7 @@ const Routes = () => {
         <Route path="/match" exact component={MatchMe}></Route>;
         <Route path="/profile/me" exact component={ProfileUser}></Route>;
         <Route path="/profile" exact component={Profile}></Route>;
+        <Route path="/verifyAccount" exact component={VerifyAccount}></Route>;
         {/* <Route path="/nav" exact component={NavMenu}></Route>; */}
         {/* 404 error page */}
       </Switch>

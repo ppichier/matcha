@@ -7,6 +7,8 @@
 ## [FRONT] - selected item navabar bug 
 ## [FRONT] - Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
 ## [FRONT / BACK] - if user go to / redirect to login if not auth or match if logged
+## [FRONT] - UI verifyAccount 
+
 
 
 ## [BACK] - language msg -> french
