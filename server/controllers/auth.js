@@ -287,3 +287,106 @@ exports.verifyAccount = (req, res) => {
     }
   });
 };
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({
+        err: "Internal error - Db down"
+      });
+    } else {
+      connection.query(
+        "SELECT UserId FROM User WHERE  Email = ?",
+        [email],
+        (err, result) => {
+          if (err) {
+            handleError(res, err, "Internal error", 500, connection);
+          } else {
+            uuid = uuidv4();
+            const mailOptions = {
+              from: process.env.NODEMAILER_USER,
+              to: "pierantonio.pichierri@gmail.com", //email
+              subject: template.templateMailSignUpHeader,
+              html: template.templateMailSignUpBody(
+                "Bonjour",
+                "http://localhost:3000/recoverPassword/?uuid=" + uuid
+              ),
+              attachments: [
+                {
+                  filename: "Logo.png",
+                  path: path.join(
+                    __dirname,
+                    "../utility/template/matchaMail.png"
+                  ),
+                  cid: "logo"
+                }
+              ]
+            };
+            transporter.sendMail(mailOptions);
+            connection.query(
+              "INSERT INTO `recover_ password` (UserId, Uuid) VALUES (?, ?)",
+              [[result[0].UserId], uuid],
+              (err, result) => {
+                if (err) {
+                  handleError(res, err, "Internal error", 500, connection);
+                }
+              }
+            );
+          }
+        }
+      );
+    }
+  });
+};
+
+exports.RecoverPassword = async (req, res) => {
+  const { email, password, uuid } = req.body;
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({
+        err: "Internal error - Db down"
+      });
+    } else {
+      connection.query(
+        "SELECT `UserId` FROM `recover_ password` WHERE Uuid= ?",
+        [uuid],
+        (err, result) => {
+          if (err) {
+            handleError(res, err, "Internal error", 500, connection);
+          } else {
+            connection.query(
+              "SELECT * FROM User INNER JOIN recover_password ON User.UserId = recover_password.UserId WHERE recover_password.Uuid = ?",
+              [uuid],
+              (err, result) => {
+                if (err) {
+                  handleError(res, err, "Internal error", 500, connection);
+                } else {
+                  connection.query(
+                    "UPDATE `User` SET `Password`=? WHERE `UserId`= ?, `Email`= ?",
+                    [password, [result[0].UserId], email],
+                    (err, result) => {
+                      if (err) {
+                        handleError(
+                          res,
+                          err,
+                          "Internal error",
+                          500,
+                          connection
+                        );
+                      } else {
+                        connection.release();
+                        return res.json({
+                          msg: `votre mot de passe a bien ete modifier`
+                        });
+                      }
+                    }
+                  );
+                }
+              }
+            );
+          }
+        }
+      );
+    }
+  });
+};

@@ -10,13 +10,13 @@ const RecoverPassword = ({ location }) => {
   const [values, setValues] = useState({
     email: "",
     password: "",
-    hash: "",
+    uuid: "",
     err: "",
     redirect: false
   });
   const parsed = queryString.parse(location.search);
-  console.log(parsed.hash);
-  // verifyAccount(url.uuid)
+  // console.log(parsed.hash);
+  // // verifyAccount(url.uuid)
   const msg_error = () => {
     if (values.err) {
       return (
@@ -27,7 +27,7 @@ const RecoverPassword = ({ location }) => {
     }
   };
   const handleChange = name => event => {
-    const tmp = { ...values, [name]: event.target.value, hash: parsed.hash };
+    const tmp = { ...values, [name]: event.target.value, uuid: parsed.uuid };
     setValues(tmp);
   };
 
@@ -35,9 +35,8 @@ const RecoverPassword = ({ location }) => {
     event.preventDefault();
     RecoverPassword({
       email: values.email,
-      password: values.password
-      // const url = queryString.parse(location.search);
-      // verifyAccount(url.uuid)
+      password: values.password,
+      uuid: values.uuid
     })
       .then(data => {
         if (data.err) {
