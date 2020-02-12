@@ -305,9 +305,9 @@ exports.forgotPassword = async (req, res) => {
             uuid = uuidv4();
             const mailOptions = {
               from: process.env.NODEMAILER_USER,
-              to: "pierantonio.pichierri@gmail.com", //email
-              subject: template.templateMailSignUpHeader,
-              html: template.templateMailSignUpBody(
+              to: "wafae.rharrabti@hotmail.fr", //email
+              subject: template.templateMailForgotPasswordHeader,
+              html: template.templateMailForgotPasswordgBody(
                 "Bonjour",
                 "http://localhost:3000/recoverPassword/?uuid=" + uuid
               ),
@@ -324,11 +324,41 @@ exports.forgotPassword = async (req, res) => {
             };
             transporter.sendMail(mailOptions);
             connection.query(
-              "INSERT INTO `recover_ password` (UserId, Uuid) VALUES (?, ?)",
-              [[result[0].UserId], uuid],
+              "SELECT * FROM User WHERE Email = ?",
+              [email],
               (err, result) => {
                 if (err) {
                   handleError(res, err, "Internal error", 500, connection);
+                } else if (result[0].length > 0) {
+                  "UPDATE `recover_password` SET `Uuid`= ? WHERE `UserId`= ?",
+                    [[uuid], [result[0].UserId]],
+                    (err, result) => {
+                      if (err) {
+                        handleError(
+                          res,
+                          err,
+                          "Internal error",
+                          500,
+                          connection
+                        );
+                      }
+                    };
+                } else {
+                  connection.query(
+                    "INSERT INTO `recover_password` (UserId, Uuid) VALUES (?, ?)",
+                    [[result[0].UserId], uuid],
+                    (err, result) => {
+                      if (err) {
+                        handleError(
+                          res,
+                          err,
+                          "Internal error",
+                          500,
+                          connection
+                        );
+                      }
+                    }
+                  );
                 }
               }
             );
@@ -339,7 +369,7 @@ exports.forgotPassword = async (req, res) => {
   });
 };
 
-exports.RecoverPassword = async (req, res) => {
+exports.recoverPassword = async (req, res) => {
   const { email, password, uuid } = req.body;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -348,42 +378,77 @@ exports.RecoverPassword = async (req, res) => {
       });
     } else {
       connection.query(
-        "SELECT `UserId` FROM `recover_ password` WHERE Uuid= ?",
+        "SELECT `UserId` FROM `recover_password` WHERE Uuid= ?",
         [uuid],
         (err, result) => {
           if (err) {
             handleError(res, err, "Internal error", 500, connection);
           } else {
-            connection.query(
-              "SELECT * FROM User INNER JOIN recover_password ON User.UserId = recover_password.UserId WHERE recover_password.Uuid = ?",
-              [uuid],
-              (err, result) => {
-                if (err) {
-                  handleError(res, err, "Internal error", 500, connection);
-                } else {
-                  connection.query(
-                    "UPDATE `User` SET `Password`=? WHERE `UserId`= ?, `Email`= ?",
-                    [password, [result[0].UserId], email],
-                    (err, result) => {
-                      if (err) {
-                        handleError(
-                          res,
-                          err,
-                          "Internal error",
-                          500,
-                          connection
-                        );
-                      } else {
-                        connection.release();
-                        return res.json({
-                          msg: `votre mot de passe a bien ete modifier`
-                        });
+            bcrypt.genSalt(10, (err, salt) => {
+              if (err) {
+                handleError(res, err, "Internal error", 500, connection);
+              } else {
+                bcrypt.hash(password, salt, (err, hash) => {
+                  if (err) {
+                    handleError(res, err, "Internal error", 500, connection);
+                  } else {
+                    connection.query(
+                      "SELECT * FROM User INNER JOIN recover_password ON User.UserId = recover_password.UserId WHERE recover_password.Uuid = ?",
+                      [uuid],
+
+                      (err, result) => {
+                        if (err) {
+                          handleError(
+                            res,
+                            err,
+                            "Internal error",
+                            500,
+                            connection
+                          );
+                        } else {
+                          connection.query(
+                            "UPDATE `User` SET `Password`=? WHERE `UserId`= ? AND`Email`= ?",
+                            [hash, [result[0].UserId], email],
+                            (err, result) => {
+                              if (err) {
+                                handleError(
+                                  res,
+                                  err,
+                                  "Internal error",
+                                  500,
+                                  connection
+                                );
+                              } else {
+                                connection.query(
+                                  "DELETE FROM `recover_password` WHERE `Uuid` = ?",
+                                  [uuid],
+                                  (err, result) => {
+                                    if (err) {
+                                      handleError(
+                                        res,
+                                        err,
+                                        "Internal error",
+                                        500,
+                                        connection
+                                      );
+                                    } else {
+                                      connection.release();
+                                      return res.json({
+                                        msg: `votre mot de passe a bien ete modifier`
+                                      });
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
                       }
-                    }
-                  );
-                }
+                    );
+                  }
+                });
               }
-            );
+            });
           }
         }
       );

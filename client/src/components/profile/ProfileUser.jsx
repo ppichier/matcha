@@ -2,15 +2,7 @@ import React, { useState, Fragment } from "react";
 import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import CardPicture from "./CardPicture";
-import {
-  Row,
-  Col,
-  Form,
-  Button,
-  Badge,
-  Container,
-  Toast
-} from "react-bootstrap";
+import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
 import { profileUser } from "../../api/auth";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -113,7 +105,7 @@ const ProfileUser = props => {
 
     let width = 0;
     for (const element of elements) {
-      if (values[element].length != 0) {
+      if (values[element].length !== 0) {
         width += 10;
       }
     }

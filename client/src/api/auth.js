@@ -38,6 +38,19 @@ export const forgotPassword = data => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+export const recoverPassword = data => {
+  return fetch(`${API}/recoverPassword`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
 export const profileUser = data => {
   return fetch(`${API}/profileUser`, {
     method: "POST",

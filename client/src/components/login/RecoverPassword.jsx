@@ -5,6 +5,7 @@ import "./Signin.css";
 import "./Login.css";
 import { Container, Row, Col } from "react-bootstrap";
 import queryString from "query-string";
+import { recoverPassword } from "../../api/auth";
 
 const RecoverPassword = ({ location }) => {
   const [values, setValues] = useState({
@@ -14,9 +15,29 @@ const RecoverPassword = ({ location }) => {
     err: "",
     redirect: false
   });
+  const verifValited = () => {
+    let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
+    let lenPassword = values.password.length;
+    if (lenPassword < 6 && lenPassword > 30) {
+      const tmp = {
+        ...values,
+        err: "Le code d'accès doit etre composé min de 6 caractères et max 30 "
+      };
+      setValues(tmp);
+      return 1;
+    } else if (!rgxpassword.test(values.password)) {
+      const tmp = {
+        ...values,
+        err:
+          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
+      };
+      setValues(tmp);
+      return 1;
+    }
+    return 0;
+  };
+
   const parsed = queryString.parse(location.search);
-  // console.log(parsed.hash);
-  // // verifyAccount(url.uuid)
   const msg_error = () => {
     if (values.err) {
       return (
@@ -33,21 +54,23 @@ const RecoverPassword = ({ location }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    RecoverPassword({
-      email: values.email,
-      password: values.password,
-      uuid: values.uuid
-    })
-      .then(data => {
-        if (data.err) {
-          setValues({ ...values, err: data.err });
-        } else {
-          // set jwt on localstorage sent by the server
-          // redirect to /login or /discover
-          setValues({ ...values, redirect: true });
-        }
+    if (verifValited() === 0) {
+      recoverPassword({
+        email: values.email,
+        password: values.password,
+        uuid: values.uuid
       })
-      .catch(err => console.log(err));
+        .then(data => {
+          if (data.err) {
+            setValues({ ...values, err: data.err });
+          } else {
+            // set jwt on localstorage sent by the server
+            // redirect to /login or /discover
+            setValues({ ...values, redirect: true });
+          }
+        })
+        .catch(err => console.log(err));
+    }
   };
 
   const redirectUser = () => {
@@ -64,15 +87,15 @@ const RecoverPassword = ({ location }) => {
         <Row>
           <Col></Col>
           <Col md={6} className="py-5">
-            <form>
+            <form onSubmit={handleSubmit}>
               <h4 style={{ justifyContent: "center", display: "flex" }}>
                 Nouveau mot de passe
               </h4>
               <div className="form-group">
                 <label>Email</label>
                 <input
-                  onChange={handleChange("pseudo")}
-                  type="text"
+                  onChange={handleChange("email")}
+                  type="email"
                   className="form-control"
                   value={values.pseudo}
                 ></input>

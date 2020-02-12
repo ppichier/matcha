@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { signup } from "../../api/auth";
 import { Toast } from "react-bootstrap";
-import "./Signup.css";
+import { verifValited } from "../fonctions/utils";
 
 const Signup = () => {
   const [values, setValues] = useState({
@@ -17,42 +17,6 @@ const Signup = () => {
     showSuccessToast: false
   });
 
-  const verifValited = () => {
-    let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
-    let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let i = values.password.length;
-
-    if (i < 6) {
-      const tmp = {
-        ...values,
-        err: "Le mot de passe doit etre composé d'au moins 6 caractères.",
-        showErrorToast: true,
-        showSuccessToast: false
-      };
-      setValues(tmp);
-      return 1;
-    } else if (!rgxpassword.test(values.password)) {
-      const tmp = {
-        ...values,
-        err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.",
-        showErrorToast: true,
-        showSuccessToast: false
-      };
-      setValues(tmp);
-      return 1;
-    } else if (!rgxmail.test(values.email)) {
-      const tmp = {
-        ...values,
-        err: "votre adresse email n'est pas valide.",
-        showErrorToast: true,
-        showSuccessToast: false
-      };
-      setValues(tmp);
-      return 1;
-    }
-    return 0;
-  };
   const handleChange = name => event => {
     const tmp = {
       ...values,
@@ -65,7 +29,10 @@ const Signup = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    if (verifValited() === 0) {
+    const verif = verifValited(values);
+    if (verif.err !== null) {
+      setValues({ ...values, err: verif.err });
+    } else {
       signup({
         email: values.email,
         pseudo: values.pseudo,
@@ -103,6 +70,20 @@ const Signup = () => {
     }
   };
 
+  const showError = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "red", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showErrorToast: false })}
+        show={values.showErrorToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
+      </Toast>
+    );
+  };
+
   const showSuccess = () => {
     return (
       <Toast
@@ -113,20 +94,6 @@ const Signup = () => {
         className="mt-2"
       >
         <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
-      </Toast>
-    );
-  };
-
-  const msg_error = () => {
-    return (
-      <Toast
-        style={{ backgroundColor: "red", maxWidth: "none" }}
-        animation
-        onClose={() => setValues({ ...values, showErrorToast: false })}
-        show={values.showErrorToast}
-        className="mt-2"
-      >
-        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
       </Toast>
     );
   };
@@ -191,7 +158,7 @@ const Signup = () => {
           S'inscrire
         </button>
         {showSuccess()}
-        {msg_error()}
+        {showError()}
       </form>
       {/* {JSON.stringify(values)} */}
     </div>
