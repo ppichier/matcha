@@ -6,55 +6,40 @@ import "./Login.css";
 import { Container, Row, Col } from "react-bootstrap";
 import queryString from "query-string";
 import { recoverPassword } from "../../api/auth";
+import { verifValitedPassword } from "../fonctions/utils";
+import { Toast } from "react-bootstrap";
 
-const RecoverPassword = ({ location }) => {
+const RecoverPassword = ({ location, history }) => {
   const [values, setValues] = useState({
     email: "",
     password: "",
     uuid: "",
     err: "",
-    redirect: false
+    msg: "",
+    redirect: false,
+    showErrorToast: false,
+    showSuccessToast: false
   });
-  const verifValited = () => {
-    let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
-    let lenPassword = values.password.length;
-    if (lenPassword < 6 && lenPassword > 30) {
-      const tmp = {
-        ...values,
-        err: "Le code d'accès doit etre composé min de 6 caractères et max 30 "
-      };
-      setValues(tmp);
-      return 1;
-    } else if (!rgxpassword.test(values.password)) {
-      const tmp = {
-        ...values,
-        err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
-      };
-      setValues(tmp);
-      return 1;
-    }
-    return 0;
-  };
 
   const parsed = queryString.parse(location.search);
-  const msg_error = () => {
-    if (values.err) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          {values.err}
-        </div>
-      );
-    }
-  };
+
   const handleChange = name => event => {
-    const tmp = { ...values, [name]: event.target.value, uuid: parsed.uuid };
+    const tmp = {
+      ...values,
+      [name]: event.target.value,
+      uuid: parsed.uuid,
+      showErrorToast: false,
+      showSuccessToast: false
+    };
     setValues(tmp);
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    if (verifValited() === 0) {
+    const verif = verifValitedPassword(values);
+    if (verif.err !== null) {
+      setValues({ ...values, err: verif.err });
+    } else {
       recoverPassword({
         email: values.email,
         password: values.password,
@@ -62,11 +47,20 @@ const RecoverPassword = ({ location }) => {
       })
         .then(data => {
           if (data.err) {
-            setValues({ ...values, err: data.err });
+            setValues({
+              ...values,
+              err: data.err,
+              showErrorToast: true,
+              showSuccessToast: false
+            });
           } else {
-            // set jwt on localstorage sent by the server
-            // redirect to /login or /discover
-            setValues({ ...values, redirect: true });
+            setValues({
+              ...values,
+              redirect: true,
+              msg: data.msg,
+              showErrorToast: false,
+              showSuccessToast: true
+            });
           }
         })
         .catch(err => console.log(err));
@@ -75,10 +69,36 @@ const RecoverPassword = ({ location }) => {
 
   const redirectUser = () => {
     if (values.redirect) {
-      // and check valid token ??
-      // fake loader ??
       return <Redirect to="/login" />;
     }
+  };
+
+  const showError = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "red", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showErrorToast: false })}
+        show={values.showErrorToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
+      </Toast>
+    );
+  };
+
+  const showSuccess = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showSuccessToast: false })}
+        show={values.showSuccessToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
+      </Toast>
+    );
   };
 
   return (
@@ -115,7 +135,8 @@ const RecoverPassword = ({ location }) => {
               >
                 Valider
               </button>
-              {msg_error()}
+              {showError()}
+              {showSuccess()}
               {redirectUser()}
             </form>
           </Col>

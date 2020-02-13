@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 import "./Picture.css";
-// import { picture } from "../../api/auth";
+// import { picture } from "../../api/";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

@@ -97,3 +97,7 @@ exports.userSigninValidator = (req, res, next) => {
 
   next();
 };
+
+// TODO middleware check email --> forgot password
+
+// TODO middleware check email and pasword --> recoverPassword

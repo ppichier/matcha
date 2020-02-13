@@ -3,10 +3,11 @@ import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import CardPicture from "./CardPicture";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
-import { profileUser } from "../../api/auth";
+import { profileUser } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { verifValited } from "../fonctions/utils";
 import "./ProfileUser.css";
 
 const ProfileUser = props => {
@@ -30,48 +31,7 @@ const ProfileUser = props => {
     showErrorToast: false,
     showSuccessToast: true
   });
-
-  const verifValited = () => {
-    let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
-    let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let lenPassword = values.newPassword.length;
-    let lenFirstName = values.firstName.length;
-    let lenLastName = values.lastName.length;
-    let lenPseudo = values.pseudo.length;
-    if (lenPassword < 6 && lenPassword > 30) {
-      const tmp = {
-        ...values,
-        err: "Le code d'accès doit etre composé min de 6 caractères et max 30 "
-      };
-      setValues(tmp);
-      return 1;
-    } else if (!rgxpassword.test(values.newPassword)) {
-      const tmp = {
-        ...values,
-        err:
-          " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
-      };
-      setValues(tmp);
-      return 1;
-    } else if (!rgxmail.test(values.email)) {
-      const tmp = { ...values, err: "votre adresse email n'est pas valide." };
-      setValues(tmp);
-      return 1;
-    } else if (
-      (lenFirstName < 3 && lenFirstName > 30) ||
-      (lenLastName < 3 && lenLastName > 30) ||
-      (lenPseudo < 3 && lenPseudo > 30)
-    ) {
-      const tmp = {
-        ...values,
-        err: " votre nom ou prenom ..."
-      };
-      setValues(tmp);
-      return 1;
-    }
-    return 0;
-  };
-  const msg_error = () => {
+  const showError = () => {
     return (
       <Toast
         style={{ backgroundColor: "red", maxWidth: "none" }}
@@ -113,29 +73,6 @@ const ProfileUser = props => {
     setValues({ ...values, width: width });
   };
 
-  // const [values, setValues] = useState({
-  //   myTags: [],
-  //   commonTags: [],
-  //   email: "",
-  //   pseudo: "",
-  //   firstName: "",
-  //   lastName: "",
-  //   dateOfBirth: "",
-  //   newPassword: "",
-  //   oldPassword: "",
-  //   gender: "N",
-  //   sexualPreference: "N",
-  //   description: "",
-  //   adress: "",
-  //   city: "",
-  //   postalCode: "",
-  //   width: 0,
-  //   err: "",
-  //   success: false,
-  //   showErrorToast: false,
-  //   showSuccessToast: true
-  // });
-
   const handlePress = event => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -150,7 +87,10 @@ const ProfileUser = props => {
     setValues({ ...values, myTags: tab });
   };
   const handleSubmit = event => {
-    if (verifValited() === 0) {
+    const verif = verifValited(values);
+    if (verif.err !== null) {
+      setValues({ ...values, err: verif.err });
+    } else {
       profileUser({
         myTags: values.myTags,
         email: values.email,
@@ -171,6 +111,13 @@ const ProfileUser = props => {
           if (data.err) {
             setValues({ ...values, err: data.err });
           } else {
+            setValues({
+              ...values,
+              err: "",
+              success: true,
+              showSuccessToast: true,
+              showErrorToast: false
+            });
             // redirect to /profile or /discover
           }
         })
@@ -441,7 +388,7 @@ const ProfileUser = props => {
                 >
                   Valider
                 </Button>
-                {msg_error()}
+                {showError()}
               </Col>
             </Row>
           </Col>

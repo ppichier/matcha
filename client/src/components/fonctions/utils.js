@@ -1,6 +1,3 @@
-import { Toast } from "react-bootstrap";
-// import React, from "react";
-
 export const verifValited = values => {
   let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
   let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -32,3 +29,23 @@ export const verifValited = values => {
     err: null
   };
 };
+
+export const verifValitedPassword = values => {
+  let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
+  let lenPassword = values.password.length;
+  if (lenPassword < 6 && lenPassword > 30) {
+    return {
+      err: "Le code d'accès doit etre composé min de 6 caractères et max 30 "
+    };
+  } else if (!rgxpassword.test(values.password)) {
+    return {
+      err:
+        " votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial.."
+    };
+  }
+  return {
+    err: null
+  };
+};
+
+// TODO verif forget password if email

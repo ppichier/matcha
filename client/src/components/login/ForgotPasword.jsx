@@ -1,29 +1,51 @@
 import React, { useState } from "react";
 import { forgotPassword } from "../../api/auth";
+import { Toast } from "react-bootstrap";
 
 const ForgotPassword = () => {
   const [values, setValues] = useState({
     email: "",
     err: "",
-    msg: ""
+    msg: "",
+    showErrorToast: false,
+    showSuccessToast: false
   });
-  const msg_error = () => {
-    if (values.err) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          {values.err}
-        </div>
-      );
-    } else if (values.msg) {
-      return (
-        <div className="alert alert-success" role="alert">
-          {values.msg}
-        </div>
-      );
-    }
+
+  const showError = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "red", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showErrorToast: false })}
+        show={values.showErrorToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
+      </Toast>
+    );
   };
+
+  const showSuccess = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showSuccessToast: false })}
+        show={values.showSuccessToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
+      </Toast>
+    );
+  };
+
   const handleChange = event => {
-    setValues({ ...values, email: event.target.value });
+    setValues({
+      ...values,
+      email: event.target.value,
+      showSuccessToast: false,
+      showErrorToast: false
+    });
   };
   const handleSubmit = event => {
     event.preventDefault();
@@ -32,13 +54,20 @@ const ForgotPassword = () => {
     })
       .then(data => {
         if (data.err) {
-          setValues({ ...values, err: data.err });
+          setValues({
+            ...values,
+            err: data.err,
+            showErrorToast: true,
+            showSuccessToast: false
+          });
         } else if (data.msg) {
           setValues({
             ...values,
             email: "",
             err: "",
-            msg: data.msg
+            msg: data.msg,
+            showErrorToast: false,
+            showSuccessToast: true
           });
         }
       })
@@ -71,8 +100,9 @@ const ForgotPassword = () => {
           >
             Valider
           </button>
-          {msg_error()}
         </div>
+        {showSuccess()}
+        {showError()}
       </form>
     </div>
   );

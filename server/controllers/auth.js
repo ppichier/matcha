@@ -92,7 +92,7 @@ exports.signup = (req, res) => {
                               uuid = uuidv4();
                               const mailOptions = {
                                 from: process.env.NODEMAILER_USER,
-                                to: "pierantonio.pichierri@gmail.com", //email
+                                to: email, //email
                                 subject: template.templateMailSignUpHeader,
                                 html: template.templateMailSignUpBody(
                                   pseudo,
@@ -287,7 +287,7 @@ exports.verifyAccount = (req, res) => {
     }
   });
 };
-exports.forgotPassword = async (req, res) => {
+exports.forgotPassword = (req, res) => {
   const { email } = req.body;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -296,19 +296,28 @@ exports.forgotPassword = async (req, res) => {
       });
     } else {
       connection.query(
-        "SELECT UserId FROM User WHERE  Email = ?",
+        "SELECT * FROM User WHERE  Email = ?",
         [email],
         (err, result) => {
           if (err) {
             handleError(res, err, "Internal error", 500, connection);
+          } else if (result.length === 0) {
+            handleError(
+              res,
+              err,
+              "L'email indiqué n'existe pas",
+              400,
+              connection
+            );
           } else {
+            const UserId = result[0].UserId;
             uuid = uuidv4();
             const mailOptions = {
               from: process.env.NODEMAILER_USER,
-              to: "wafae.rharrabti@hotmail.fr", //email
+              to: email, //email
               subject: template.templateMailForgotPasswordHeader,
               html: template.templateMailForgotPasswordgBody(
-                "Bonjour",
+                result[0].UserName,
                 "http://localhost:3000/recoverPassword/?uuid=" + uuid
               ),
               attachments: [
@@ -324,14 +333,15 @@ exports.forgotPassword = async (req, res) => {
             };
             transporter.sendMail(mailOptions);
             connection.query(
-              "SELECT * FROM User WHERE Email = ?",
-              [email],
+              "SELECT * FROM `recover_password` WHERE UserId = ?",
+              [UserId],
               (err, result) => {
                 if (err) {
                   handleError(res, err, "Internal error", 500, connection);
-                } else if (result[0].length > 0) {
-                  "UPDATE `recover_password` SET `Uuid`= ? WHERE `UserId`= ?",
-                    [[uuid], [result[0].UserId]],
+                } else if (result.length > 0) {
+                  connection.query(
+                    "UPDATE `recover_password` SET Uuid = ? WHERE UserId = ?",
+                    [uuid, UserId],
                     (err, result) => {
                       if (err) {
                         handleError(
@@ -341,12 +351,18 @@ exports.forgotPassword = async (req, res) => {
                           500,
                           connection
                         );
+                      } else {
+                        res.json({
+                          msg: `Un email a été envoyé à ${email} afin de réinitialiser votre mot de passe`
+                        });
+                        connection.release();
                       }
-                    };
+                    }
+                  );
                 } else {
                   connection.query(
                     "INSERT INTO `recover_password` (UserId, Uuid) VALUES (?, ?)",
-                    [[result[0].UserId], uuid],
+                    [UserId, uuid],
                     (err, result) => {
                       if (err) {
                         handleError(
@@ -356,6 +372,10 @@ exports.forgotPassword = async (req, res) => {
                           500,
                           connection
                         );
+                      } else {
+                        res.json({
+                          msg: `Un email a été envoyé à ${email} afin de réinitialiser votre mot de passe`
+                        });
                       }
                     }
                   );
@@ -369,7 +389,7 @@ exports.forgotPassword = async (req, res) => {
   });
 };
 
-exports.recoverPassword = async (req, res) => {
+exports.recoverPassword = (req, res) => {
   const { email, password, uuid } = req.body;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -378,11 +398,13 @@ exports.recoverPassword = async (req, res) => {
       });
     } else {
       connection.query(
-        "SELECT `UserId` FROM `recover_password` WHERE Uuid= ?",
-        [uuid],
+        "SELECT * FROM User INNER JOIN recover_password ON User.UserId = recover_password.UserId WHERE recover_password.Uuid = ? AND User.Email = ?",
+        [uuid, email],
         (err, result) => {
           if (err) {
             handleError(res, err, "Internal error", 500, connection);
+          } else if (result.length === 0) {
+            handleError(res, err, "Opération non autorisée", 400, connection);
           } else {
             bcrypt.genSalt(10, (err, salt) => {
               if (err) {
@@ -393,9 +415,8 @@ exports.recoverPassword = async (req, res) => {
                     handleError(res, err, "Internal error", 500, connection);
                   } else {
                     connection.query(
-                      "SELECT * FROM User INNER JOIN recover_password ON User.UserId = recover_password.UserId WHERE recover_password.Uuid = ?",
-                      [uuid],
-
+                      "UPDATE `User` SET `Password`=? WHERE `UserId`= ? AND`Email`= ?",
+                      [hash, [result[0].UserId], email],
                       (err, result) => {
                         if (err) {
                           handleError(
@@ -407,8 +428,8 @@ exports.recoverPassword = async (req, res) => {
                           );
                         } else {
                           connection.query(
-                            "UPDATE `User` SET `Password`=? WHERE `UserId`= ? AND`Email`= ?",
-                            [hash, [result[0].UserId], email],
+                            "DELETE FROM `recover_password` WHERE `Uuid` = ?",
+                            [uuid],
                             (err, result) => {
                               if (err) {
                                 handleError(
@@ -419,26 +440,10 @@ exports.recoverPassword = async (req, res) => {
                                   connection
                                 );
                               } else {
-                                connection.query(
-                                  "DELETE FROM `recover_password` WHERE `Uuid` = ?",
-                                  [uuid],
-                                  (err, result) => {
-                                    if (err) {
-                                      handleError(
-                                        res,
-                                        err,
-                                        "Internal error",
-                                        500,
-                                        connection
-                                      );
-                                    } else {
-                                      connection.release();
-                                      return res.json({
-                                        msg: `votre mot de passe a bien ete modifier`
-                                      });
-                                    }
-                                  }
-                                );
+                                connection.release();
+                                return res.json({
+                                  msg: "Votre mot de passe a bien été modifié"
+                                });
                               }
                             }
                           );

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { signup } from "../../api/auth";
 import { Toast } from "react-bootstrap";
 import { verifValited } from "../fonctions/utils";
+import "./Signup.css";
 
 const Signup = () => {
   const [values, setValues] = useState({
