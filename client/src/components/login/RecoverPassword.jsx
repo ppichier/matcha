@@ -38,7 +38,12 @@ const RecoverPassword = ({ location, history }) => {
     event.preventDefault();
     const verif = verifValitedPassword(values);
     if (verif.err !== null) {
-      setValues({ ...values, err: verif.err });
+      setValues({
+        ...values,
+        err: verif.err,
+        showErrorToast: true,
+        showSuccessToast: false
+      });
     } else {
       recoverPassword({
         email: values.email,

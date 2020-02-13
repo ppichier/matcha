@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { forgotPassword } from "../../api/auth";
 import { Toast } from "react-bootstrap";
+import { verifValitedEmail } from "../fonctions/utils";
 
 const ForgotPassword = () => {
   const [values, setValues] = useState({
@@ -49,29 +50,39 @@ const ForgotPassword = () => {
   };
   const handleSubmit = event => {
     event.preventDefault();
-    forgotPassword({
-      email: values.email
-    })
-      .then(data => {
-        if (data.err) {
-          setValues({
-            ...values,
-            err: data.err,
-            showErrorToast: true,
-            showSuccessToast: false
-          });
-        } else if (data.msg) {
-          setValues({
-            ...values,
-            email: "",
-            err: "",
-            msg: data.msg,
-            showErrorToast: false,
-            showSuccessToast: true
-          });
-        }
+    const verif = verifValitedEmail(values);
+    if (verif.err !== null) {
+      setValues({
+        ...values,
+        err: verif.err,
+        showErrorToast: true,
+        showSuccessToast: false
+      });
+    } else {
+      forgotPassword({
+        email: values.email
       })
-      .catch(err => console.log(err));
+        .then(data => {
+          if (data.err) {
+            setValues({
+              ...values,
+              err: data.err,
+              showErrorToast: true,
+              showSuccessToast: false
+            });
+          } else if (data.msg) {
+            setValues({
+              ...values,
+              email: "",
+              err: "",
+              msg: data.msg,
+              showErrorToast: false,
+              showSuccessToast: true
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    }
   };
   return (
     <div className="forgot-password">

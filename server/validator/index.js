@@ -101,3 +101,54 @@ exports.userSigninValidator = (req, res, next) => {
 // TODO middleware check email --> forgot password
 
 // TODO middleware check email and pasword --> recoverPassword
+exports.forgotPasswordValidator = (req, res, next) => {
+  if (
+    typeof req.body.email === "undefined" ||
+    req.body.email === null ||
+    req.body.email.trim().length === 0
+  ) {
+    return res.status(400).json({
+      err: "All fields are required"
+    });
+  }
+  const rgxEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (!rgxEmail.test(String(req.body.email).toLowerCase())) {
+    return res.status(400).json({
+      err: "L'email n'est pas valide"
+    });
+  }
+  next();
+};
+exports.recoverPasswordValidator = (req, res, next) => {
+  if (
+    typeof req.body.email === "undefined" ||
+    typeof req.body.password === "undefined" ||
+    req.body.email === null ||
+    req.body.password === null ||
+    req.body.email.trim().length === 0 ||
+    req.body.password.trim().length === 0 ||
+    req.body.password.length > 30
+  ) {
+    return res.status(400).json({
+      err: "All fields are required"
+    });
+  }
+
+  const rgxEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (!rgxEmail.test(String(req.body.email).toLowerCase())) {
+    return res.status(400).json({
+      err: "L'email n'est pas valide"
+    });
+  }
+
+  // check if password is valid
+  const regexPwd = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[&#($_);.+!-])[0-9a-zA-Z&#($_);.+!-]{6,}$/;
+  if (!regexPwd.test(String(req.body.password))) {
+    return res.status(400).json({
+      err:
+        "Le mot de passe doit contenir plus de 5 caractères, avoir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial ( &#($_);.+!- )"
+    });
+  }
+
+  next();
+};
