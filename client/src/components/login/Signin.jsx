@@ -36,6 +36,11 @@ const Signin = ({ forgotPassword }) => {
         } else {
           // set jwt on localstorage sent by the server
           // redirect to /profile or /discover
+          if (typeof window !== "undefined") {
+            localStorage.setItem("jwt", JSON.stringify(data));
+          } else {
+            console.error("Failed to save in local storage");
+          }
           setValues({ ...values, redirect: true });
         }
       })

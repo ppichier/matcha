@@ -1,5 +1,28 @@
 import { API } from "../config";
 
+// 1- Client side check JWT is not expired. YES.
+// 2- Then check if JWT token is still for an active user on the server. YES/NO possibly
+
+// const logUserOut = token =>{
+//   setTimeout(()=> MyLogoutFunction(), token.expiresIn)
+// }
+
+export const isAuthenticated = () => {
+  //If jwt undefined in local storage crash !!
+
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/verifyToken`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt.token
+    }
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
 export const signup = data => {
   return fetch(`${API}/signup`, {
     method: "POST",

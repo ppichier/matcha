@@ -1,6 +1,6 @@
 var jwt = require("jsonwebtoken");
 
-exports.verifyToken = (req, res, next) => {
+exports.verifyToken = (req, res) => {
   const authorization = req.headers.authorization;
   if (!authorization) {
     return res.status(403).json({ auth: false, msg: "No token provided." });
@@ -17,6 +17,7 @@ exports.verifyToken = (req, res, next) => {
     }
 
     req.userId = decoded.id;
-    next();
+    return res.json({ auth: true });
+    // next();
   });
 };

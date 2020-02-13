@@ -8,6 +8,7 @@
 ## [FRONT] - Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
 ## [FRONT / BACK] - if user go to / redirect to login if not auth or match if logged
 ## [FRONT] - UI verifyAccount 
+## [FRONT] - Move functions api/auth.js to ?
 
 
 

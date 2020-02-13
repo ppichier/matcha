@@ -220,15 +220,14 @@ exports.signin = async (req, res) => {
                   const token = generateJwt();
                   connection.release();
                   return res.json({
-                    auth: true,
                     token: token,
                     msg: "Authentification réussie"
+                    // user : {id: ... , ...}
                   });
                 }
               } else {
                 connection.release();
                 return res.status(401).json({
-                  auth: false,
                   token: null,
                   err: "Le mot de passe entré est incorrect."
                 });
@@ -271,7 +270,7 @@ exports.verifyAccount = (req, res) => {
                   handleError(res, err, "Internal error", 500, connection);
                 } else {
                   connection.release();
-                  return res.json({ msg: "ok" });
+                  return res.json({ auth: true });
                 }
               }
             );
