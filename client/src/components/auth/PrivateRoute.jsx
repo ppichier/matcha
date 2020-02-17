@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { isAuthenticated } from "../../api/auth";
+import CustomSpinner from "./Spinner";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const [loading, setLoading] = useState(true);
@@ -27,7 +28,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   // const isAuth = await isAuthenticated();
 
   if (loading) {
-    return <div>Pending...</div>;
+    return <CustomSpinner />;
   } else if (auth) {
     return <Route {...rest} render={props => <Component {...props} />} />;
   } else {

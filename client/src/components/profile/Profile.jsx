@@ -12,6 +12,8 @@ import {
   faUser
 } from "@fortawesome/free-solid-svg-icons";
 
+import CustomSpinner from "../auth/Spinner";
+
 const Profile = () => {
   const [values, setValues] = useState({
     indexImages: 0,
