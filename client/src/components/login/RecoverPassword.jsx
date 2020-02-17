@@ -6,7 +6,7 @@ import "./Login.css";
 import { Container, Row, Col } from "react-bootstrap";
 import queryString from "query-string";
 import { recoverPassword } from "../../api/auth";
-import { verifValitedPassword } from "../fonctions/utils";
+import { verifValitedPassword } from "../functions/utils";
 import { Toast } from "react-bootstrap";
 
 const RecoverPassword = ({ location, history }) => {
@@ -122,7 +122,7 @@ const RecoverPassword = ({ location, history }) => {
                   onChange={handleChange("email")}
                   type="email"
                   className="form-control"
-                  value={values.pseudo}
+                  value={values.email}
                 ></input>
               </div>
               <div className="form-group">

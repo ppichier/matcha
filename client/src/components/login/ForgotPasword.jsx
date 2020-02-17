@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { forgotPassword } from "../../api/auth";
 import { Toast } from "react-bootstrap";
-import { verifValitedEmail } from "../fonctions/utils";
+import { verifValitedEmail } from "../functions/utils";
 
 const ForgotPassword = () => {
   const [values, setValues] = useState({
@@ -93,7 +93,7 @@ const ForgotPassword = () => {
             onChange={handleChange}
             type="email"
             className="form-control"
-            values={values.msg}
+            value={values.email}
           ></input>
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>

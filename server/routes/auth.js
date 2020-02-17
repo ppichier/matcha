@@ -17,8 +17,6 @@ const {
 } = require("../validator");
 const { verifyToken } = require("../controllers/verifyToken");
 
-const { userSignupValidator, userSigninValidator } = require("../validator");
-
 router.post("/signup", userSignupValidator, signup);
 router.post("/signin", userSigninValidator, signin);
 router.post("/verifyAccount", verifyAccount);

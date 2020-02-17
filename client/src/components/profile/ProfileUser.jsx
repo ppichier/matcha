@@ -7,7 +7,7 @@ import { profileUser } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { verifValited } from "../fonctions/utils";
+import { verifValited } from "../functions/utils";
 import "./ProfileUser.css";
 
 const ProfileUser = props => {
