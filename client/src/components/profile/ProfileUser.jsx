@@ -7,7 +7,7 @@ import { profileUser } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { verifValited } from "../fonctions/utils";
+import { valitedPassword, validatedTag } from "../functions/utils";
 import "./ProfileUser.css";
 
 const ProfileUser = props => {
@@ -31,6 +31,14 @@ const ProfileUser = props => {
     showErrorToast: false,
     showSuccessToast: true
   });
+  var date = new Date();
+  let day = date.getDate();
+  day = day < 10 ? "0" + day : day;
+  let month = date.getMonth() + 1;
+  month = month < 10 ? "0" + month : month;
+  let year = date.getFullYear() - 18;
+  let max = year + "-" + month + "-" + day;
+
   const showError = () => {
     return (
       <Toast
@@ -47,7 +55,9 @@ const ProfileUser = props => {
   const handleChange = name => event => {
     const tmp = {
       ...values,
-      [name]: event.target.value
+      [name]: event.target.value,
+      showSuccessToast: false,
+      showErrorToast: false
     };
     setValues(tmp);
   };
@@ -76,8 +86,22 @@ const ProfileUser = props => {
   const handlePress = event => {
     if (event.key === "Enter") {
       event.preventDefault();
-      const tmp = { ...values, myTags: [...values.myTags, event.target.value] };
-      setValues(tmp);
+      const lenTag = validatedTag(event.target.value);
+      if (lenTag.err !== null) {
+        const tmp = {
+          ...values,
+          err: lenTag.err,
+          showErrorToast: true,
+          showSuccessToast: false
+        };
+        setValues(tmp);
+      } else {
+        const tmp = {
+          ...values,
+          myTags: [...values.myTags, event.target.value]
+        };
+        setValues(tmp);
+      }
     }
   };
 
@@ -87,9 +111,15 @@ const ProfileUser = props => {
     setValues({ ...values, myTags: tab });
   };
   const handleSubmit = event => {
-    const verif = verifValited(values);
+    const verif = valitedPassword(values);
     if (verif.err !== null) {
-      setValues({ ...values, err: verif.err });
+      setValues({
+        ...values,
+        err: verif.err,
+        success: false,
+        showErrorToast: true,
+        showSuccessToast: false
+      });
     } else {
       profileUser({
         myTags: values.myTags,
@@ -207,6 +237,8 @@ const ProfileUser = props => {
                             type="date"
                             placeholder="date de naissance"
                             name="date"
+                            min="1970-01-12"
+                            max={max}
                             onChange={handleChange("dateOfBirth")}
                             onBlur={udpateProgressBar}
                           ></Form.Control>
@@ -303,16 +335,16 @@ const ProfileUser = props => {
                           <Col>
                             <Form.Check
                               type="checkbox"
-                              id="musique"
-                              label="Musique"
+                              id="vegan"
+                              label="vegan"
                               name="commonTags"
                             />
                           </Col>
                           <Col>
                             <Form.Check
                               type="checkbox"
-                              id="musique"
-                              label="Musique"
+                              id="bio"
+                              label="bio"
                               name="commonTags"
                             />
                           </Col>
