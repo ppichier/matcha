@@ -7,20 +7,21 @@ import ProfileUser from "./components/profile/ProfileUser";
 import VerifyAccount from "./components/login/VerifyAccount";
 import RecoverPassword from "./components/login/RecoverPassword";
 import PrivateRoute from "./components/auth/PrivateRoute";
+import NotFound from "./components/404/NotFound";
+import CustomRoute from "./components/auth/CustomRoute";
 // import NavMenu from "./components/match/NavMenu";
 
 const Routes = () => {
   return (
     <BrowserRouter>
       <Switch>
-        {/* <Route path="/" exact component={Home}></Route>; */}
+        <CustomRoute path="/" exact></CustomRoute>
         <Route path="/login" exact component={Login}></Route>;
         <PrivateRoute
           path="/profile/me"
           exact
           component={ProfileUser}
         ></PrivateRoute>
-        {/* <PrivateRoute path="/profile" exact component={Profile}></PrivateRoute>; */}
         <PrivateRoute path="/profile" exact component={Profile}></PrivateRoute>;
         <PrivateRoute path="/match" exact component={MatchMe}></PrivateRoute>;
         <Route path="/verifyAccount" exact component={VerifyAccount}></Route>;
@@ -30,7 +31,7 @@ const Routes = () => {
           component={RecoverPassword}
         ></Route>
         ;{/* <Route path="/nav" exact component={NavMenu}></Route>; */}
-        {/* 404 error page */}
+        <Route path="" component={NotFound} />
       </Switch>
     </BrowserRouter>
   );
