@@ -6,7 +6,10 @@ import "./Login.css";
 import { Container, Row, Col } from "react-bootstrap";
 import queryString from "query-string";
 import { recoverPassword } from "../../api/auth";
-import { verifValitedPassword, verifValitedEmail } from "../functions/utils";
+import {
+  verifValidatedPassword,
+  verifValidatedEmail
+} from "../functions/utils";
 import { Toast } from "react-bootstrap";
 
 const RecoverPassword = ({ location, history }) => {
@@ -36,13 +39,13 @@ const RecoverPassword = ({ location, history }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const verifPassword = verifValitedPassword(values.password);
-    const verifEmail = verifValitedEmail(values.email);
+    const verifPassword = verifValidatedPassword(values.password);
+    const verifEmail = verifValidatedEmail(values.email);
     let error;
     if (verifPassword.err !== null && verifEmail !== null) {
       if (verifPassword.err !== null) {
         error = verifPassword.err;
-      } else error = verifValitedEmail.err;
+      } else error = verifValidatedEmail.err;
       setValues({
         ...values,
         err: error,
@@ -127,7 +130,7 @@ const RecoverPassword = ({ location, history }) => {
                   onChange={handleChange("email")}
                   type="email"
                   className="form-control"
-                  value={values.pseudo}
+                  value={values.email}
                 ></input>
               </div>
               <div className="form-group">
