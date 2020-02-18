@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from "react";
 import "../profile/CardPicture.css";
 import "../profile/CardPicture";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Form } from "react-bootstrap";
 import CardPicture from "../profile/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 // import Navbar from "react-bootstrap/Navbar";
@@ -39,7 +39,18 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
         <Col md={4} className="pl-5">
           <Row className="style_menu mt-5">
             <Col>
-              <p></p>
+              <Form>
+                <Form.Group as={Col}>
+                  <Form.Label>Age</Form.Label>
+                  <Form.Control
+                    type="range"
+                    placeholder="18"
+                    name="date"
+                    min="18"
+                    max="65"
+                  ></Form.Control>
+                </Form.Group>
+              </Form>
             </Col>
           </Row>
         </Col>

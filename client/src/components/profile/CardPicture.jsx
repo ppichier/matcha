@@ -30,14 +30,14 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
     // };
     setValues(tmp);
   };
-  const age = birthday => {
-    birthday = new Date(birthday);
-    return ((new Date().getTime() - birthday.getTime()) / 31536000000).toFixed(
-      0
-    );
-  };
+  // const age = birthday => {
+  //   birthday = new Date(birthday);
+  //   return ((new Date().getTime() - birthday.getTime()) / 31536000000).toFixed(
+  //     0
+  //   );
+  // };
   const isShow = birthday => {
-    if (birthday) return <div>Age: {age(birthday)}</div>;
+    if (birthday) return <div>Age: {birthday} ans</div>;
   };
   const cardProfile = () => {
     if (nb === 1) {

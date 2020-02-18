@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { forgotPassword } from "../../api/auth";
 import { Toast } from "react-bootstrap";
-import { verifValitedEmail } from "../functions/utils";
+import { verifValidatedEmail } from "../functions/utils";
 
 const ForgotPassword = () => {
   const [values, setValues] = useState({
@@ -50,7 +50,7 @@ const ForgotPassword = () => {
   };
   const handleSubmit = event => {
     event.preventDefault();
-    const verif = verifValitedEmail(values);
+    const verif = verifValidatedEmail(values.email);
     if (verif.err !== null) {
       setValues({
         ...values,

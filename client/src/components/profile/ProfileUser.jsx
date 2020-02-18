@@ -7,30 +7,38 @@ import { profileUser } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { verifValited } from "../functions/utils";
+import { valitedPassword, validatedTag } from "../functions/utils";
 import "./ProfileUser.css";
+import { forgotPassword } from "../../api/auth";
 
 const ProfileUser = props => {
   const [values, setValues] = useState({
     myTags: [],
     commonTags: [],
-    email: "",
+    email: "wafae.rharrabti@hotmail.fr",
     pseudo: "",
     firstName: "",
     lastName: "",
     dateOfBirth: "",
-    newPassword: "",
-    oldPassword: "",
     gender: "",
     sexualPreference: "",
     description: "",
     userSize: "",
     width: 0,
     err: "",
+    msg: "",
     success: false,
     showErrorToast: false,
     showSuccessToast: true
   });
+  // var date = new Date();
+  // let day = date.getDate();
+  // day = day < 10 ? "0" + day : day;
+  // let month = date.getMonth() + 1;
+  // month = month < 10 ? "0" + month : month;
+  // let year = date.getFullYear() - 18;
+  // let max = year + "-" + month + "-" + day;
+
   const showError = () => {
     return (
       <Toast
@@ -44,10 +52,25 @@ const ProfileUser = props => {
       </Toast>
     );
   };
+  const showSuccess = () => {
+    return (
+      <Toast
+        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
+        animation
+        onClose={() => setValues({ ...values, showSuccessToast: false })}
+        show={values.showSuccessToast}
+        className="mt-2"
+      >
+        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
+      </Toast>
+    );
+  };
   const handleChange = name => event => {
     const tmp = {
       ...values,
-      [name]: event.target.value
+      [name]: event.target.value,
+      showSuccessToast: false,
+      showErrorToast: false
     };
     setValues(tmp);
   };
@@ -76,8 +99,22 @@ const ProfileUser = props => {
   const handlePress = event => {
     if (event.key === "Enter") {
       event.preventDefault();
-      const tmp = { ...values, myTags: [...values.myTags, event.target.value] };
-      setValues(tmp);
+      const lenTag = validatedTag(event.target.value);
+      if (lenTag.err !== null) {
+        const tmp = {
+          ...values,
+          err: lenTag.err,
+          showErrorToast: true,
+          showSuccessToast: false
+        };
+        setValues(tmp);
+      } else {
+        const tmp = {
+          ...values,
+          myTags: [...values.myTags, event.target.value]
+        };
+        setValues(tmp);
+      }
     }
   };
 
@@ -87,9 +124,15 @@ const ProfileUser = props => {
     setValues({ ...values, myTags: tab });
   };
   const handleSubmit = event => {
-    const verif = verifValited(values);
+    const verif = valitedPassword(values);
     if (verif.err !== null) {
-      setValues({ ...values, err: verif.err });
+      setValues({
+        ...values,
+        err: verif.err,
+        success: false,
+        showErrorToast: true,
+        showSuccessToast: false
+      });
     } else {
       profileUser({
         myTags: values.myTags,
@@ -98,8 +141,6 @@ const ProfileUser = props => {
         firstName: values.firstName,
         lastName: values.lastName,
         dateOfBirth: values.dateOfBirth,
-        newPassword: values.newPassword,
-        oldPassword: values.oldPassword,
         gender: values.gender,
         sexualPreference: values.sexualPreference,
         description: values.description,
@@ -124,6 +165,33 @@ const ProfileUser = props => {
         .catch(err => console.log(err));
     }
   };
+  const handleChangePassword = event => {
+    event.preventDefault();
+    forgotPassword({
+      email: values.email
+    })
+      .then(data => {
+        if (data.err) {
+          setValues({
+            ...values,
+            err: data.err,
+            showErrorToast: true,
+            showSuccessToast: false
+          });
+        } else if (data.msg) {
+          setValues({
+            ...values,
+            email: "",
+            err: "",
+            msg: data.msg,
+            showErrorToast: false,
+            showSuccessToast: true
+          });
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
   return (
     <Fragment>
       <NavbarHeader />
@@ -152,6 +220,12 @@ const ProfileUser = props => {
                 </Row>
               </Col>
             </Row>
+            <button
+              className="btn btn-link btn-block mt-4 text-dark"
+              onClick={handleChangePassword}
+            >
+              Modifier votre mot de passe
+            </button>
           </Col>
           <Col md={8} className="pl-5">
             <Row className="mt-5 mb-1 row-picture">
@@ -202,31 +276,15 @@ const ProfileUser = props => {
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="6">
-                          <Form.Label>Date de naissance</Form.Label>
+                          <Form.Label>Age</Form.Label>
                           <Form.Control
-                            type="date"
-                            placeholder="date de naissance"
+                            type="number"
+                            placeholder="18"
                             name="date"
+                            min="18"
+                            max="65"
                             onChange={handleChange("dateOfBirth")}
                             onBlur={udpateProgressBar}
-                          ></Form.Control>
-                        </Form.Group>
-                      </Form.Row>
-                      <Form.Row>
-                        <Form.Group as={Col} md="6">
-                          <Form.Label>Ancien Mot de Passe</Form.Label>
-                          <Form.Control
-                            type="password"
-                            placeholder="Ancien mot de passe"
-                            onChange={handleChange("oldPassword")}
-                          ></Form.Control>
-                        </Form.Group>
-                        <Form.Group as={Col} md="6">
-                          <Form.Label>Nouveau Mot de Passe</Form.Label>
-                          <Form.Control
-                            type="password"
-                            placeholder="Nouveau Mot de Passe"
-                            onChange={handleChange("newPassword")}
                           ></Form.Control>
                         </Form.Group>
                       </Form.Row>
@@ -252,6 +310,7 @@ const ProfileUser = props => {
                             <option value="B">Bigenre</option>
                           </Form.Control>
                         </Form.Group>
+
                         <Form.Group as={Col} md="6">
                           <Form.Label>Je cherche </Form.Label>
                           <Form.Control
@@ -268,16 +327,30 @@ const ProfileUser = props => {
                           </Form.Control>
                         </Form.Group>
                       </Form.Row>
-                      <Form.Group md="12">
-                        <Form.Label>Taille</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="1.67"
-                          name="userSize"
-                          onChange={handleChange("adress")}
-                          onBlur={udpateProgressBar}
-                        />
-                      </Form.Group>
+                      <Form.Row>
+                        <Form.Group as={Col} md="6">
+                          <Form.Label>Taille</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="1.67"
+                            name="userSize"
+                            onChange={handleChange("adress")}
+                            onBlur={udpateProgressBar}
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} md="6">
+                          <Form.Label>Etes vous </Form.Label>
+                          <Form.Control
+                            as="select"
+                            onChange={handleChange("gender")}
+                            onBlur={udpateProgressBar}
+                          >
+                            <option value="Blond"> Blond(e) </option>
+                            <option value="Brun"> Brun(e) </option>
+                            <option value="roux"> Roux(sse)</option>
+                          </Form.Control>
+                        </Form.Group>
+                      </Form.Row>
                     </Form>
                   </Col>
                 </Row>
@@ -303,16 +376,16 @@ const ProfileUser = props => {
                           <Col>
                             <Form.Check
                               type="checkbox"
-                              id="musique"
-                              label="Musique"
+                              id="vegan"
+                              label="vegan"
                               name="commonTags"
                             />
                           </Col>
                           <Col>
                             <Form.Check
                               type="checkbox"
-                              id="musique"
-                              label="Musique"
+                              id="bio"
+                              label="bio"
                               name="commonTags"
                             />
                           </Col>
@@ -389,6 +462,7 @@ const ProfileUser = props => {
                   Valider
                 </Button>
                 {showError()}
+                {showSuccess()}
               </Col>
             </Row>
           </Col>
