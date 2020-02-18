@@ -12,7 +12,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       if (localStorage.getItem("jwt")) {
         isAuthenticated()
           .then(data => {
-            console.log(data);
             if (data.auth) {
               setAuth(true);
             }
