@@ -1,41 +1,39 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-// import { cardPicture } from "../../api/";
+import { uploadImage, readImage } from "../../api/";
 
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
-    image: [],
-    uploading: false
+    uploading: false,
+    pathImage: "",
+    formData: "",
+    photo: ""
   });
-  const handleChange = event => {
-    event.preventDefault();
 
-    const files = Array.from(event.target.files);
-    const tmp = { ...values, image: [...values.image, files] };
-    const formData = new FormData();
-
-    files.forEach((file, i) => {
-      formData.append(i, files);
-    });
-    //   profile({
-    //     formData
-    //   })
-    //     .then(images => {
-    //         setValues({ ...values, images: images, uploading: false })
-    //       })
-    //     .catch(err => console.log(err));
-    // };
-    setValues(tmp);
+  const init = () => {
+    setValues({ ...values, formData: new FormData() });
   };
-  // const age = birthday => {
-  //   birthday = new Date(birthday);
-  //   return ((new Date().getTime() - birthday.getTime()) / 31536000000).toFixed(
-  //     0
-  //   );
-  // };
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  const handleChange = event => {
+    const value = event.target.files[0];
+    values.formData.set("photo", value);
+    console.log(values.formData);
+    setValues({ ...values, photo: value });
+    uploadImage(values.formData)
+      .then(data => {
+        console.log(data);
+        setValues({ ...values, pathImage: data.image });
+      })
+      .catch(err => console.log(err));
+  };
+
   const isShow = birthday => {
     if (birthday) return <div>Age: {birthday} ans</div>;
   };
@@ -50,7 +48,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
                   <div>
                     <Image
                       className="profile-header-img"
-                      src="https://thumbs.dreamstime.com/b/beau-profil-du-c%C3%B4t%C3%A9-front-s-de-femme-109059081.jpg"
+                      src={values.path}
                       roundedCircle
                     />
                     <div className="rank-label-container">
@@ -94,7 +92,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
                   <label htmlFor="single">
                     <Image
                       className="profile-header-img"
-                      src="https://thumbs.dreamstime.com/b/beau-profil-du-c%C3%B4t%C3%A9-front-s-de-femme-109059081.jpg"
+                      src={"data:image/png;base64, " + values.pathImage}
                       roundedCircle
                     />
                   </label>
@@ -137,6 +135,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
       );
     }
   };
+
   return <Fragment>{cardProfile()}</Fragment>;
 };
 export default CardPicture;

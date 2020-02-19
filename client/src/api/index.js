@@ -13,14 +13,24 @@ export const profileUser = data => {
     .catch(err => console.log(err));
 };
 
-export const cardPicture = data => {
-  return fetch(`${API}/cardPicture`, {
+export const uploadImage = data => {
+  return fetch(`${API}/profile/uploadImage`, {
     method: "POST",
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
+      Accept: "application/json"
     },
-    body: FormData
+    body: data
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
+export const readImage = () => {
+  return fetch(`${API}/profile/readImage`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json"
+    }
   })
     .then(res => res.json())
     .catch(err => console.log(err));
@@ -33,8 +43,21 @@ export const Picture = data => {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: FormData
+    body: data
   })
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+
+// export const createProduct = (userId, token, product) => {
+//   return fetch(`${API}/product/create/${userId}`, {
+//     method: "POST",
+//     headers: {
+//       Accept: "application/json",
+//       Authorization: `Bearer ${token}`
+//     },
+//     body: product //Product is a form-data type
+//   })
+//     .then(response => response.json())
+//     .catch(err => console.error(err));
+// };

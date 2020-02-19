@@ -30,7 +30,7 @@ const Routes = () => {
           exact
           component={RecoverPassword}
         ></Route>
-        ;{/* <Route path="/nav" exact component={NavMenu}></Route>; */}
+        {/* <Route path="/nav" exact component={NavMenu}></Route> */}
         <Route path="" component={NotFound} />
       </Switch>
     </BrowserRouter>
