@@ -6,7 +6,8 @@ const {
   signin,
   verifyAccount,
   forgotPassword,
-  recoverPassword
+  recoverPassword,
+  logout
 } = require("../controllers/auth");
 
 const {
@@ -19,6 +20,7 @@ const { verifyToken } = require("../controllers/verifyToken");
 
 router.post("/signup", userSignupValidator, signup);
 router.post("/signin", userSigninValidator, signin);
+router.post("/logout", verifyToken, logout);
 router.post("/verifyAccount", verifyAccount);
 router.post("/forgotPassword", forgotPasswordValidator, forgotPassword);
 router.post("/recoverPassword", recoverPasswordValidator, recoverPassword);

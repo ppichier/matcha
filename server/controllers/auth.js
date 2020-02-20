@@ -462,3 +462,15 @@ exports.recoverPassword = (req, res) => {
     }
   });
 };
+exports.logout = (req, res) => {
+  const { user } = req.body;
+  connection.query(
+    "UPDATE `User` SET `LastConnection`= NOW() WHERE `Uuid`= ?",
+    [user._id],
+    (err, result) => {
+      if (err) {
+        handleError(res, err, "Internal error", 500, connection);
+      }
+    }
+  );
+};
