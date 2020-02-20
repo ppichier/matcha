@@ -14,26 +14,26 @@ export const profileUser = data => {
 };
 
 export const cardPicture = data => {
-  return fetch(`${API}/cardPicture`, {
+  return fetch(`${API}/uploadImage`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: FormData
+    body: data
   })
     .then(res => res.json())
     .catch(err => console.log(err));
 };
 
-export const Picture = data => {
+export const picture = data => {
   return fetch(`${API}/Picture`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: FormData
+    body: data
   })
     .then(res => res.json())
     .catch(err => console.log(err));

@@ -191,7 +191,13 @@ const ProfileUser = props => {
       })
       .catch(err => console.log(err));
   };
-
+  let i = 0;
+  const ProgressBarTag = () => {
+    if (i === 0) {
+      udpateProgressBar();
+      i++;
+    }
+  };
   return (
     <Fragment>
       <NavbarHeader />
@@ -371,6 +377,7 @@ const ProfileUser = props => {
                               id="musique"
                               label="Musique"
                               name="commonTags"
+                              onBlur={udpateProgressBar}
                             />
                           </Col>
                           <Col>
@@ -398,6 +405,7 @@ const ProfileUser = props => {
                           type="text"
                           placeholder="Tags"
                           name="myTags"
+                          onBlur={ProgressBarTag}
                         />
                         <div className="mytags-main mt-2">
                           {values.myTags.map((tag, i) => {

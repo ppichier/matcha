@@ -3,12 +3,13 @@ import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-// import { cardPicture } from "../../api/";
+import { cardPicture } from "../../api/";
 
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
     image: [],
-    uploading: false
+    uploading: false,
+    imagePath: ""
   });
   const handleChange = event => {
     event.preventDefault();
@@ -17,17 +18,14 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
     const tmp = { ...values, image: [...values.image, files] };
     const formData = new FormData();
 
-    files.forEach((file, i) => {
-      formData.append(i, files);
-    });
-    //   profile({
-    //     formData
-    //   })
-    //     .then(images => {
-    //         setValues({ ...values, images: images, uploading: false })
-    //       })
-    //     .catch(err => console.log(err));
-    // };
+    // files.forEach((file, i) => {
+    formData.append(0, files);
+    // });
+    cardPicture(formData)
+      .then(path => {
+        setValues({ ...values, imagePath: path, uploading: false });
+      })
+      .catch(err => console.log(err));
     setValues(tmp);
   };
   // const age = birthday => {

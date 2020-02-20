@@ -6,8 +6,20 @@ import Badge from "react-bootstrap/Badge";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
+import { logout } from "../../api/auth";
 
 const NavbarHeader = () => {
+  const handleLogout = () => {
+    if (typeof window != "undefined") {
+      if (localStorage.getItem("jwt")) {
+        logout()
+          .then(data => {
+            localStorage.removeItem("jwt");
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  };
   return (
     <Navbar variant="dark" expand="md" className="navbar-main">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -73,7 +85,9 @@ const NavbarHeader = () => {
           >
             <NavDropdown.Item href="/profile/me">Profile</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="/login">Déconnexion</NavDropdown.Item>
+            <NavDropdown.Item href="/login" onClick={handleLogout}>
+              Déconnexion
+            </NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>

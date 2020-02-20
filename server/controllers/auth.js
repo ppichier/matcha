@@ -34,6 +34,7 @@ exports.signup = (req, res) => {
       "SELECT * FROM User WHERE Email = ?; SELECT * FROM User WHERE Username = ?",
       [[email], [pseudo]],
       (err, result) => {
+        const userUuid = uuidv4();
         if (err) {
           handleError(res, err, "Internal error", 500, connection);
         } else if (result[0].length > 0) {
@@ -62,8 +63,8 @@ exports.signup = (req, res) => {
                   handleError(res, err, "Internal error", 500, connection);
                 } else {
                   connection.query(
-                    "INSERT INTO User (Email, Password, UserName, FirstName, LastName, EmailValidate) VALUES (?, ?, ?, ?, ?, ?)",
-                    [email, hash, pseudo, firstName, lastName, 0],
+                    "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [userUuid, email, hash, pseudo, firstName, lastName, 0],
                     (err, result) => {
                       if (err) {
                         handleError(
@@ -458,4 +459,16 @@ exports.recoverPassword = (req, res) => {
       );
     }
   });
+};
+exports.logout = (req, res) => {
+  const { user } = req.body;
+  connection.query(
+    "UPDATE `User` SET `LastConnection`= NOW() WHERE `Uuid`= ?",
+    [user._id],
+    (err, result) => {
+      if (err) {
+        handleError(res, err, "Internal error", 500, connection);
+      }
+    }
+  );
 };
