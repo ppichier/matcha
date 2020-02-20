@@ -7,11 +7,23 @@ import { API } from "../config";
 //   setTimeout(()=> MyLogoutFunction(), token.expiresIn)
 // }
 
+// export const isAuthenticated = () => {
+//   if (typeof window == "undefined") {
+//     return false;
+//   }
+//   //If jwt undefined in local storage crash !!
+//   if (localStorage.getItem("jwt")) {
+//     return JSON.parse(localStorage.getItem("jwt"));
+//   } else {
+//     return false;
+//   }
+// };
+
 export const isAuthenticated = () => {
   //If jwt undefined in local storage crash !!
 
   let jwt = JSON.parse(localStorage.getItem("jwt"));
-  return fetch(`${API}/verifyToken`, {
+  return fetch(`${API}/changePage`, {
     method: "POST",
     headers: {
       Accept: "application/json",

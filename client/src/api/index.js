@@ -1,11 +1,13 @@
 import { API } from "../config";
 
-export const profileUser = data => {
-  return fetch(`${API}/profileUser`, {
+export const updateProfile = data => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/updateProfile`, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt.token}`
     },
     body: JSON.stringify(data)
   })
@@ -14,10 +16,13 @@ export const profileUser = data => {
 };
 
 export const uploadImage = data => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+
   return fetch(`${API}/profile/uploadImage`, {
     method: "POST",
     headers: {
-      Accept: "application/json"
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt.token}`
     },
     body: data
   })
@@ -26,10 +31,12 @@ export const uploadImage = data => {
 };
 
 export const readImage = () => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/readImage`, {
     method: "GET",
     headers: {
-      Accept: "application/json"
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt.token}`
     }
   })
     .then(res => res.json())
@@ -37,11 +44,12 @@ export const readImage = () => {
 };
 
 export const Picture = data => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/Picture`, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      Authorization: `Bearer ${jwt.token}`
     },
     body: data
   })
@@ -50,7 +58,7 @@ export const Picture = data => {
 };
 
 // export const createProduct = (userId, token, product) => {
-//   return fetch(`${API}/product/create/${userId}`, {
+//   return fetch(`${API}/profile/${userId}`, {
 //     method: "POST",
 //     headers: {
 //       Accept: "application/json",

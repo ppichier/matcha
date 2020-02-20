@@ -34,6 +34,7 @@ const Signin = ({ forgotPassword }) => {
         if (data.err) {
           setValues({ ...values, err: data.err });
         } else {
+          console.log(data);
           // set jwt on localstorage sent by the server
           // redirect to /profile or /discover
           if (typeof window !== "undefined") {

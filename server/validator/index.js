@@ -152,3 +152,5 @@ exports.recoverPasswordValidator = (req, res, next) => {
 
   next();
 };
+
+exports.updateProfile = (req, res, next) => {};

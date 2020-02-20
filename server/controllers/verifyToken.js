@@ -1,6 +1,6 @@
 var jwt = require("jsonwebtoken");
 
-exports.verifyToken = (req, res) => {
+exports.verifyToken = (req, res, next) => {
   const authorization = req.headers.authorization;
   if (!authorization) {
     return res.status(403).json({ auth: false, msg: "No token provided." });
@@ -16,8 +16,7 @@ exports.verifyToken = (req, res) => {
         .json({ auth: false, message: "Failed to authenticate token." });
     }
 
-    req.userId = decoded.id;
-    return res.json({ auth: true });
-    // next();
+    req.userUuid = decoded._id;
+    next();
   });
 };

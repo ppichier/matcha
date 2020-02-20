@@ -3,7 +3,7 @@ import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import CardPicture from "./CardPicture";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
-import { profileUser } from "../../api/";
+import { updateProfile } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -134,7 +134,7 @@ const ProfileUser = props => {
         showSuccessToast: false
       });
     } else {
-      profileUser({
+      updateProfile({
         myTags: values.myTags,
         email: values.email,
         pseudo: values.pseudo,

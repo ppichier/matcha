@@ -14,8 +14,8 @@ const handleError = (res, err, displayErr, code, connection) => {
   });
 };
 
-const generateJwt = () => {
-  return jwt.sign({ id: "id of user" }, process.env.JWT_SECRET, {
+const generateJwt = userUuid => {
+  return jwt.sign({ _id: userUuid }, process.env.JWT_SECRET, {
     expiresIn: 86400 // expires in 24 hours
   });
 };
@@ -188,7 +188,7 @@ exports.signin = async (req, res) => {
       });
     } else {
       connection.query(
-        "SELECT UserName, Password, EmailValidate  FROM User WHERE UserName = ?",
+        "SELECT UserName, Password, EmailValidate, Uuid FROM User WHERE UserName = ?",
         [pseudo],
         async (err, result) => {
           if (err) {
@@ -218,12 +218,14 @@ exports.signin = async (req, res) => {
                     connection
                   );
                 } else {
-                  const token = generateJwt();
+                  const token = generateJwt(result[0].Uuid);
                   connection.release();
                   return res.json({
                     token: token,
+                    user: {
+                      _id: result[0].Uuid
+                    },
                     msg: "Authentification réussie"
-                    // user : {id: ... , ...}
                   });
                 }
               } else {

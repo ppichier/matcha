@@ -31,7 +31,6 @@ exports.uploadImage = (req, res) => {
 
   form.on("file", (name, file) => {
     console.log("Uploaded " + file.name);
-    l;
     var bitmap = fs.readFileSync(__dirname + "/../images/smoke.png");
     // var bitmap = fs.readFileSync(__dirname + "/../images/userUuid/imageprofile.png");
     image64 = new Buffer(bitmap).toString("base64");
@@ -51,4 +50,8 @@ exports.readImage = (req, res) => {
   return res.json({
     image: image64
   });
+};
+
+exports.changePage = (req, res) => {
+  return res.json({ auth: true });
 };

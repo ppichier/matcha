@@ -24,8 +24,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const handleChange = event => {
     const value = event.target.files[0];
     values.formData.set("photo", value);
-    console.log(values.formData);
-    setValues({ ...values, photo: value });
+    // setValues({ ...values, photo: value });
     uploadImage(values.formData)
       .then(data => {
         console.log(data);
