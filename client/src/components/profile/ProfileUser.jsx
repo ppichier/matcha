@@ -10,8 +10,7 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { verifValidated, validatedTag } from "../functions/utils";
 import "./ProfileUser.css";
 import { forgotPassword } from "../../api/auth";
-import _ from "lodash";
-import Slider, { Range, createSliderWithTooltip } from "rc-slider";
+import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
@@ -37,9 +36,25 @@ const ProfileUser = props => {
     showSuccessToast: false
   });
 
-  useEffect(() => {
-    udpateProgressBar();
-  }, []);
+  useEffect(
+    () => {
+      const { width, ...rest } = values;
+      udpateProgressBar();
+    },
+    [
+      // values.myTags,
+      // values.email,
+      // values.pseudo,
+      // values.firstName,
+      // values.lastName,
+      // values.age,
+      // values.gender,
+      // values.sexualPreference,
+      // values.description,
+      // values.userSize,
+      // values.width
+    ]
+  );
 
   const showError = () => {
     return (
@@ -96,7 +111,6 @@ const ProfileUser = props => {
       "myTags",
       "description"
     ];
-
     let width = 0;
     for (const element of elements) {
       if (values[element].length !== 0) {
@@ -135,14 +149,14 @@ const ProfileUser = props => {
   };
 
   const ageFormatter = v => {
-    if (v == "17") {
+    if (toString(v) === "17") {
       return "Age";
     }
     return `${v} ans`;
   };
 
   const cmFormatter = v => {
-    if (v == "129") {
+    if (toString(v) === "129") {
       return "Taille";
     }
     return `${v}cm`;
@@ -223,14 +237,7 @@ const ProfileUser = props => {
       })
       .catch(err => console.log(err));
   };
-  let i = 0;
-  // const ProgressBarTag = () => {
-  //   console.log("+++++++++++++++++++");
-  //   if (i === 0) {
-  //     udpateProgressBar();
-  //     i++;
-  //   }
-  // };
+
   return (
     <Fragment>
       <NavbarHeader />
@@ -432,7 +439,7 @@ const ProfileUser = props => {
                           type="text"
                           placeholder="Tags"
                           name="myTags"
-                          // onBlur={ProgressBarTag}
+                          onBlur={udpateProgressBar}
                         />
                         <div className="mytags-main mt-2">
                           {values.myTags.map((tag, i) => {

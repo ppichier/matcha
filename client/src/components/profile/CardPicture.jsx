@@ -3,7 +3,7 @@ import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { uploadImage, readImage } from "../../api/";
+import { uploadImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
@@ -67,12 +67,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
               <div className="profile-header-container">
                 <a href="/profile">
                   <div>
-                    <Image
-                      className="profile-header-img"
-                      src={values.path}
-                      roundedCircle
-                    />
-
+                    {handleImage()}
                     <div className="rank-label-container">
                       <span className="label label-default rank-label">
                         100{" "}

@@ -56,8 +56,8 @@
   cursor: pointer;
   /* padding: 54px; */
   line-height: 1 !important;
-  width: 250px;
-  height: 250px;
+  width: 200px;
+  height: 200px;
 }
 a {
   padding: 4px 8px 10px;
@@ -80,6 +80,7 @@ a {
 }
 
 .rank-label-container {
+  z-index: 100;
   margin-top: -25px;
   text-align: center;
 }
@@ -94,6 +95,5 @@ a {
   position: absolute;
   top: 30%;
   left: -10px;
-  /* z-index: 100; */
   cursor: pointer;
 }
