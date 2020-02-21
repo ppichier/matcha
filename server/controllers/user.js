@@ -1,20 +1,10 @@
 const formidable = require("formidable");
 const fs = require("fs");
-const path = require("path");
 
-exports.profile = (req, res) => {
-  // const form = new FormData.IncomingForm()
-
-  // form.parse( err, fields, files , () => {
-
-  //   const data = fs.readFile(files[0])
-
-  //   INSERT
-
-  // })
-  console.log("youhou");
+exports.updateProfile = (req, res) => {
+  console.log("Iico");
   return res.json({
-    msg: req.userId
+    msg: "Profil mis à jour"
   });
 };
 

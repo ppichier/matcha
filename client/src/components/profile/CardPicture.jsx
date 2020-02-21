@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,22 +9,13 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
     uploading: false,
     pathImage: "",
-    formData: "",
+    formData: new FormData(),
     photo: ""
   });
-
-  const init = () => {
-    setValues({ ...values, formData: new FormData() });
-  };
-
-  useEffect(() => {
-    init();
-  }, []);
 
   const handleChange = event => {
     const value = event.target.files[0];
     values.formData.set("photo", value);
-    // setValues({ ...values, photo: value });
     uploadImage(values.formData)
       .then(data => {
         console.log(data);

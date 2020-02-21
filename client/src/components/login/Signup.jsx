@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { signup } from "../../api/auth";
 import { Toast } from "react-bootstrap";
-import { verifValidated } from "../functions/utils";
+import { verifValidated, verifValidatedPassword } from "../functions/utils";
 import "./Signup.css";
 
 const Signup = () => {
@@ -31,10 +31,14 @@ const Signup = () => {
   const handleSubmit = event => {
     event.preventDefault();
     const verif = verifValidated(values);
-    if (verif.err !== null) {
+    const verifPassword = verifValidatedPassword(values.password);
+    let error = "";
+    if (verif.err !== null || verifPassword.err != null) {
+      if (verifPassword.err != null) error = verifPassword.err;
+      else error = verif.err;
       setValues({
         ...values,
-        err: verif.err,
+        err: error,
         success: false,
         showErrorToast: true,
         showSuccessToast: false

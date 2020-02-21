@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import CardPicture from "./CardPicture";
@@ -7,37 +7,39 @@ import { updateProfile } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { valitedPassword, validatedTag } from "../functions/utils";
+import { verifValidated, validatedTag } from "../functions/utils";
 import "./ProfileUser.css";
 import { forgotPassword } from "../../api/auth";
+import _ from "lodash";
+import Slider, { Range, createSliderWithTooltip } from "rc-slider";
+import "rc-slider/assets/index.css";
+
+const SliderWithTooltip = createSliderWithTooltip(Slider);
 
 const ProfileUser = props => {
   const [values, setValues] = useState({
     myTags: [],
     commonTags: [],
     email: "wafae.rharrabti@hotmail.fr",
-    pseudo: "",
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
+    pseudo: "wafa",
+    firstName: "abc",
+    lastName: "def",
+    age: "17",
     gender: "",
     sexualPreference: "",
     description: "",
-    userSize: "",
+    userSize: "129",
     width: 0,
     err: "",
     msg: "",
     success: false,
     showErrorToast: false,
-    showSuccessToast: true
+    showSuccessToast: false
   });
-  // var date = new Date();
-  // let day = date.getDate();
-  // day = day < 10 ? "0" + day : day;
-  // let month = date.getMonth() + 1;
-  // month = month < 10 ? "0" + month : month;
-  // let year = date.getFullYear() - 18;
-  // let max = year + "-" + month + "-" + day;
+
+  useEffect(() => {
+    udpateProgressBar();
+  }, []);
 
   const showError = () => {
     return (
@@ -66,9 +68,15 @@ const ProfileUser = props => {
     );
   };
   const handleChange = name => event => {
+    let value = "";
+    if (name === "userSize" || name === "age") {
+      value = event;
+    } else {
+      value = event.target.value;
+    }
     const tmp = {
       ...values,
-      [name]: event.target.value,
+      [name]: value,
       showSuccessToast: false,
       showErrorToast: false
     };
@@ -81,9 +89,12 @@ const ProfileUser = props => {
       "email",
       "firstName",
       "lastName",
-      "dateOfBirth",
+      "userSize",
+      "age",
       "gender",
-      "sexualPreference"
+      "sexualPreference",
+      "myTags",
+      "description"
     ];
 
     let width = 0;
@@ -91,8 +102,13 @@ const ProfileUser = props => {
       if (values[element].length !== 0) {
         width += 10;
       }
+      if (element === "age" && values.age.toString() === "17") {
+        width -= 10;
+      }
+      if (element === "userSize" && values.userSize.toString() === "129") {
+        width -= 10;
+      }
     }
-    //if //myTags.length != 0
     setValues({ ...values, width: width });
   };
 
@@ -118,13 +134,28 @@ const ProfileUser = props => {
     }
   };
 
+  const ageFormatter = v => {
+    if (v == "17") {
+      return "Age";
+    }
+    return `${v} ans`;
+  };
+
+  const cmFormatter = v => {
+    if (v == "129") {
+      return "Taille";
+    }
+    return `${v}cm`;
+  };
+
   const handleDeleteTag = i => () => {
     const tab = [...values.myTags];
     tab.splice(i, 1);
     setValues({ ...values, myTags: tab });
   };
+
   const handleSubmit = event => {
-    const verif = valitedPassword(values);
+    const verif = verifValidated(values);
     if (verif.err !== null) {
       setValues({
         ...values,
@@ -140,7 +171,7 @@ const ProfileUser = props => {
         pseudo: values.pseudo,
         firstName: values.firstName,
         lastName: values.lastName,
-        dateOfBirth: values.dateOfBirth,
+        age: values.age,
         gender: values.gender,
         sexualPreference: values.sexualPreference,
         description: values.description,
@@ -152,6 +183,7 @@ const ProfileUser = props => {
           if (data.err) {
             setValues({ ...values, err: data.err });
           } else {
+            console.log(data);
             setValues({
               ...values,
               err: "",
@@ -211,7 +243,7 @@ const ProfileUser = props => {
                     pseudo={values.pseudo}
                     lastName={values.lastName}
                     city={values.city}
-                    birthday={values.dateOfBirth}
+                    birthday={values.age}
                   />
                 </Row>
                 <Row
@@ -246,6 +278,7 @@ const ProfileUser = props => {
                         <Form.Group as={Col} md="4">
                           <Form.Label>Nom</Form.Label>
                           <Form.Control
+                            value={values.firstName}
                             type="text"
                             placeholder="Nom"
                             onChange={handleChange("firstName")}
@@ -253,8 +286,9 @@ const ProfileUser = props => {
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="4">
-                          <Form.Label>Prenom</Form.Label>
+                          <Form.Label>Prénom</Form.Label>
                           <Form.Control
+                            value={values.lastName}
                             type="text"
                             placeholder="Prenom"
                             onChange={handleChange("lastName")}
@@ -264,6 +298,7 @@ const ProfileUser = props => {
                         <Form.Group as={Col} md="4">
                           <Form.Label>Pseudo</Form.Label>
                           <Form.Control
+                            value={values.pseudo}
                             type="text"
                             placeholder="Pseudo"
                             onChange={handleChange("pseudo")}
@@ -275,6 +310,7 @@ const ProfileUser = props => {
                         <Form.Group as={Col} md="6">
                           <Form.Label>Email</Form.Label>
                           <Form.Control
+                            value={values.email}
                             type="email"
                             placeholder="Email"
                             onChange={handleChange("email")}
@@ -283,15 +319,15 @@ const ProfileUser = props => {
                         </Form.Group>
                         <Form.Group as={Col} md="6">
                           <Form.Label>Age</Form.Label>
-                          <Form.Control
-                            type="number"
-                            placeholder="18"
-                            name="date"
-                            min="18"
-                            max="65"
-                            onChange={handleChange("dateOfBirth")}
+                          <SliderWithTooltip
+                            min={17}
+                            max={65}
+                            value={parseFloat(values.age)}
+                            tipFormatter={ageFormatter}
+                            onChange={handleChange("age")}
+                            marks={{ 18: 18, 65: 65 }}
                             onBlur={udpateProgressBar}
-                          ></Form.Control>
+                          />
                         </Form.Group>
                       </Form.Row>
                     </Form>
@@ -318,7 +354,7 @@ const ProfileUser = props => {
                         </Form.Group>
 
                         <Form.Group as={Col} md="6">
-                          <Form.Label>Je cherche </Form.Label>
+                          <Form.Label>Je cherche</Form.Label>
                           <Form.Control
                             as="select"
                             onChange={handleChange("sexualPreference")}
@@ -336,25 +372,15 @@ const ProfileUser = props => {
                       <Form.Row>
                         <Form.Group as={Col} md="6">
                           <Form.Label>Taille</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="1.67"
-                            name="userSize"
-                            onChange={handleChange("adress")}
+                          <SliderWithTooltip
+                            min={129}
+                            max={230}
+                            value={parseFloat(values.userSize)}
+                            tipFormatter={cmFormatter}
+                            onChange={handleChange("userSize")}
+                            marks={{ 130: 130, 230: 230 }}
                             onBlur={udpateProgressBar}
                           />
-                        </Form.Group>
-                        <Form.Group as={Col} md="6">
-                          <Form.Label>Etes vous </Form.Label>
-                          <Form.Control
-                            as="select"
-                            onChange={handleChange("gender")}
-                            onBlur={udpateProgressBar}
-                          >
-                            <option value="Blond"> Blond(e) </option>
-                            <option value="Brun"> Brun(e) </option>
-                            <option value="roux"> Roux(sse)</option>
-                          </Form.Control>
                         </Form.Group>
                       </Form.Row>
                     </Form>
@@ -456,7 +482,7 @@ const ProfileUser = props => {
                       <ProgressBar
                         striped
                         variant="info"
-                        label={values.width}
+                        label={values.width + "%"}
                         now={values.width}
                         max={100}
                       />

@@ -35,14 +35,12 @@ export const verifValidated = values => {
   let lenFirstName = values.firstName.length;
   let lenLastName = values.lastName.length;
   let lenPseudo = values.pseudo.length;
-  const verifPassword = verifValidatedPassword(values.password);
+  // const verifPassword = verifValidatedPassword(values.password);
   const verifEmail = verifValidatedEmail(values.email);
 
-  if (verifEmail !== null && valitedPassword !== null) {
+  if (verifEmail !== null) {
     if (verifEmail.err !== null) {
       return { err: verifEmail.err };
-    } else if (verifPassword.err !== null) {
-      return { err: verifPassword.err };
     } else if (
       lenFirstName < 3 ||
       lenFirstName > 30 ||
@@ -54,6 +52,13 @@ export const verifValidated = values => {
       return {
         err: "Votre nom ou prenom ..."
       };
+    } else if (values.description) {
+      if (values.description.length > 1000) {
+        return {
+          err:
+            "La longueur de la description doit être inférieur à 1000 caractères"
+        };
+      }
     }
   }
   return {
@@ -62,19 +67,7 @@ export const verifValidated = values => {
 };
 
 export const valitedPassword = values => {
-  // if (values.newPassword !== "" && values.oldPassword !== "") {
-  //   const newPassword = verifValidatedPassword(values.newPassword);
-  //   const oldPassword = verifValidatedPassword(values.oldPassword);
-  const email = verifValidatedEmail(values.email);
-  //   if (newPassword.err !== null && oldPassword !== null) {
-  //     if (newPassword.err !== null) {
-  //       return { err: newPassword.err };
-  //     } else return { err: oldPassword.err };}
-  if (email !== null) {
-    return { err: email };
-  }
-
-  return { err: null };
+  // if(verifValidatedEmail != null && )
 };
 
 export const validatedTag = tag => {

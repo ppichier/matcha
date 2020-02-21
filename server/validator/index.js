@@ -153,4 +153,7 @@ exports.recoverPasswordValidator = (req, res, next) => {
   next();
 };
 
-exports.updateProfile = (req, res, next) => {};
+exports.updateProfileValidator = (req, res, next) => {
+  console.log("bou");
+  next();
+};

@@ -2,7 +2,7 @@ import { API } from "../config";
 
 export const updateProfile = data => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
-  return fetch(`${API}/updateProfile`, {
+  return fetch(`${API}/profile/updateProfile`, {
     method: "POST",
     headers: {
       Accept: "application/json",
