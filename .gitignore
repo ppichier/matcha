@@ -26,3 +26,6 @@
 **/yarn-error.log*
 
 db.sh
+
+# server images
+server/images/*

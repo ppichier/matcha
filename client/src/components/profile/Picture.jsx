@@ -58,7 +58,7 @@ const Picture = () => {
       case values.images.length > 0:
         return values.path.map((image, i) => (
           <div key={i} className="fadein">
-            <div onClick={removeImage(i)} className="delete">
+            <div onClick={removeImage(i)} className="">
               <FontAwesomeIcon icon={faTimesCircle} size="2x" />
             </div>
             <img className="img" src={values.path[i]} alt="" />

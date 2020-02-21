@@ -4,7 +4,7 @@ import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { uploadImage, readImage } from "../../api/";
-
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
     uploading: false,
@@ -22,6 +22,37 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
         setValues({ ...values, pathImage: data.image });
       })
       .catch(err => console.log(err));
+  };
+  const removeImage = () => {
+    setValues({ ...values, pathImage: "" });
+  };
+  const handleImage = () => {
+    if (values.pathImage) {
+      return (
+        <div style={{ position: "relative" }}>
+          <div onClick={removeImage} className="delete">
+            <FontAwesomeIcon icon={faTimesCircle} size="1x" />
+          </div>
+          <label htmlFor="single" className="imgProfile mb-0">
+            <Image
+              className="profile-header-img"
+              src={"data:image/png;base64, " + values.pathImage}
+              roundedCircle
+            />
+          </label>
+        </div>
+      );
+    } else {
+      return (
+        <label htmlFor="single" className="mb-0">
+          <Image
+            className="profile-header-img"
+            src={"https://image.flaticon.com/icons/png/512/1177/1177577.png"}
+            roundedCircle
+          />
+        </label>
+      );
+    }
   };
 
   const isShow = birthday => {
@@ -41,6 +72,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
                       src={values.path}
                       roundedCircle
                     />
+
                     <div className="rank-label-container">
                       <span className="label label-default rank-label">
                         100{" "}
@@ -79,13 +111,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
             <Row>
               <div className="profile-header-container">
                 <div>
-                  <label htmlFor="single">
-                    <Image
-                      className="profile-header-img"
-                      src={"data:image/png;base64, " + values.pathImage}
-                      roundedCircle
-                    />
-                  </label>
+                  {handleImage()}
                   <div className="rank-label-container">
                     <span className="label label-default rank-label">
                       100{" "}
