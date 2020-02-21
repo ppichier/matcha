@@ -13,11 +13,11 @@
 }
 .row-pictureProfile {
   background-color: white !important;
-  height: 400px !important;
+  /* height: 400px !important; */
   /* max-height: 800px !important; */
   border-radius: 6px;
   display: flex !important;
-  line-height: 1.7px;
+  /* line-height: 1.7px; */
   flex-wrap: wrap !important;
 }
 

@@ -192,12 +192,13 @@ const ProfileUser = props => {
       .catch(err => console.log(err));
   };
   let i = 0;
-  const ProgressBarTag = () => {
-    if (i === 0) {
-      udpateProgressBar();
-      i++;
-    }
-  };
+  // const ProgressBarTag = () => {
+  //   console.log("+++++++++++++++++++");
+  //   if (i === 0) {
+  //     udpateProgressBar();
+  //     i++;
+  //   }
+  // };
   return (
     <Fragment>
       <NavbarHeader />
@@ -206,7 +207,7 @@ const ProfileUser = props => {
           <Col md={4} className="mt-5 ">
             <Row>
               <Col>
-                <Row className="row-pictureProfile">
+                <Row className="row-pictureProfile py-4">
                   <CardPicture
                     pseudo={values.pseudo}
                     lastName={values.lastName}
@@ -405,7 +406,7 @@ const ProfileUser = props => {
                           type="text"
                           placeholder="Tags"
                           name="myTags"
-                          onBlur={ProgressBarTag}
+                          // onBlur={ProgressBarTag}
                         />
                         <div className="mytags-main mt-2">
                           {values.myTags.map((tag, i) => {
