@@ -9,7 +9,7 @@ export const updateProfile = data => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${jwt.token}`
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify({ ...data, userUuid: jwt.user._id })
   })
     .then(res => res.json())
     .catch(err => console.log(err));
@@ -17,7 +17,6 @@ export const updateProfile = data => {
 
 export const uploadImage = data => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
-
   return fetch(`${API}/profile/uploadImage`, {
     method: "POST",
     headers: {

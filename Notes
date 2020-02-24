@@ -10,6 +10,8 @@
 ## [FRONT] - UI verifyAccount 
 ## [FRONT] - Move functions api/auth.js to ?
 
+## [FRONT-BACK] - if user auth , could not go to /login
+
 
 
 

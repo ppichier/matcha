@@ -21,6 +21,9 @@ router.post(
 );
 router.post("/profile/uploadImage", uploadImage);
 router.get("/profile/readImage", readImage);
+// router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
+// router.post("/profile/updateProfile", updateProfile);
+
 // router.get("/uploadImage", verifyToken, uploadImage);
 // router.post("/profile/:userId", userSigninValidator, profile);
 

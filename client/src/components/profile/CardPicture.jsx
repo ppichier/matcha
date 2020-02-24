@@ -8,26 +8,29 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
     uploading: false,
-    pathImage: "",
-    formData: new FormData(),
-    photo: ""
+    base64Image: "",
+    formData: new FormData()
   });
 
   const handleChange = event => {
     const value = event.target.files[0];
+    const jwt = JSON.parse(localStorage.getItem("jwt"));
     values.formData.set("photo", value);
+    values.formData.set("userUuid", jwt.user._id);
+    values.formData.set("label", "ImageProfile");
+    values.formData.set("nbr_images", 1);
+
     uploadImage(values.formData)
       .then(data => {
-        console.log(data);
-        setValues({ ...values, pathImage: data.image });
+        setValues({ ...values, base64Image: data.image });
       })
       .catch(err => console.log(err));
   };
   const removeImage = () => {
-    setValues({ ...values, pathImage: "" });
+    setValues({ ...values, base64Image: "" });
   };
   const handleImage = () => {
-    if (values.pathImage) {
+    if (values.base64Image) {
       return (
         <div style={{ position: "relative" }}>
           <div onClick={removeImage} className="delete">
@@ -36,7 +39,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
           <label htmlFor="single" className="imgProfile mb-0">
             <Image
               className="profile-header-img"
-              src={"data:image/png;base64, " + values.pathImage}
+              src={"data:image/png;base64, " + values.base64Image}
               roundedCircle
             />
           </label>

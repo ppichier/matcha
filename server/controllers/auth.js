@@ -5,14 +5,7 @@ const jwt = require("jsonwebtoken");
 const transporter = require("../utility/mail");
 const template = require("../utility/template/mail");
 const uuidv4 = require("uuid/v4");
-
-const handleError = (res, err, displayErr, code, connection) => {
-  connection.release();
-  console.log(err);
-  return res.status(code).json({
-    err: displayErr
-  });
-};
+const error = require("./error");
 
 const generateJwt = userUuid => {
   return jwt.sign({ _id: userUuid }, process.env.JWT_SECRET, {
@@ -36,9 +29,9 @@ exports.signup = (req, res) => {
       (err, result) => {
         const userUuid = uuidv4();
         if (err) {
-          handleError(res, err, "Internal error", 500, connection);
+          error.handleError(res, err, "Internal error", 500, connection);
         } else if (result[0].length > 0) {
-          handleError(
+          error.handleError(
             res,
             err,
             "Cet email a déjà un compte associé.",
@@ -46,7 +39,7 @@ exports.signup = (req, res) => {
             connection
           );
         } else if (result[1].length > 0) {
-          handleError(
+          error.handleError(
             res,
             err,
             "Ce pseudo n'est pas disponible.",
@@ -56,18 +49,24 @@ exports.signup = (req, res) => {
         } else {
           bcrypt.genSalt(10, (err, salt) => {
             if (err) {
-              handleError(res, err, "Internal error", 500, connection);
+              error.handleError(res, err, "Internal error", 500, connection);
             } else {
               bcrypt.hash(password, salt, (err, hash) => {
                 if (err) {
-                  handleError(res, err, "Internal error", 500, connection);
+                  error.handleError(
+                    res,
+                    err,
+                    "Internal error",
+                    500,
+                    connection
+                  );
                 } else {
                   connection.query(
                     "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate) VALUES (?, ?, ?, ?, ?, ?, ?)",
                     [userUuid, email, hash, pseudo, firstName, lastName, 0],
                     (err, result) => {
                       if (err) {
-                        handleError(
+                        error.handleError(
                           res,
                           err,
                           "Internal error",
@@ -82,7 +81,7 @@ exports.signup = (req, res) => {
                           [pseudo],
                           (err, result) => {
                             if (err) {
-                              handleError(
+                              error.handleError(
                                 res,
                                 err,
                                 "Internal error",
@@ -116,7 +115,7 @@ exports.signup = (req, res) => {
                                 [result[0].UserId, uuid],
                                 (err, result) => {
                                   if (err) {
-                                    handleError(
+                                    error.handleError(
                                       res,
                                       err,
                                       "Internal error",
@@ -133,7 +132,7 @@ exports.signup = (req, res) => {
                                             [pseudo],
                                             (err, result) => {
                                               if (err) {
-                                                handleError(
+                                                error.handleError(
                                                   res,
                                                   err,
                                                   "Internal error",
@@ -141,7 +140,7 @@ exports.signup = (req, res) => {
                                                   connection
                                                 );
                                               } else {
-                                                handleError(
+                                                error.handleError(
                                                   res,
                                                   err,
                                                   "Erreur. Veuillez réesayer",
@@ -188,14 +187,14 @@ exports.signin = async (req, res) => {
       });
     } else {
       connection.query(
-        "SELECT UserName, Password, EmailValidate, Uuid FROM User WHERE UserName = ?",
+        "SELECT UserId, UserName, Password, EmailValidate, Uuid FROM User WHERE UserName = ?",
         [pseudo],
         async (err, result) => {
           if (err) {
-            handleError(res, err, "Internal error", 500, connection);
+            error.handleError(res, err, "Internal error", 500, connection);
           } else if (!result[0]) {
             //Check if pseudo exists.
-            handleError(
+            error.handleError(
               res,
               err,
               "Ce pseudo ne correspond à aucun compte. Veuillez créer un compte",
@@ -210,7 +209,7 @@ exports.signin = async (req, res) => {
               );
               if (match) {
                 if (result[0].EmailValidate == 0) {
-                  handleError(
+                  error.handleError(
                     res,
                     err,
                     "Votre compte n'a pas été activé. Veuillez cliquer sur le lien présent dans l'email d'inscription",
@@ -218,6 +217,21 @@ exports.signin = async (req, res) => {
                     connection
                   );
                 } else {
+                  connection.query(
+                    "UPDATE `user` SET `LastConnection`= ? WHERE UserId = ?",
+                    [null, result[0].UserId],
+                    (err, result) => {
+                      if (err) {
+                        error.handleError(
+                          res,
+                          err,
+                          "Internal error",
+                          500,
+                          connection
+                        );
+                      }
+                    }
+                  );
                   const token = generateJwt(result[0].Uuid);
                   connection.release();
                   return res.json({
@@ -236,11 +250,11 @@ exports.signin = async (req, res) => {
                 });
               }
             } catch (err) {
-              handleError(res, err, "Internal error", 500, connection);
+              error.handleError(res, err, "Internal error", 500, connection);
             }
           } else {
             // duplicate data
-            handleError(res, err, "Internal error", 500, connection);
+            error.handleError(res, err, "Internal error", 500, connection);
           }
         }
       );
@@ -262,7 +276,7 @@ exports.verifyAccount = (req, res) => {
         [uuid],
         (err, result) => {
           if (err) {
-            handleError(res, err, "Internal error", 500, connection);
+            error.handleError(res, err, "Internal error", 500, connection);
           } else if (result.length != 0) {
             //uuid found
             connection.query(
@@ -270,7 +284,13 @@ exports.verifyAccount = (req, res) => {
               [[result[0].UserId], [result[0].UserId]],
               (err, result) => {
                 if (err) {
-                  handleError(res, err, "Internal error", 500, connection);
+                  error.handleError(
+                    res,
+                    err,
+                    "Internal error",
+                    500,
+                    connection
+                  );
                 } else {
                   connection.release();
                   return res.json({ auth: true });
@@ -302,9 +322,9 @@ exports.forgotPassword = (req, res) => {
         [email],
         (err, result) => {
           if (err) {
-            handleError(res, err, "Internal error", 500, connection);
+            error.handleError(res, err, "Internal error", 500, connection);
           } else if (result.length === 0) {
-            handleError(
+            error.handleError(
               res,
               err,
               "L'email indiqué n'existe pas",
@@ -339,14 +359,20 @@ exports.forgotPassword = (req, res) => {
               [UserId],
               (err, result) => {
                 if (err) {
-                  handleError(res, err, "Internal error", 500, connection);
+                  error.handleError(
+                    res,
+                    err,
+                    "Internal error",
+                    500,
+                    connection
+                  );
                 } else if (result.length > 0) {
                   connection.query(
                     "UPDATE `recover_password` SET Uuid = ? WHERE UserId = ?",
                     [uuid, UserId],
                     (err, result) => {
                       if (err) {
-                        handleError(
+                        error.handleError(
                           res,
                           err,
                           "Internal error",
@@ -367,7 +393,7 @@ exports.forgotPassword = (req, res) => {
                     [UserId, uuid],
                     (err, result) => {
                       if (err) {
-                        handleError(
+                        error.handleError(
                           res,
                           err,
                           "Internal error",
@@ -404,24 +430,36 @@ exports.recoverPassword = (req, res) => {
         [uuid, email],
         (err, result) => {
           if (err) {
-            handleError(res, err, "Internal error", 500, connection);
+            error.handleError(res, err, "Internal error", 500, connection);
           } else if (result.length === 0) {
-            handleError(res, err, "Opération non autorisée", 400, connection);
+            error.handleError(
+              res,
+              err,
+              "Opération non autorisée",
+              400,
+              connection
+            );
           } else {
             bcrypt.genSalt(10, (err, salt) => {
               if (err) {
-                handleError(res, err, "Internal error", 500, connection);
+                error.handleError(res, err, "Internal error", 500, connection);
               } else {
                 bcrypt.hash(password, salt, (err, hash) => {
                   if (err) {
-                    handleError(res, err, "Internal error", 500, connection);
+                    error.handleError(
+                      res,
+                      err,
+                      "Internal error",
+                      500,
+                      connection
+                    );
                   } else {
                     connection.query(
                       "UPDATE `User` SET `Password`=? WHERE `UserId`= ? AND`Email`= ?",
                       [hash, [result[0].UserId], email],
                       (err, result) => {
                         if (err) {
-                          handleError(
+                          error.handleError(
                             res,
                             err,
                             "Internal error",
@@ -434,7 +472,7 @@ exports.recoverPassword = (req, res) => {
                             [uuid],
                             (err, result) => {
                               if (err) {
-                                handleError(
+                                error.handleError(
                                   res,
                                   err,
                                   "Internal error",
@@ -463,14 +501,23 @@ exports.recoverPassword = (req, res) => {
   });
 };
 exports.logout = (req, res) => {
-  const { user } = req.body;
-  connection.query(
-    "UPDATE `User` SET `LastConnection`= NOW() WHERE `Uuid`= ?",
-    [user._id],
-    (err, result) => {
-      if (err) {
-        handleError(res, err, "Internal error", 500, connection);
-      }
+  const { userUuid } = req.body;
+
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({
+        err: "Internal error - Db down"
+      });
+    } else {
+      connection.query(
+        "UPDATE `User` SET `LastConnection`= NOW() WHERE `Uuid`= ?",
+        [userUuid],
+        (err, result) => {
+          if (err) {
+            error.handleError(res, err, "Internal error", 500, connection);
+          }
+        }
+      );
     }
-  );
+  });
 };
