@@ -155,6 +155,56 @@ exports.uploadSecondaryImages = (req, res) => {
     });
   });
 };
+
+exports.deleteProfileImage = (req, res) => {
+  const { userUuid } = req.body;
+  pool.getConnection((err, connection) => {
+    if (err) {
+      if (err) {
+        error.handleError(res, err, "Internal error", 500, connection);
+      }
+    }
+    connection.query(
+      `SELECT * FROM User WHERE Uuid = ?`,
+      [userUuid],
+      (err, result) => {
+        if (err) {
+          error.handleError(res, err, "Intenal error", 500, connection);
+        } else {
+          console.log(result[0].UserId);
+          const image = result[0].ImageProfile;
+          connection.query(
+            `UPDATE User SET ImageProfile = ? WHERE Uuid = ?`,
+            [null, userUuid],
+            (err, result) => {
+              if (err) {
+                error.handleError(res, err, "Intenal error", 500, connection);
+              } else {
+                fs.unlink(image, err => {
+                  if (err) {
+                    error.handleError(
+                      res,
+                      err,
+                      "Internal error",
+                      500,
+                      connection
+                    );
+                  } else {
+                    connection.release();
+                    return res.json({
+                      msg: "image delete"
+                    });
+                  }
+                });
+              }
+            }
+          );
+        }
+      }
+    );
+  });
+};
+
 exports.deleteSecondaryImage = (req, res) => {
   const { userUuid, imageIdRemove } = req.body;
   let deleteimage = "Image" + (imageIdRemove + 1);

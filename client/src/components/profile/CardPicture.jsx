@@ -3,7 +3,7 @@ import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { uploadProfileImage } from "../../api/";
+import { uploadProfileImage, deleteProfileImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
@@ -27,7 +27,11 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
       .catch(err => console.log(err));
   };
   const removeImage = () => {
-    setValues({ ...values, base64Image: "" });
+    deleteProfileImage()
+      .then(() => {
+        setValues({ ...values, base64Image: "" });
+      })
+      .catch(err => console.log(err));
   };
   const handleImage = () => {
     if (values.base64Image) {

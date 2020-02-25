@@ -5,6 +5,7 @@ const { verifyToken } = require("../controllers/verifyToken");
 const {
   uploadProfileImage,
   uploadSecondaryImages,
+  deleteProfileImage,
   deleteSecondaryImage,
   readImage,
   changePage,
@@ -23,6 +24,7 @@ router.post(
 );
 router.post("/profile/uploadProfileImage", uploadProfileImage);
 router.post("/profile/uploadSecondaryImages", uploadSecondaryImages);
+router.delete("/profile/deleteProfileImage", deleteProfileImage);
 router.delete("/profile/deleteSecondaryImage", deleteSecondaryImage);
 
 router.get("/profile/readImage", readImage);

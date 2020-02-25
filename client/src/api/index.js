@@ -43,6 +43,21 @@ export const uploadSecondaryImages = data => {
     .catch(err => console.log(err));
 };
 
+export const deleteProfileImage = () => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/profile/deleteProfileImage`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt.token}`
+    },
+    body: JSON.stringify({ userUuid: jwt.user._id })
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
 export const deleteSecondaryImage = data => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/deleteSecondaryImage`, {
