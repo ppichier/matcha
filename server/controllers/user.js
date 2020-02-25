@@ -180,8 +180,6 @@ exports.deleteSecondaryImage = (req, res) => {
               if (err) {
                 error.handleError(res, err, "Intenal error", 500, connection);
               } else {
-                console.log("+++++++++++++++++++++++++++-----====");
-                console.log(image);
                 fs.unlink(image, err => {
                   if (err) {
                     error.handleError(
@@ -191,6 +189,11 @@ exports.deleteSecondaryImage = (req, res) => {
                       500,
                       connection
                     );
+                  } else {
+                    connection.release();
+                    return res.json({
+                      msg: "image delete"
+                    });
                   }
                 });
               }
