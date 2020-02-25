@@ -3,7 +3,9 @@ const router = express.Router();
 
 const { verifyToken } = require("../controllers/verifyToken");
 const {
-  uploadImage,
+  uploadProfileImage,
+  uploadSecondaryImages,
+  deleteSecondaryImage,
   readImage,
   changePage,
   updateProfile
@@ -19,7 +21,10 @@ router.post(
   updateProfileValidator,
   updateProfile
 );
-router.post("/profile/uploadImage", uploadImage);
+router.post("/profile/uploadProfileImage", uploadProfileImage);
+router.post("/profile/uploadSecondaryImages", uploadSecondaryImages);
+router.delete("/profile/deleteSecondaryImage", deleteSecondaryImage);
+
 router.get("/profile/readImage", readImage);
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);

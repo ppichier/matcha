@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 import "./Picture.css";
-import { uploadImage } from "../../api/";
+import { uploadSecondaryImages, deleteSecondaryImage } from "../../api/";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,37 +13,52 @@ const Picture = () => {
   const [values, setValues] = useState({
     formData: new FormData(),
     base64Images: [
-      // "https://miro.medium.com/max/700/1*-e9ggCgUcu3_9OdKhX9g5g.jpeg",
-      // "https://www.bigstockphoto.com/images/homepage/module-6.jpg",
-      // "https://miro.medium.com/max/700/1*eukbB4_M_hFVlARuE_EaTQ.jpeg",
-      // "https://miro.medium.com/max/1600/1*F5TxJsQZ9QDfPKeyw7ClTA.jpeg",
-      // "https://miro.medium.com/max/700/1*0dWe2qDwWKQt9wuVnMXJ-w.jpeg"
+      //image1
     ],
-    uploading: false
+    uploading: false,
+    err: "",
+    msg: ""
   });
 
   const handleChange = event => {
     const files = Array.from(event.target.files);
 
+    // TODO aficher msg or err
+    if (files.length >= 5) {
+      setValues({ ...values, err: "Vous pouvez upload 5 photos maximum" });
+      return;
+    }
+
     files.forEach((file, i) => {
-      values.formData.set("photo" + (i + 1), files[i]);
+      values.formData.set("photo" + i, files[i]);
       values.formData.set("nbr_images", i++);
     });
 
     const jwt = JSON.parse(localStorage.getItem("jwt"));
     values.formData.set("userUuid", jwt.user._id);
-    console.log(values.formData);
-    uploadImage(values.formData)
+    uploadSecondaryImages(values.formData)
       .then(data => {
-        // setValues({ ...values, base64Images: data.images, uploading: false });
+        setValues({
+          ...values,
+          base64Images: data.images,
+          uploading: false,
+          msg: data.msg
+        });
       })
       .catch(err => console.log(err));
   };
 
   const removeImage = id => () => {
+    console.log(id);
     const path_image = [...values.base64Images];
     path_image.splice(id, 1);
-    setValues({ ...values, base64Images: path_image });
+    deleteSecondaryImage({ imageIdRemove: id })
+      .then(() => {
+        setValues({ ...values, base64Images: path_image });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   const content = () => {
     switch (true) {
@@ -59,7 +74,11 @@ const Picture = () => {
             <div onClick={removeImage(i)} className="">
               <FontAwesomeIcon icon={faTimesCircle} size="2x" />
             </div>
-            <img className="img" src={values.base64Images[i]} alt="" />
+            <img
+              className="img"
+              src={"data:image/png;base64, " + image}
+              alt=""
+            />
           </div>
         ));
       default:

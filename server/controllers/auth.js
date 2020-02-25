@@ -232,6 +232,10 @@ exports.signin = async (req, res) => {
                       }
                     }
                   );
+                  console.log(
+                    "*******************-------------------+++++++++++"
+                  );
+                  console.log(result[0]);
                   const token = generateJwt(result[0].Uuid);
                   connection.release();
                   return res.json({

@@ -3,13 +3,15 @@ import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { uploadImage } from "../../api/";
+import { uploadProfileImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
     uploading: false,
     base64Image: "",
-    formData: new FormData()
+    formData: new FormData(),
+    err: "",
+    msg: ""
   });
 
   const handleChange = event => {
@@ -17,12 +19,10 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
     const jwt = JSON.parse(localStorage.getItem("jwt"));
     values.formData.set("photo", value);
     values.formData.set("userUuid", jwt.user._id);
-    values.formData.set("label", "ImageProfile");
-    values.formData.set("nbr_images", 1);
 
-    uploadImage(values.formData)
+    uploadProfileImage(values.formData)
       .then(data => {
-        setValues({ ...values, base64Image: data.image });
+        setValues({ ...values, base64Image: data.image, msg: data.msg });
       })
       .catch(err => console.log(err));
   };
