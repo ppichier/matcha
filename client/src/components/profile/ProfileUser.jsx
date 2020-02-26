@@ -188,10 +188,8 @@ const ProfileUser = props => {
         age: values.age,
         gender: values.gender,
         sexualPreference: values.sexualPreference,
-        description: values.description,
-        adress: values.adress,
-        city: values.city,
-        postalCode: values.postalCode
+        userSize: values.userSize,
+        description: values.description
       })
         .then(data => {
           if (data.err) {
@@ -353,11 +351,11 @@ const ProfileUser = props => {
                             onBlur={udpateProgressBar}
                           >
                             <option value=""> Séléctionnez un genre</option>
-                            <option value="M"> Un Homme </option>
-                            <option value="F"> Une Femme </option>
-                            <option value="TF"> une Transféminine</option>
-                            <option value="TH"> une Transmasculin</option>
-                            <option value="B">Bigenre</option>
+                            <option value="1"> Un Homme </option>
+                            <option value="2"> Une Femme </option>
+                            <option value="3"> une Transféminine</option>
+                            <option value="4"> une Transmasculin</option>
+                            <option value="5">Bigenre</option>
                           </Form.Control>
                         </Form.Group>
 
@@ -369,11 +367,11 @@ const ProfileUser = props => {
                             onBlur={udpateProgressBar}
                           >
                             <option value=""> Séléctionnez un genre</option>
-                            <option value="M"> Un Homme </option>
-                            <option value="F"> Une Femme </option>
-                            <option value="TF"> une Transféminine</option>
-                            <option value="TH"> une Transmasculin</option>
-                            <option value="B">Bigenre</option>
+                            <option value="1"> Un Homme </option>
+                            <option value="2"> Une Femme </option>
+                            <option value="3"> une Transféminine</option>
+                            <option value="4"> une Transmasculin</option>
+                            <option value="5">Bigenre</option>
                           </Form.Control>
                         </Form.Group>
                       </Form.Row>

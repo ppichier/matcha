@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 import "./Picture.css";
-// import { picture } from "../../api/";
+import { uploadSecondaryImages, deleteSecondaryImage } from "../../api/";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,41 +11,51 @@ import {
 
 const Picture = () => {
   const [values, setValues] = useState({
-    images: [],
-    path: [
-      "https://miro.medium.com/max/700/1*-e9ggCgUcu3_9OdKhX9g5g.jpeg",
-      "https://www.bigstockphoto.com/images/homepage/module-6.jpg",
-      "https://miro.medium.com/max/700/1*eukbB4_M_hFVlARuE_EaTQ.jpeg",
-      "https://miro.medium.com/max/1600/1*F5TxJsQZ9QDfPKeyw7ClTA.jpeg",
-      "https://miro.medium.com/max/700/1*0dWe2qDwWKQt9wuVnMXJ-w.jpeg"
-    ],
-    uploading: false
+    formData: new FormData(),
+    base64Images: ["", "", "", ""],
+    uploading: false,
+    err: "",
+    msg: ""
   });
-  const handleChange = event => {
-    event.preventDefault();
 
+  const handleChange = event => {
     const files = Array.from(event.target.files);
-    const tmp = { ...values, images: [...values.images, files] };
-    const formData = new FormData();
+
+    // TODO aficher msg or err
+    if (files.length >= 5) {
+      setValues({ ...values, err: "Vous pouvez upload 5 photos maximum" });
+      return;
+    }
 
     files.forEach((file, i) => {
-      formData.append(i, files);
+      values.formData.set("photo" + i, files[i]);
+      values.formData.set("nbr_images", i++);
     });
-    //   profile({
-    //     formData
-    //   })
-    //     .then(images => {
-    //         setValues({ ...values, images: images, uploading: false })
-    //       })
-    //     .catch(err => console.log(err));
-    // };
-    setValues(tmp);
+
+    const jwt = JSON.parse(localStorage.getItem("jwt"));
+    values.formData.set("userUuid", jwt.user._id);
+    uploadSecondaryImages(values.formData)
+      .then(data => {
+        setValues({
+          ...values,
+          base64Images: data.images,
+          uploading: false,
+          msg: data.msg
+        });
+      })
+      .catch(err => console.log(err));
   };
 
   const removeImage = id => () => {
-    const path_image = [...values.path];
-    path_image.splice(id, 1);
-    setValues({ ...values, path: path_image });
+    const path_image = [...values.base64Images];
+    path_image[id] = "";
+    deleteSecondaryImage({ imageIdRemove: id })
+      .then(() => {
+        setValues({ ...values, base64Images: path_image });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   const content = () => {
     switch (true) {
@@ -55,19 +65,10 @@ const Picture = () => {
             <FontAwesomeIcon icon={faBowlingBall} size="5x" color="#3B5998" />
           </div>
         );
-      case values.images.length > 0:
-        return values.path.map((image, i) => (
-          <div key={i} className="fadein">
-            <div onClick={removeImage(i)} className="">
-              <FontAwesomeIcon icon={faTimesCircle} size="2x" />
-            </div>
-            <img className="img" src={values.path[i]} alt="" />
-          </div>
-        ));
-      default:
+      case values.base64Images.filter(e => e !== "").length === 0:
         return (
           <Fragment>
-            <Col style={{}}>
+            <Col>
               <div className="buttons fadein py-5">
                 <div className="button">
                   <label htmlFor="multi">
@@ -82,12 +83,31 @@ const Picture = () => {
                     name="file"
                     id="multi"
                     onChange={handleChange}
+                    multiple
                   />
                 </div>
               </div>
             </Col>
           </Fragment>
         );
+      case values.base64Images.length > 0:
+        return values.base64Images.map((image, i) => {
+          if (image !== "")
+            return (
+              <div key={i} className="fadein">
+                <div onClick={removeImage(i)} className="">
+                  <FontAwesomeIcon icon={faTimesCircle} size="2x" />
+                </div>
+                <img
+                  className="img"
+                  src={"data:image/png;base64, " + image}
+                  alt=""
+                />
+              </div>
+            );
+        });
+
+      default:
     }
   };
   return <div className="buttons">{content()}</div>;

@@ -3,31 +3,40 @@ import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { uploadImage } from "../../api/";
+import { uploadProfileImage, deleteProfileImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
     uploading: false,
-    pathImage: "",
+    base64Image: "",
     formData: new FormData(),
-    photo: ""
+    err: "",
+    msg: ""
   });
 
   const handleChange = event => {
+    console.log(event.target.files[0]);
     const value = event.target.files[0];
-    values.formData.set("photo", value);
-    uploadImage(values.formData)
-      .then(data => {
-        console.log(data);
-        setValues({ ...values, pathImage: data.image });
+    const jwt = JSON.parse(localStorage.getItem("jwt"));
+    if (value !== undefined) {
+      values.formData.set("photo", value);
+      values.formData.set("userUuid", jwt.user._id);
+      uploadProfileImage(values.formData)
+        .then(data => {
+          setValues({ ...values, base64Image: data.image, msg: data.msg });
+        })
+        .catch(err => console.log(err));
+    }
+  };
+  const removeImage = () => {
+    deleteProfileImage()
+      .then(() => {
+        setValues({ ...values, base64Image: "" });
       })
       .catch(err => console.log(err));
   };
-  const removeImage = () => {
-    setValues({ ...values, pathImage: "" });
-  };
   const handleImage = () => {
-    if (values.pathImage) {
+    if (values.base64Image) {
       return (
         <div style={{ position: "relative" }}>
           <div onClick={removeImage} className="delete">
@@ -36,7 +45,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
           <label htmlFor="single" className="imgProfile mb-0">
             <Image
               className="profile-header-img"
-              src={"data:image/png;base64, " + values.pathImage}
+              src={"data:image/png;base64, " + values.base64Image}
               roundedCircle
             />
           </label>

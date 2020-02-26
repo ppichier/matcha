@@ -69,9 +69,9 @@ exports.userSignupValidator = (req, res, next) => {
     req.body.pseudo.length > 40 ||
     req.body.password.length > 30 ||
     req.body.firstName.length > 255 ||
-    req.body.firstName.length === 0 ||
+    req.body.firstName.length < 3 ||
     req.body.lastName.length > 255 ||
-    req.body.lastName.length === 0
+    req.body.lastName.length < 3
   ) {
     return res.status(400).json({
       err: "Error value Min-Max length"
@@ -154,6 +154,83 @@ exports.recoverPasswordValidator = (req, res, next) => {
 };
 
 exports.updateProfileValidator = (req, res, next) => {
-  console.log("bou");
+  // check if variable is undefined
+  if (
+    typeof req.body.email === "undefined" ||
+    typeof req.body.pseudo === "undefined" ||
+    typeof req.body.firstName === "undefined" ||
+    typeof req.body.lastName === "undefined"
+  ) {
+    return res.status(400).json({
+      err: "Tous les champs sont requis"
+    });
+  }
+
+  const rgxEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (!rgxEmail.test(String(req.body.email).toLowerCase())) {
+    return res.status(400).json({
+      err: "L'email n'est pas valide"
+    });
+  }
+
+  //check if pseudo is valid (letter , number, certains special chars)
+
+  const regexPseudo = /^[0-9a-zA-Z&#($_);.+!-]{1,}$/;
+  if (!regexPseudo.test(String(req.body.pseudo))) {
+    return res.status(400).json({
+      err: "Pseudo is not valid"
+    });
+  }
+
+  // check length of variable
+  req.body.firstName = escapeHtml(req.body.firstName);
+  req.body.lastName = escapeHtml(req.body.lastName);
+
+  if (
+    req.body.email.length > 255 ||
+    req.body.pseudo.length > 40 ||
+    req.body.firstName.length > 255 ||
+    req.body.firstName.length < 3 ||
+    req.body.lastName.length > 255 ||
+    req.body.lastName.length < 3 ||
+    req.body.description.length > 1000
+  ) {
+    return res.status(400).json({
+      err: "Error value Min-Max length"
+    });
+  }
+
+  if (isNaN(req.body.gender)) {
+    return res.status(400).json({
+      err: "Error value gender"
+    });
+  }
+
+  if (req.body.gender !== "" && (req.body.gender < 1 || req.body.gender > 5)) {
+    return res.status(400).json({
+      err: "Error value gender"
+    });
+  }
+
+  if (isNaN(req.body.sexualPreference)) {
+    return res.status(400).json({
+      err: "Error value sexual preference"
+    });
+  }
+
+  if (
+    req.body.sexualPreference !== "" &&
+    (req.body.sexualPreference < 1 || req.body.sexualPreference > 5)
+  ) {
+    return res.status(400).json({
+      err: "Error value sexual preference"
+    });
+  }
+
+  if (req.body.gender === "") {
+    req.body.gender = null;
+  }
+  if (req.body.sexualPreference === "") req.body.sexualPreference = null;
+
   next();
 };

@@ -38,13 +38,15 @@ export const logout = () => {
   //If jwt undefined in local storage crash !!
 
   let jwt = JSON.parse(localStorage.getItem("jwt"));
+  let userUuid = jwt.user._id;
   return fetch(`${API}/logout`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: "Bearer " + jwt.token
-    }
+    },
+    body: JSON.stringify({ userUuid })
   })
     .then(res => res.json())
     .catch(err => console.log(err));

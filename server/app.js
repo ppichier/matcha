@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const chalk = require("chalk");
+// const formData = require("express-form-data");
 require("dotenv").config();
 
 //import routes
@@ -16,6 +17,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
+// app.use(formData.parse());
 
 //routes middlewares
 app.use("/api", authRoutes);

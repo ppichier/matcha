@@ -32,9 +32,9 @@ export const verifValidatedEmail = email => {
 };
 
 export const verifValidated = values => {
-  let lenFirstName = values.firstName.length;
-  let lenLastName = values.lastName.length;
-  let lenPseudo = values.pseudo.length;
+  let lenFirstName = values.firstName.trim().length;
+  let lenLastName = values.lastName.trim().length;
+  let lenPseudo = values.pseudo.trim().length;
   // const verifPassword = verifValidatedPassword(values.password);
   const verifEmail = verifValidatedEmail(values.email);
 
