@@ -36,12 +36,16 @@ const Picture = () => {
     values.formData.set("userUuid", jwt.user._id);
     uploadSecondaryImages(values.formData)
       .then(data => {
-        setValues({
-          ...values,
-          base64Images: data.images,
-          uploading: false,
-          msg: data.msg
-        });
+        if (data.err) {
+          setValues({ ...values, err: data.err });
+        } else {
+          setValues({
+            ...values,
+            base64Images: data.images,
+            uploading: false,
+            msg: data.msg
+          });
+        }
       })
       .catch(err => console.log(err));
   };

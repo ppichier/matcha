@@ -1,4 +1,3 @@
-const formidable = require("formidable");
 const fs = require("fs");
 const error = require("./error");
 const pool = require("../db");
@@ -196,7 +195,6 @@ exports.deleteSecondaryImage = (req, res) => {
         if (err) {
           error.handleError(res, err, "Intenal error", 500, connection);
         } else {
-          console.log(result[0].UserId);
           const image = result[0][deleteImage];
           connection.query(
             `UPDATE User SET ${deleteImage} = ? WHERE Uuid = ?`,

@@ -8,6 +8,14 @@ exports.createUploadDirectory = (req, res, next) => {
   let form = new formidable.IncomingForm();
 
   form.parse(req, (err, fields, files) => {
+    let keys = Object.keys(files);
+    keys.forEach(key => {
+      if (files[key].size > 1000000) {
+        return res.status(400).json({
+          err: "Le poids de l'image doit d'être inférieur à 1mb"
+        });
+      }
+    });
     req.files = files;
     next();
   });
