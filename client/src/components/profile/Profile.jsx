@@ -1,10 +1,11 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Carousel, Container, Row, Col, Badge, Form } from "react-bootstrap";
 import "./Profile.css";
 import "./ProfileUser.css";
 import CardPicture from "./CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { readImage } from "../../api/";
 import {
   faHeart,
   faComment,
@@ -14,11 +15,24 @@ import {
 
 const Profile = () => {
   const [values, setValues] = useState({
+    baseImage64: [],
     indexImages: 0,
     directionImages: null,
     fakeCount: false,
     like: 0
   });
+
+  useEffect(() => {
+    console.log("+++++++++++++++++++++++");
+    readImage()
+      .then(data => {
+        console.log(data.msg);
+        console.log(data.image);
+        setValues({ ...values, base64Image: data.image });
+      })
+      .catch(err => console.log(err));
+  }, []);
+
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,

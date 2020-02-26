@@ -196,7 +196,6 @@ exports.deleteSecondaryImage = (req, res) => {
         if (err) {
           error.handleError(res, err, "Intenal error", 500, connection);
         } else {
-          console.log(result[0].UserId);
           const image = result[0][deleteImage];
           connection.query(
             `UPDATE User SET ${deleteImage} = ? WHERE Uuid = ?`,
@@ -231,11 +230,39 @@ exports.deleteSecondaryImage = (req, res) => {
 };
 
 exports.readImage = (req, res) => {
-  var bitmap = fs.readFileSync(__dirname + "/../images/smoke.png");
-  image64 = new Buffer(bitmap).toString("base64");
+  let image64 = [];
+  let files = req.files;
 
+  // pool.getConnection((err, connection) => {
+  //   if (err) {
+  //     if (err) {
+  //       error.handleError(res, err, "Internal error", 500, connection);
+  //     }
+  //   }
+  //   connection.query(
+  //     `SELECT * FROM User WHERE Uuid = ?`,
+  //     [req.userUuid],
+  //     (err, result) => {
+  //       if (err) {
+  //         error.handleError(res, err, "Intenal error", 500, connection);
+  // } else {
+  for (let i = 0; i < 4; i++) {
+    console.log("++++++++++++++++++++++++++++++++++");
+    const key = "image" + (i + 1);
+    const bitmap = fs.readFileSync(
+      __dirname + `/../images/${req.userUuid}/${key}`
+    );
+  }
+  image64.push(new Buffer.from(bitmap).toString("base64"));
+  // }
+  // }
+  // );
+  // });
+  console.log("*********************************");
+  console.log(image64);
   return res.json({
-    image: image64
+    image: image64,
+    msg: "ok ok ok"
   });
 };
 
