@@ -1,23 +1,31 @@
 const formidable = require("formidable");
 const fs = require("fs");
-const uuidv4 = require("uuid/v4");
 const pool = require("../db");
 const error = require("../controllers/error");
 
 exports.createUploadDirectory = (req, res, next) => {
   let form = new formidable.IncomingForm();
+  let newName = "";
 
   form.parse(req, (err, fields, files) => {
+    if (newName === null) {
+      return res.status(500).json({
+        err: "Internal error : key file is not valid"
+      });
+    }
     let keys = Object.keys(files);
+    let maxsize = false;
     keys.forEach(key => {
-      if (files[key].size > 1000000) {
-        return res.status(400).json({
-          err: "Le poids de l'image doit d'être inférieur à 1mb"
-        });
-      }
+      if (files[key].size > 1000000) maxsize = true;
     });
-    req.files = files;
-    next();
+    if (maxsize) {
+      return res.status(400).json({
+        err: "Le poids de l'image doit d'être inférieur à 1mb"
+      });
+    } else {
+      req.files = files;
+      next();
+    }
   });
 
   form.on("fileBegin", (name, file) => {
@@ -27,15 +35,33 @@ exports.createUploadDirectory = (req, res, next) => {
     if (!fs.existsSync(__dirname + `/../images/${req.userUuid}`)) {
       fs.mkdirSync(__dirname + `/../images/${req.userUuid}`);
     }
-    randomName = uuidv4();
+    // randomName = uuidv4();
     format = file.type.split("/");
     if (format.length !== 2) {
       return res.status(400).json({
         err: "Format de l'image non valide"
       });
     }
-    file.name = randomName + "." + file.type.split("/")[1];
-
+    switch (name) {
+      case "photo":
+        newName = "ImageProfile";
+        break;
+      case "photo0":
+        newName = "Image1";
+        break;
+      case "photo1":
+        newName = "Image2";
+        break;
+      case "photo2":
+        newName = "Image3";
+        break;
+      case "photo3":
+        newName = "Image4";
+        break;
+      default:
+        newName = null;
+    }
+    file.name = newName + "." + file.type.split("/")[1];
     file.path = __dirname + `/../images/${req.userUuid}/` + file.name;
   });
 };
