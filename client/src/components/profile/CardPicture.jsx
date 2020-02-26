@@ -15,16 +15,18 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   });
 
   const handleChange = event => {
+    console.log(event.target.files[0]);
     const value = event.target.files[0];
     const jwt = JSON.parse(localStorage.getItem("jwt"));
-    values.formData.set("photo", value);
-    values.formData.set("userUuid", jwt.user._id);
-
-    uploadProfileImage(values.formData)
-      .then(data => {
-        setValues({ ...values, base64Image: data.image, msg: data.msg });
-      })
-      .catch(err => console.log(err));
+    if (value !== undefined) {
+      values.formData.set("photo", value);
+      values.formData.set("userUuid", jwt.user._id);
+      uploadProfileImage(values.formData)
+        .then(data => {
+          setValues({ ...values, base64Image: data.image, msg: data.msg });
+        })
+        .catch(err => console.log(err));
+    }
   };
   const removeImage = () => {
     deleteProfileImage()

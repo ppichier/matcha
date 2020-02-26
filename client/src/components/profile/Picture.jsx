@@ -12,9 +12,7 @@ import {
 const Picture = () => {
   const [values, setValues] = useState({
     formData: new FormData(),
-    base64Images: [
-      //image1
-    ],
+    base64Images: ["", "", "", ""],
     uploading: false,
     err: "",
     msg: ""
@@ -49,9 +47,8 @@ const Picture = () => {
   };
 
   const removeImage = id => () => {
-    console.log(id);
     const path_image = [...values.base64Images];
-    path_image.splice(id, 1);
+    path_image[id] = "";
     deleteSecondaryImage({ imageIdRemove: id })
       .then(() => {
         setValues({ ...values, base64Images: path_image });
@@ -68,23 +65,10 @@ const Picture = () => {
             <FontAwesomeIcon icon={faBowlingBall} size="5x" color="#3B5998" />
           </div>
         );
-      case values.base64Images.length > 0:
-        return values.base64Images.map((image, i) => (
-          <div key={i} className="fadein">
-            <div onClick={removeImage(i)} className="">
-              <FontAwesomeIcon icon={faTimesCircle} size="2x" />
-            </div>
-            <img
-              className="img"
-              src={"data:image/png;base64, " + image}
-              alt=""
-            />
-          </div>
-        ));
-      default:
+      case values.base64Images.filter(e => e !== "").length === 0:
         return (
           <Fragment>
-            <Col style={{}}>
+            <Col>
               <div className="buttons fadein py-5">
                 <div className="button">
                   <label htmlFor="multi">
@@ -106,6 +90,24 @@ const Picture = () => {
             </Col>
           </Fragment>
         );
+      case values.base64Images.length > 0:
+        return values.base64Images.map((image, i) => {
+          if (image !== "")
+            return (
+              <div key={i} className="fadein">
+                <div onClick={removeImage(i)} className="">
+                  <FontAwesomeIcon icon={faTimesCircle} size="2x" />
+                </div>
+                <img
+                  className="img"
+                  src={"data:image/png;base64, " + image}
+                  alt=""
+                />
+              </div>
+            );
+        });
+
+      default:
     }
   };
   return <div className="buttons">{content()}</div>;

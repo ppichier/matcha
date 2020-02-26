@@ -12,6 +12,11 @@ const {
   updateProfile
 } = require("../controllers/user");
 
+const {
+  createUploadDirectory,
+  deletePreviousImage
+} = require("../middlewares/users");
+
 const { updateProfileValidator } = require("../validator");
 
 router.post("/changePage", verifyToken, changePage);
@@ -22,12 +27,27 @@ router.post(
   updateProfileValidator,
   updateProfile
 );
-router.post("/profile/uploadProfileImage", uploadProfileImage);
-router.post("/profile/uploadSecondaryImages", uploadSecondaryImages);
-router.delete("/profile/deleteProfileImage", deleteProfileImage);
-router.delete("/profile/deleteSecondaryImage", deleteSecondaryImage);
+router.post(
+  "/profile/uploadProfileImage",
+  verifyToken,
+  createUploadDirectory,
+  deletePreviousImage,
+  uploadProfileImage
+);
+router.post(
+  "/profile/uploadSecondaryImages",
+  verifyToken,
+  createUploadDirectory,
+  uploadSecondaryImages
+);
+router.delete("/profile/deleteProfileImage", verifyToken, deleteProfileImage);
+router.delete(
+  "/profile/deleteSecondaryImage",
+  verifyToken,
+  deleteSecondaryImage
+);
 
-router.get("/profile/readImage", readImage);
+router.get("/profile/readImage", verifyToken, readImage);
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);
 
