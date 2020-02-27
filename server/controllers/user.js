@@ -229,11 +229,17 @@ exports.deleteSecondaryImage = (req, res) => {
 };
 
 exports.readImage = (req, res) => {
-  var bitmap = fs.readFileSync(__dirname + "/../images/smoke.png");
-  image64 = new Buffer(bitmap).toString("base64");
-
+  let image64 = [];
+  filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+  filesName.forEach(name => {
+    const bitmap = fs.readFileSync(
+      __dirname + `/../images/${req.userUuid}/` + name
+    );
+    image64.push(new Buffer.from(bitmap).toString("base64"));
+  });
   return res.json({
-    image: image64
+    image: image64,
+    msg: "ok ok ok"
   });
 };
 

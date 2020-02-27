@@ -1,6 +1,10 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import "./Picture.css";
-import { uploadSecondaryImages, deleteSecondaryImage } from "../../api/";
+import {
+  uploadSecondaryImages,
+  deleteSecondaryImage,
+  readImage
+} from "../../api/";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,7 +21,13 @@ const Picture = () => {
     err: "",
     msg: ""
   });
-
+  useEffect(() => {
+    readImage()
+      .then(data => {
+        setValues({ ...values, base64Images: data.image });
+      })
+      .catch(err => console.log(err));
+  }, []);
   const handleChange = event => {
     const files = Array.from(event.target.files);
 

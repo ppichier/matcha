@@ -1,10 +1,11 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Carousel, Container, Row, Col, Badge, Form } from "react-bootstrap";
 import "./Profile.css";
 import "./ProfileUser.css";
 import CardPicture from "./CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { readImage } from "../../api/";
 import {
   faHeart,
   faComment,
@@ -14,11 +15,23 @@ import {
 
 const Profile = () => {
   const [values, setValues] = useState({
+    base64Images: ["", "", "", ""],
     indexImages: 0,
     directionImages: null,
     fakeCount: false,
     like: 0
   });
+
+  useEffect(() => {
+    readImage()
+      .then(data => {
+        console.log(data.msg);
+        console.log(data.image);
+        setValues({ ...values, base64Images: data.image });
+      })
+      .catch(err => console.log(err));
+  }, []);
+  console.log(values.base64Images[0]);
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
@@ -75,6 +88,21 @@ const Profile = () => {
         />
       );
   };
+  const handleImages = () => {
+    if (values.base64Images.length > 0) {
+      return values.base64Images.map((image, i) => {
+        return (
+          <Carousel.Item key={i}>
+            <img
+              className="d-block w-100 image"
+              src={"data:image/png;base64, " + image}
+              alt="First slide"
+            />
+          </Carousel.Item>
+        );
+      });
+    }
+  };
   return (
     <Fragment>
       <NavbarHeader />
@@ -114,27 +142,7 @@ const Profile = () => {
               onSelect={handleSelect}
               className="mt-5"
             >
-              <Carousel.Item>
-                <img
-                  className="d-block w-100 image"
-                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
-                  alt="First slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100 image"
-                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
-                  alt="Second slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100 image"
-                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
-                  alt="Third slide"
-                />
-              </Carousel.Item>
+              {handleImages()}
             </Carousel>
             {/* </Row> */}
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
