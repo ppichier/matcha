@@ -228,18 +228,48 @@ exports.deleteSecondaryImage = (req, res) => {
   });
 };
 
-exports.readImage = (req, res) => {
+exports.readSecondaryImages = (req, res) => {
   let image64 = [];
-  filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
-  filesName.forEach(name => {
-    const bitmap = fs.readFileSync(
-      __dirname + `/../images/${req.userUuid}/` + name
-    );
-    image64.push(new Buffer.from(bitmap).toString("base64"));
-  });
+  let a = ["image1", "image2", "image3", "image4"];
+
+  if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
+    filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+    filesNameTmp = filesName.map(e => e.substring(0, 6));
+    for (let i = 0; i < 4; i++) {
+      let j = filesNameTmp.indexOf(a[i]);
+      if (j !== -1) {
+        const bitmap = fs.readFileSync(
+          __dirname + `/../images/${req.userUuid}/` + filesName[j]
+        );
+        image64.push(new Buffer.from(bitmap).toString("base64"));
+      } else {
+        image64.push("");
+      }
+    }
+  }
+
   return res.json({
     image: image64,
-    msg: "ok ok ok"
+    msg: "Read image success"
+  });
+};
+exports.readImage = (req, res) => {
+  let image64 = "";
+  if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
+    filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+    filesNameTmp = filesName.map(e => e.substring(0, 12));
+    let j = filesNameTmp.indexOf("imageProfile");
+    if (j !== -1) {
+      const bitmap = fs.readFileSync(
+        __dirname + `/../images/${req.userUuid}/` + filesName
+      );
+      image64 = new Buffer.from(bitmap).toString("base64");
+    } else {
+      image64 = null;
+    }
+  }
+  return res.json({
+    image: image64
   });
 };
 
