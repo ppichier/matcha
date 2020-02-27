@@ -44,19 +44,19 @@ exports.createUploadDirectory = (req, res, next) => {
     }
     switch (name) {
       case "photo":
-        newName = "ImageProfile";
+        newName = "imageProfile";
         break;
       case "photo0":
-        newName = "Image1";
+        newName = "image1";
         break;
       case "photo1":
-        newName = "Image2";
+        newName = "image2";
         break;
       case "photo2":
-        newName = "Image3";
+        newName = "image3";
         break;
       case "photo3":
-        newName = "Image4";
+        newName = "image4";
         break;
       default:
         newName = null;
