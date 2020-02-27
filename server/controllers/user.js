@@ -231,17 +231,13 @@ exports.deleteSecondaryImage = (req, res) => {
 
 exports.readImage = (req, res) => {
   let image64 = [];
-  let bitmap = [];
   filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
-  console.log(filesName);
-  let i = 0;
   filesName.forEach(name => {
     const bitmap = fs.readFileSync(
       __dirname + `/../images/${req.userUuid}/` + name
     );
     image64.push(new Buffer.from(bitmap).toString("base64"));
   });
-  console.log(image64);
   return res.json({
     image: image64,
     msg: "ok ok ok"

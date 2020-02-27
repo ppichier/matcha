@@ -23,7 +23,6 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    console.log("+++++++++++++++++++++++");
     readImage()
       .then(data => {
         console.log(data.msg);
@@ -91,7 +90,6 @@ const Profile = () => {
   };
   const handleImages = () => {
     if (values.base64Images.length > 0) {
-      console.log("je rentre ici");
       return values.base64Images.map((image, i) => {
         return (
           <Carousel.Item key={i}>
@@ -103,32 +101,6 @@ const Profile = () => {
           </Carousel.Item>
         );
       });
-    } else {
-      return (
-        <Fragment>
-          <Carousel.Item>
-            <img
-              className="d-block w-100 image"
-              src="https://im.qccdn.fr/node/actualite-rencontres-en-ligne-infographie-vous-et-les-sites-de-rencontres-63551/original-41799.jpg"
-              alt="First slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100 image"
-              src="https://im.qccdn.fr/node/actualite-rencontres-en-ligne-infographie-vous-et-les-sites-de-rencontres-63551/original-41799.jpg"
-              alt="Second slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100 image"
-              src="https://im.qccdn.fr/node/actualite-rencontres-en-ligne-infographie-vous-et-les-sites-de-rencontres-63551/original-41799.jpg"
-              alt="Third slide"
-            />
-          </Carousel.Item>
-        </Fragment>
-      );
     }
   };
   return (
@@ -171,27 +143,6 @@ const Profile = () => {
               className="mt-5"
             >
               {handleImages()}
-              {/* <Carousel.Item>
-                <img
-                  className="d-block w-100 image"
-                  src={"data:image/png;base64, " + values.base64Images[0]}
-                  alt="First slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100 image"
-                  src={"data:image/png;base64, " + values.base64Images[1]}
-                  alt="Second slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100 image"
-                  src={"data:image/png;base64, " + values.base64Images[2]}
-                  alt="Third slide"
-                />
-              </Carousel.Item> */}
             </Carousel>
             {/* </Row> */}
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
