@@ -1,18 +1,27 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { uploadProfileImage, deleteProfileImage } from "../../api/";
+import { uploadProfileImage, deleteProfileImage, readImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
     uploading: false,
-    base64Image: "",
     formData: new FormData(),
     err: "",
     msg: ""
   });
+
+  const [base64Image, setBase64Image] = useState("");
+
+  useEffect(() => {
+    readImage()
+      .then(data => {
+        setBase64Image(data.image);
+      })
+      .catch(err => console.log(err));
+  }, [base64Image]);
 
   const handleChange = event => {
     const value = event.target.files[0];
@@ -25,21 +34,24 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
           if (data.err) {
             setValues({ ...values, err: data.err });
           } else {
-            setValues({ ...values, base64Image: data.image, msg: data.msg });
+            setValues({ ...values, msg: data.msg });
+            setBase64Image(data.image);
           }
         })
         .catch(err => console.log(err));
     }
   };
+
   const removeImage = () => {
     deleteProfileImage()
       .then(() => {
-        setValues({ ...values, base64Image: "" });
+        setBase64Image("");
       })
       .catch(err => console.log(err));
   };
+
   const handleImage = () => {
-    if (values.base64Image) {
+    if (base64Image) {
       return (
         <div style={{ position: "relative" }}>
           <div onClick={removeImage} className="delete">
@@ -48,7 +60,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
           <label htmlFor="single" className="imgProfile mb-0">
             <Image
               className="profile-header-img"
-              src={"data:image/png;base64, " + values.base64Image}
+              src={"data:image/png;base64, " + base64Image}
               roundedCircle
             />
           </label>

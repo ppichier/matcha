@@ -28,6 +28,19 @@ exports.createUploadDirectory = (req, res, next) => {
     }
   });
 
+  // const types = ["image/png", "image/jpeg", "image/gif"];
+  // files.forEach((file, i) => {
+  //   if (types.every(type => file.type !== type)) {
+  //     return res.status(400).json({
+  //       err: "Format de l'image non valide"
+  //     });
+  //   } else if (file.size > 150000) {
+  //     return res
+  //       .status(400)
+  //       .json({ err: "veuillez choisir une photo plus petit" });
+  //   }
+  // });
+
   form.on("fileBegin", (name, file) => {
     if (!fs.existsSync(__dirname + "/../images")) {
       fs.mkdirSync(__dirname + "/../images");

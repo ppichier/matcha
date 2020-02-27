@@ -228,10 +228,46 @@ exports.deleteSecondaryImage = (req, res) => {
   });
 };
 
-exports.readImage = (req, res) => {
-  var bitmap = fs.readFileSync(__dirname + "/../images/smoke.png");
-  image64 = new Buffer(bitmap).toString("base64");
+exports.readSecondaryImages = (req, res) => {
+  let image64 = [];
+  let a = ["image1", "image2", "image3", "image4"];
 
+  if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
+    filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+    filesNameTmp = filesName.map(e => e.substring(0, 6));
+    for (let i = 0; i < 4; i++) {
+      let j = filesNameTmp.indexOf(a[i]);
+      if (j !== -1) {
+        const bitmap = fs.readFileSync(
+          __dirname + `/../images/${req.userUuid}/` + filesName[j]
+        );
+        image64.push(new Buffer.from(bitmap).toString("base64"));
+      } else {
+        image64.push("");
+      }
+    }
+  }
+
+  return res.json({
+    images: image64,
+    msg: "Read image success"
+  });
+};
+exports.readImage = (req, res) => {
+  let image64 = "";
+  if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
+    filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+    filesNameTmp = filesName.map(e => e.substring(0, 12));
+    let j = filesNameTmp.indexOf("imageProfile");
+    if (j !== -1) {
+      const bitmap = fs.readFileSync(
+        __dirname + `/../images/${req.userUuid}/` + filesName[j]
+      );
+      image64 = new Buffer.from(bitmap).toString("base64");
+    } else {
+      image64 = null;
+    }
+  }
   return res.json({
     image: image64
   });

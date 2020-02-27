@@ -7,6 +7,7 @@ const {
   uploadSecondaryImages,
   deleteProfileImage,
   deleteSecondaryImage,
+  readSecondaryImages,
   readImage,
   changePage,
   updateProfile
@@ -47,6 +48,7 @@ router.delete(
   deleteSecondaryImage
 );
 
+router.get("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
 router.get("/profile/readImage", verifyToken, readImage);
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);
