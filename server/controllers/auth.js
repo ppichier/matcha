@@ -232,10 +232,6 @@ exports.signin = async (req, res) => {
                       }
                     }
                   );
-                  console.log(
-                    "*******************-------------------+++++++++++"
-                  );
-                  console.log(result[0]);
                   const token = generateJwt(result[0].Uuid);
                   connection.release();
                   return res.json({
@@ -519,6 +515,10 @@ exports.logout = (req, res) => {
         (err, result) => {
           if (err) {
             error.handleError(res, err, "Internal error", 500, connection);
+          } else {
+            return res.json({
+              msg: "Deconnexion réussie"
+            });
           }
         }
       );

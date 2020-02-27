@@ -61,6 +61,7 @@ const Picture = () => {
         console.log(err);
       });
   };
+
   const content = () => {
     switch (true) {
       case values.uploading:
@@ -109,6 +110,7 @@ const Picture = () => {
                 />
               </div>
             );
+          else return <Fragment key={i}></Fragment>;
         });
 
       default:

@@ -15,7 +15,6 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   });
 
   const handleChange = event => {
-    console.log("HANDLE CHANGE");
     const value = event.target.files[0];
     const jwt = JSON.parse(localStorage.getItem("jwt"));
     if (value !== undefined) {
