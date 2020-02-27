@@ -15,17 +15,18 @@ import {
 
 const Profile = () => {
   const [values, setValues] = useState({
-    base64Images: ["", "", "", ""],
     indexImages: 0,
     directionImages: null,
     fakeCount: false,
     like: 0
   });
 
+  const [base64Images, setBase64Images] = useState(["", "", "", ""]);
+
   useEffect(() => {
     readSecondaryImages()
       .then(data => {
-        setValues({ ...values, base64Images: data.image });
+        setBase64Images(data.images);
       })
       .catch(err => console.log(err));
   }, []);
@@ -87,26 +88,19 @@ const Profile = () => {
       );
   };
   const handleImages = () => {
-    if (values.base64Images.filter(e => e !== "").length > 0) {
-      return values.base64Images.map((image, i) => {
+    return base64Images
+      .filter(e => e !== "")
+      .map((image, i) => {
         return (
-          <Carousel
-            activeIndex={values.indexImages}
-            direction={values.directionImages}
-            onSelect={handleSelect}
-            className="mt-5"
-          >
-            <Carousel.Item key={i}>
-              <img
-                className="d-block w-100 image"
-                src={"data:image/png;base64, " + image}
-                alt="First slide"
-              />
-            </Carousel.Item>
-          </Carousel>
+          <Carousel.Item key={i}>
+            <img
+              className="d-block w-100 image"
+              src={"data:image/png;base64, " + image}
+              alt="First slide"
+            />
+          </Carousel.Item>
         );
       });
-    }
   };
 
   return (
@@ -142,7 +136,14 @@ const Profile = () => {
             </Row>
           </Col>
           <Col md={8} className="pl-5">
-            {handleImages()}
+            <Carousel
+              activeIndex={values.indexImages}
+              direction={values.directionImages}
+              onSelect={handleSelect}
+              className="mt-5"
+            >
+              {handleImages()}
+            </Carousel>
 
             {/* </Row> */}
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">

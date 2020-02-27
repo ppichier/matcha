@@ -16,18 +16,21 @@ import {
 const Picture = () => {
   const [values, setValues] = useState({
     formData: new FormData(),
-    base64Images: ["", "", "", ""],
     uploading: false,
     err: "",
     msg: ""
   });
+
+  const [base64Images, setBase64Images] = useState(["", "", "", ""]);
+
   useEffect(() => {
     readSecondaryImages()
       .then(data => {
-        setValues({ ...values, base64Images: data.image });
+        setBase64Images(data.images);
       })
       .catch(err => console.log(err));
   }, []);
+
   const handleChange = event => {
     const files = Array.from(event.target.files);
 
@@ -51,21 +54,22 @@ const Picture = () => {
         } else {
           setValues({
             ...values,
-            base64Images: data.images,
             uploading: false,
             msg: data.msg
           });
+          setBase64Images(data.images);
         }
       })
       .catch(err => console.log(err));
   };
 
   const removeImage = id => () => {
-    const path_image = [...values.base64Images];
+    const path_image = [...base64Images];
     path_image[id] = "";
     deleteSecondaryImage({ imageIdRemove: id })
       .then(() => {
-        setValues({ ...values, base64Images: path_image });
+        setBase64Images(path_image);
+        setValues({ ...values });
       })
       .catch(err => {
         console.log(err);
@@ -80,7 +84,7 @@ const Picture = () => {
             <FontAwesomeIcon icon={faBowlingBall} size="5x" color="#3B5998" />
           </div>
         );
-      case values.base64Images.filter(e => e !== "").length === 0:
+      case base64Images.filter(e => e !== "").length === 0:
         return (
           <Fragment>
             <Col>
@@ -105,8 +109,8 @@ const Picture = () => {
             </Col>
           </Fragment>
         );
-      case values.base64Images.length > 0:
-        return values.base64Images.map((image, i) => {
+      case base64Images.length > 0:
+        return base64Images.map((image, i) => {
           if (image !== "")
             return (
               <div key={i} className="fadein">

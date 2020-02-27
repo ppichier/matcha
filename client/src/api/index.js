@@ -76,7 +76,7 @@ export const deleteSecondaryImage = data => {
 export const readSecondaryImages = () => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/readSecondaryImages`, {
-    method: "POST",
+    method: "GET",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`
@@ -88,7 +88,7 @@ export const readSecondaryImages = () => {
 export const readImage = () => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/readImage`, {
-    method: "POST",
+    method: "GET",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`
