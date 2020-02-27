@@ -1,9 +1,9 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import "./CardPicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { uploadProfileImage, deleteProfileImage } from "../../api/";
+import { uploadProfileImage, deleteProfileImage, readImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   const [values, setValues] = useState({
@@ -13,7 +13,13 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
     err: "",
     msg: ""
   });
-
+  // useEffect(() => {
+  //   readImage()
+  //     .then(data => {
+  //       setValues({ ...values, base64Image: data.image });
+  //     })
+  //     .catch(err => console.log(err));
+  // }, []);
   const handleChange = event => {
     const value = event.target.files[0];
     const jwt = JSON.parse(localStorage.getItem("jwt"));

@@ -3,7 +3,7 @@ import "./Picture.css";
 import {
   uploadSecondaryImages,
   deleteSecondaryImage,
-  readImage
+  readSecondaryImages
 } from "../../api/";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +22,7 @@ const Picture = () => {
     msg: ""
   });
   useEffect(() => {
-    readImage()
+    readSecondaryImages()
       .then(data => {
         setValues({ ...values, base64Images: data.image });
       })

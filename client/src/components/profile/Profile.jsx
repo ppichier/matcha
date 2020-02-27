@@ -5,7 +5,7 @@ import "./ProfileUser.css";
 import CardPicture from "./CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { readImage } from "../../api/";
+import { readSecondaryImages } from "../../api/";
 import {
   faHeart,
   faComment,
@@ -23,15 +23,13 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    readImage()
+    readSecondaryImages()
       .then(data => {
-        console.log(data.msg);
-        console.log(data.image);
         setValues({ ...values, base64Images: data.image });
       })
       .catch(err => console.log(err));
   }, []);
-  console.log(values.base64Images[0]);
+
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
@@ -89,20 +87,28 @@ const Profile = () => {
       );
   };
   const handleImages = () => {
-    if (values.base64Images.length > 0) {
+    if (values.base64Images.filter(e => e !== "").length > 0) {
       return values.base64Images.map((image, i) => {
         return (
-          <Carousel.Item key={i}>
-            <img
-              className="d-block w-100 image"
-              src={"data:image/png;base64, " + image}
-              alt="First slide"
-            />
-          </Carousel.Item>
+          <Carousel
+            activeIndex={values.indexImages}
+            direction={values.directionImages}
+            onSelect={handleSelect}
+            className="mt-5"
+          >
+            <Carousel.Item key={i}>
+              <img
+                className="d-block w-100 image"
+                src={"data:image/png;base64, " + image}
+                alt="First slide"
+              />
+            </Carousel.Item>
+          </Carousel>
         );
       });
     }
   };
+
   return (
     <Fragment>
       <NavbarHeader />
@@ -136,14 +142,8 @@ const Profile = () => {
             </Row>
           </Col>
           <Col md={8} className="pl-5">
-            <Carousel
-              activeIndex={values.indexImages}
-              direction={values.directionImages}
-              onSelect={handleSelect}
-              className="mt-5"
-            >
-              {handleImages()}
-            </Carousel>
+            {handleImages()}
+
             {/* </Row> */}
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
               <Col>
