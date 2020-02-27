@@ -36,25 +36,37 @@ const ProfileUser = props => {
     showSuccessToast: false
   });
 
-  useEffect(
-    () => {
-      const { width, ...rest } = values;
-      udpateProgressBar();
-    },
-    [
-      // values.myTags,
-      // values.email,
-      // values.pseudo,
-      // values.firstName,
-      // values.lastName,
-      // values.age,
-      // values.gender,
-      // values.sexualPreference,
-      // values.description,
-      // values.userSize,
-      // values.width
-    ]
-  );
+  const [widthProgressBar, setWidthProgressBar] = useState(0);
+
+  useEffect(() => {
+    // const { width, ...rest } = values;
+    // udpateProgressBar();
+    const elements = [
+      "pseudo",
+      "email",
+      "firstName",
+      "lastName",
+      "userSize",
+      "age",
+      "gender",
+      "sexualPreference",
+      "myTags",
+      "description"
+    ];
+    let width = 0;
+    for (const element of elements) {
+      if (values[element].length !== 0) {
+        width += 10;
+      }
+      if (element === "age" && values.age.toString() === "17") {
+        width -= 10;
+      }
+      if (element === "userSize" && values.userSize.toString() === "129") {
+        width -= 10;
+      }
+    }
+    setWidthProgressBar(width);
+  }, [values]);
 
   const showError = () => {
     return (
@@ -98,33 +110,7 @@ const ProfileUser = props => {
     setValues(tmp);
   };
 
-  const udpateProgressBar = () => {
-    const elements = [
-      "pseudo",
-      "email",
-      "firstName",
-      "lastName",
-      "userSize",
-      "age",
-      "gender",
-      "sexualPreference",
-      "myTags",
-      "description"
-    ];
-    let width = 0;
-    for (const element of elements) {
-      if (values[element].length !== 0) {
-        width += 10;
-      }
-      if (element === "age" && values.age.toString() === "17") {
-        width -= 10;
-      }
-      if (element === "userSize" && values.userSize.toString() === "129") {
-        width -= 10;
-      }
-    }
-    setValues({ ...values, width: width });
-  };
+  // const udpateProgressBar = () => {};
 
   const handlePress = event => {
     if (event.key === "Enter") {
@@ -288,7 +274,6 @@ const ProfileUser = props => {
                             type="text"
                             placeholder="Nom"
                             onChange={handleChange("firstName")}
-                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="4">
@@ -298,7 +283,6 @@ const ProfileUser = props => {
                             type="text"
                             placeholder="Prenom"
                             onChange={handleChange("lastName")}
-                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="4">
@@ -308,7 +292,6 @@ const ProfileUser = props => {
                             type="text"
                             placeholder="Pseudo"
                             onChange={handleChange("pseudo")}
-                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                       </Form.Row>
@@ -320,7 +303,6 @@ const ProfileUser = props => {
                             type="email"
                             placeholder="Email"
                             onChange={handleChange("email")}
-                            onBlur={udpateProgressBar}
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -332,7 +314,6 @@ const ProfileUser = props => {
                             tipFormatter={ageFormatter}
                             onChange={handleChange("age")}
                             marks={{ 18: 18, 65: 65 }}
-                            onBlur={udpateProgressBar}
                           />
                         </Form.Group>
                       </Form.Row>
@@ -348,7 +329,6 @@ const ProfileUser = props => {
                           <Form.Control
                             as="select"
                             onChange={handleChange("gender")}
-                            onBlur={udpateProgressBar}
                           >
                             <option value=""> Séléctionnez un genre</option>
                             <option value="1"> Un Homme </option>
@@ -364,7 +344,6 @@ const ProfileUser = props => {
                           <Form.Control
                             as="select"
                             onChange={handleChange("sexualPreference")}
-                            onBlur={udpateProgressBar}
                           >
                             <option value=""> Séléctionnez un genre</option>
                             <option value="1"> Un Homme </option>
@@ -385,7 +364,6 @@ const ProfileUser = props => {
                             tipFormatter={cmFormatter}
                             onChange={handleChange("userSize")}
                             marks={{ 130: 130, 230: 230 }}
-                            onBlur={udpateProgressBar}
                           />
                         </Form.Group>
                       </Form.Row>
@@ -409,7 +387,6 @@ const ProfileUser = props => {
                               id="musique"
                               label="Musique"
                               name="commonTags"
-                              onBlur={udpateProgressBar}
                             />
                           </Col>
                           <Col>
@@ -437,7 +414,6 @@ const ProfileUser = props => {
                           type="text"
                           placeholder="Tags"
                           name="myTags"
-                          onBlur={udpateProgressBar}
                         />
                         <div className="mytags-main mt-2">
                           {values.myTags.map((tag, i) => {
@@ -476,7 +452,6 @@ const ProfileUser = props => {
                           placeholder="A propos de vous"
                           name="bio"
                           onChange={handleChange("description")}
-                          onBlur={udpateProgressBar}
                         />
                       </Form.Group>
                     </Form>
@@ -488,8 +463,8 @@ const ProfileUser = props => {
                       <ProgressBar
                         striped
                         variant="info"
-                        label={values.width + "%"}
-                        now={values.width}
+                        label={widthProgressBar + "%"}
+                        now={widthProgressBar}
                         max={100}
                       />
                     </Form>
