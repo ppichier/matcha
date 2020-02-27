@@ -48,8 +48,8 @@ router.delete(
   deleteSecondaryImage
 );
 
-router.post("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
-router.post("/profile/readImage", verifyToken, readImage);
+router.get("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
+router.get("/profile/readImage", verifyToken, readImage);
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);
 

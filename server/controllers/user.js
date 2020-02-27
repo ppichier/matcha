@@ -249,7 +249,7 @@ exports.readSecondaryImages = (req, res) => {
   }
 
   return res.json({
-    image: image64,
+    images: image64,
     msg: "Read image success"
   });
 };
@@ -261,7 +261,7 @@ exports.readImage = (req, res) => {
     let j = filesNameTmp.indexOf("imageProfile");
     if (j !== -1) {
       const bitmap = fs.readFileSync(
-        __dirname + `/../images/${req.userUuid}/` + filesName
+        __dirname + `/../images/${req.userUuid}/` + filesName[j]
       );
       image64 = new Buffer.from(bitmap).toString("base64");
     } else {
