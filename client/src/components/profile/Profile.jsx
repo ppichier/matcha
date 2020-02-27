@@ -15,7 +15,7 @@ import {
 
 const Profile = () => {
   const [values, setValues] = useState({
-    baseImage64: [],
+    base64Images: ["", "", "", ""],
     indexImages: 0,
     directionImages: null,
     fakeCount: false,
@@ -28,11 +28,11 @@ const Profile = () => {
       .then(data => {
         console.log(data.msg);
         console.log(data.image);
-        setValues({ ...values, base64Image: data.image });
+        setValues({ ...values, base64Images: data.image });
       })
       .catch(err => console.log(err));
   }, []);
-
+  console.log(values.base64Images[0]);
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
@@ -89,6 +89,48 @@ const Profile = () => {
         />
       );
   };
+  const handleImages = () => {
+    if (values.base64Images.length > 0) {
+      console.log("je rentre ici");
+      return values.base64Images.map((image, i) => {
+        return (
+          <Carousel.Item key={i}>
+            <img
+              className="d-block w-100 image"
+              src={"data:image/png;base64, " + image}
+              alt="First slide"
+            />
+          </Carousel.Item>
+        );
+      });
+    } else {
+      return (
+        <Fragment>
+          <Carousel.Item>
+            <img
+              className="d-block w-100 image"
+              src="https://im.qccdn.fr/node/actualite-rencontres-en-ligne-infographie-vous-et-les-sites-de-rencontres-63551/original-41799.jpg"
+              alt="First slide"
+            />
+          </Carousel.Item>
+          <Carousel.Item>
+            <img
+              className="d-block w-100 image"
+              src="https://im.qccdn.fr/node/actualite-rencontres-en-ligne-infographie-vous-et-les-sites-de-rencontres-63551/original-41799.jpg"
+              alt="Second slide"
+            />
+          </Carousel.Item>
+          <Carousel.Item>
+            <img
+              className="d-block w-100 image"
+              src="https://im.qccdn.fr/node/actualite-rencontres-en-ligne-infographie-vous-et-les-sites-de-rencontres-63551/original-41799.jpg"
+              alt="Third slide"
+            />
+          </Carousel.Item>
+        </Fragment>
+      );
+    }
+  };
   return (
     <Fragment>
       <NavbarHeader />
@@ -128,27 +170,28 @@ const Profile = () => {
               onSelect={handleSelect}
               className="mt-5"
             >
-              <Carousel.Item>
+              {handleImages()}
+              {/* <Carousel.Item>
                 <img
                   className="d-block w-100 image"
-                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
+                  src={"data:image/png;base64, " + values.base64Images[0]}
                   alt="First slide"
                 />
               </Carousel.Item>
               <Carousel.Item>
                 <img
                   className="d-block w-100 image"
-                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
+                  src={"data:image/png;base64, " + values.base64Images[1]}
                   alt="Second slide"
                 />
               </Carousel.Item>
               <Carousel.Item>
                 <img
                   className="d-block w-100 image"
-                  src="https://www.azutura.com/media/catalog/product/cache/48/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-42559_WP.jpg"
+                  src={"data:image/png;base64, " + values.base64Images[2]}
                   alt="Third slide"
                 />
-              </Carousel.Item>
+              </Carousel.Item> */}
             </Carousel>
             {/* </Row> */}
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">

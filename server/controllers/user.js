@@ -231,34 +231,16 @@ exports.deleteSecondaryImage = (req, res) => {
 
 exports.readImage = (req, res) => {
   let image64 = [];
-  let files = req.files;
-
-  // pool.getConnection((err, connection) => {
-  //   if (err) {
-  //     if (err) {
-  //       error.handleError(res, err, "Internal error", 500, connection);
-  //     }
-  //   }
-  //   connection.query(
-  //     `SELECT * FROM User WHERE Uuid = ?`,
-  //     [req.userUuid],
-  //     (err, result) => {
-  //       if (err) {
-  //         error.handleError(res, err, "Intenal error", 500, connection);
-  // } else {
-  for (let i = 0; i < 4; i++) {
-    console.log("++++++++++++++++++++++++++++++++++");
-    const key = "image" + (i + 1);
+  let bitmap = [];
+  filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+  console.log(filesName);
+  let i = 0;
+  filesName.forEach(name => {
     const bitmap = fs.readFileSync(
-      __dirname + `/../images/${req.userUuid}/${key}`
+      __dirname + `/../images/${req.userUuid}/` + name
     );
-  }
-  image64.push(new Buffer.from(bitmap).toString("base64"));
-  // }
-  // }
-  // );
-  // });
-  console.log("*********************************");
+    image64.push(new Buffer.from(bitmap).toString("base64"));
+  });
   console.log(image64);
   return res.json({
     image: image64,
