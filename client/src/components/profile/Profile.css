@@ -1,15 +1,18 @@
 .image {
   border-radius: 6px;
 }
+
 .descp {
   font-size: 20px;
   line-height: 15px;
   display: flex !important;
   justify-content: center;
 }
+
 body icon {
   cursor: pointer !important;
 }
+
 body .faHeartliked {
   cursor: pointer !important;
   color: rgb(161, 7, 7) !important;
