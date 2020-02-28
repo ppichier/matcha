@@ -153,6 +153,14 @@ exports.deleteProfileImage = (req, res) => {
             (err, result) => {
               if (err) {
                 error.handleError(res, err, "Intenal error", 500, connection);
+              } else if (image === null) {
+                return error.handleError(
+                  res,
+                  err,
+                  "Intenal error",
+                  500,
+                  connection
+                );
               } else {
                 fs.unlink(image, err => {
                   if (err) {
@@ -202,6 +210,14 @@ exports.deleteSecondaryImage = (req, res) => {
             (err, result) => {
               if (err) {
                 error.handleError(res, err, "Intenal error", 500, connection);
+              } else if (image === null) {
+                return error.handleError(
+                  res,
+                  err,
+                  "Intenal error",
+                  500,
+                  connection
+                );
               } else {
                 fs.unlink(image, err => {
                   if (err) {
@@ -253,7 +269,9 @@ exports.readSecondaryImages = (req, res) => {
     msg: "Read image success"
   });
 };
+
 exports.readImage = (req, res) => {
+  //TODO userid different
   let image64 = "";
   if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
     filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
