@@ -287,9 +287,6 @@ exports.readImage = (req, res) => {
   });
 };
 
-// SELECT * FROM user INNER JOIN genre ON user.GenreId = genre.GenreId
-// INNER JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = "5a0f3e2a-9ac6-4cdb-8f2d-1b437b518cbd"
-
 exports.readProfile = async (req, res) => {
   console.log("REEEADDDD PROFILE");
   pool.getConnection((err, connection) => {
@@ -297,22 +294,24 @@ exports.readProfile = async (req, res) => {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       connection.query(
-        `SELECT user.*, genre.Label AS GenreLabel, sexual_orientation.Label AS SexualOrientationLabel FROM user INNER JOIN genre ON user.GenreId = genre.GenreId  INNER JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?`,
-        [req.userUuid],
+        `SELECT user.*, genre.Label AS GenreLabel, sexual_orientation.Label AS SexualOrientationLabel FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
+        SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?)`,
+        [req.userUuid, req.userUuid],
         (err, result) => {
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
-            console.log(result[0]);
+            const myTags = result[1].map(e => e.TagLabel);
             return res.json({
               firstName: result[0].FirstName,
               lastName: result[0].LastName,
               pseudo: result[0].UserName,
-              userSize: result[0].userSize,
+              userSize: result[0].UserSize,
               age: result[0].Age,
               gender: result[0].GenreLabel,
               sexualPreference: result[0].SexualOrientationLabel,
-              description: result[0].Bio
+              description: result[0].Bio,
+              myTags
             });
           }
         }

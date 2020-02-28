@@ -34,7 +34,8 @@ const Profile = ({ location }) => {
     userSize: "",
     age: "",
     sexualPreference: "",
-    description: ""
+    description: "",
+    myTags: []
   });
 
   useEffect(() => {
@@ -47,6 +48,7 @@ const Profile = ({ location }) => {
 
     readProfile(values.uuid)
       .then(data => {
+        console.log(data.myTags);
         setInfosUser({ ...data });
       })
       .catch(err => console.log(err));
