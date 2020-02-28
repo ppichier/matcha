@@ -85,6 +85,7 @@ export const readSecondaryImages = () => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+
 export const readImage = () => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/readImage`, {
@@ -93,6 +94,21 @@ export const readImage = () => {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`
     }
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
+export const readProfile = uuid => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/profile/readProfile`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt.token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ uuid })
   })
     .then(res => res.json())
     .catch(err => console.log(err));

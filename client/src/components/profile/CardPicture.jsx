@@ -52,20 +52,34 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
 
   const handleImage = () => {
     if (base64Image) {
-      return (
-        <div style={{ position: "relative" }}>
-          <div onClick={removeImage} className="delete">
-            <FontAwesomeIcon icon={faTimesCircle} size="1x" />
+      if (nb === 1) {
+        return (
+          <div>
+            <label htmlFor="single" className="imgProfile mb-0">
+              <Image
+                className="profile-header-img"
+                src={"data:image/png;base64, " + base64Image}
+                roundedCircle
+              />
+            </label>
           </div>
-          <label htmlFor="single" className="imgProfile mb-0">
-            <Image
-              className="profile-header-img"
-              src={"data:image/png;base64, " + base64Image}
-              roundedCircle
-            />
-          </label>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div style={{ position: "relative" }}>
+            <div onClick={removeImage} className="delete">
+              <FontAwesomeIcon icon={faTimesCircle} size="1x" />
+            </div>
+            <label htmlFor="single" className="imgProfile mb-0">
+              <Image
+                className="profile-header-img"
+                src={"data:image/png;base64, " + base64Image}
+                roundedCircle
+              />
+            </label>
+          </div>
+        );
+      }
     } else {
       return (
         <label htmlFor="single" className="mb-0">
@@ -94,7 +108,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
                     {handleImage()}
                     <div className="rank-label-container">
                       <span className="label label-default rank-label">
-                        100{" "}
+                        1000{" "}
                         <FontAwesomeIcon
                           icon={faHeart}
                           className="fa-lg mr-1 faHeartliked"

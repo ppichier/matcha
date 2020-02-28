@@ -80,8 +80,8 @@ a {
 }
 
 .rank-label-container {
-  z-index: 100;
-  margin-top: -25px;
+  /* z-index: 100; */
+  /* margin-top: -25px; */
   text-align: center;
 }
 

@@ -5,7 +5,9 @@ import "./ProfileUser.css";
 import CardPicture from "./CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { readSecondaryImages } from "../../api/";
+import { readProfile, readSecondaryImages } from "../../api/";
+import queryString from "query-string";
+
 import {
   faHeart,
   faComment,
@@ -13,7 +15,7 @@ import {
   faUser
 } from "@fortawesome/free-solid-svg-icons";
 
-const Profile = () => {
+const Profile = ({ location }) => {
   const [values, setValues] = useState({
     indexImages: 0,
     directionImages: null,
@@ -23,13 +25,32 @@ const Profile = () => {
 
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
 
+  const [infosUser, setInfosUser] = useState({
+    firstName: "",
+    gender: "",
+    pseudo: "",
+    firstName: "",
+    lastName: "",
+    userSize: "",
+    age: "",
+    sexualPreference: "",
+    description: ""
+  });
+
   useEffect(() => {
+    const values = queryString.parse(location.search);
     readSecondaryImages()
       .then(data => {
         setBase64Images(data.images);
       })
       .catch(err => console.log(err));
-  }, []);
+
+    readProfile(values.uuid)
+      .then(data => {
+        setInfosUser({ ...data });
+      })
+      .catch(err => console.log(err));
+  }, [location]);
 
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
@@ -148,9 +169,11 @@ const Profile = () => {
             {/* </Row> */}
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
               <Col>
-                <h3 className="descp">Pier'Antonio</h3>
+                <h3 className="descp">{infosUser.firstName}</h3>
+                <p>{infosUser.gender}</p>
                 <p className="descp">
-                  Je suis un Homme, 28 ans, je cherche une femme pour la vie
+                  Je suis une {infosUser.gender}, 28 ans, je cherche un
+                  {infosUser.sexualPreference} pour la vie
                 </p>
               </Col>
             </Row>
@@ -167,6 +190,7 @@ const Profile = () => {
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
               <Col>
                 <h3 className="descp">A propos de moi</h3>
+                <p className="descp">{infosUser.description}</p>
               </Col>
             </Row>
             <Form>

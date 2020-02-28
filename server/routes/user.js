@@ -9,6 +9,7 @@ const {
   deleteSecondaryImage,
   readSecondaryImages,
   readImage,
+  readProfile,
   changePage,
   updateProfile
 } = require("../controllers/user");
@@ -50,6 +51,7 @@ router.delete(
 
 router.get("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
 router.get("/profile/readImage", verifyToken, readImage);
+router.post("/profile/readProfile", verifyToken, readProfile);
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);
 

@@ -267,7 +267,7 @@ const ProfileUser = props => {
                   <Col>
                     <Form>
                       <Form.Row>
-                        <Form.Group as={Col} md="4">
+                        <Form.Group as={Col} md="6">
                           <Form.Label>Nom</Form.Label>
                           <Form.Control
                             value={values.firstName}
@@ -276,7 +276,7 @@ const ProfileUser = props => {
                             onChange={handleChange("firstName")}
                           ></Form.Control>
                         </Form.Group>
-                        <Form.Group as={Col} md="4">
+                        <Form.Group as={Col} md="6">
                           <Form.Label>Prénom</Form.Label>
                           <Form.Control
                             value={values.lastName}
@@ -285,7 +285,9 @@ const ProfileUser = props => {
                             onChange={handleChange("lastName")}
                           ></Form.Control>
                         </Form.Group>
-                        <Form.Group as={Col} md="4">
+                      </Form.Row>
+                      <Form.Row>
+                        <Form.Group as={Col} md="6">
                           <Form.Label>Pseudo</Form.Label>
                           <Form.Control
                             value={values.pseudo}
@@ -294,8 +296,6 @@ const ProfileUser = props => {
                             onChange={handleChange("pseudo")}
                           ></Form.Control>
                         </Form.Group>
-                      </Form.Row>
-                      <Form.Row>
                         <Form.Group as={Col} md="6">
                           <Form.Label>Email</Form.Label>
                           <Form.Control
@@ -305,7 +305,15 @@ const ProfileUser = props => {
                             onChange={handleChange("email")}
                           ></Form.Control>
                         </Form.Group>
-                        <Form.Group as={Col} md="6">
+                      </Form.Row>
+                    </Form>
+                  </Col>
+                </Row>
+                <Row className="mb-4 pt-3 pb-3 Row">
+                  <Col>
+                    <Form>
+                      <Form.Row>
+                        <Form.Group as={Col} md="6" className="px-3">
                           <Form.Label>Age</Form.Label>
                           <SliderWithTooltip
                             min={17}
@@ -314,6 +322,17 @@ const ProfileUser = props => {
                             tipFormatter={ageFormatter}
                             onChange={handleChange("age")}
                             marks={{ 18: 18, 65: 65 }}
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} md="6" className="px-3">
+                          <Form.Label>Taille</Form.Label>
+                          <SliderWithTooltip
+                            min={129}
+                            max={230}
+                            value={parseFloat(values.userSize)}
+                            tipFormatter={cmFormatter}
+                            onChange={handleChange("userSize")}
+                            marks={{ 130: 130, 230: 230 }}
                           />
                         </Form.Group>
                       </Form.Row>
@@ -352,19 +371,6 @@ const ProfileUser = props => {
                             <option value="4"> une Transmasculin</option>
                             <option value="5">Bigenre</option>
                           </Form.Control>
-                        </Form.Group>
-                      </Form.Row>
-                      <Form.Row>
-                        <Form.Group as={Col} md="6">
-                          <Form.Label>Taille</Form.Label>
-                          <SliderWithTooltip
-                            min={129}
-                            max={230}
-                            value={parseFloat(values.userSize)}
-                            tipFormatter={cmFormatter}
-                            onChange={handleChange("userSize")}
-                            marks={{ 130: 130, 230: 230 }}
-                          />
                         </Form.Group>
                       </Form.Row>
                     </Form>

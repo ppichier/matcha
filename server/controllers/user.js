@@ -25,7 +25,7 @@ exports.updateProfile = (req, res) => {
       });
     }
     connection.query(
-      "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `userSize` = ?,`Bio` = ? WHERE `Uuid` = ?",
+      "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `UserSize` = ?,`Bio` = ? WHERE `Uuid` = ?",
       [
         email,
         pseudo,
@@ -135,9 +135,7 @@ exports.deleteProfileImage = (req, res) => {
   const { userUuid } = req.body;
   pool.getConnection((err, connection) => {
     if (err) {
-      if (err) {
-        error.handleError(res, err, "Internal error", 500, connection);
-      }
+      error.handleError(res, err, "Internal error", 500, connection);
     }
     connection.query(
       `SELECT * FROM User WHERE Uuid = ?`,
@@ -192,9 +190,7 @@ exports.deleteSecondaryImage = (req, res) => {
   let deleteImage = "Image" + (imageIdRemove + 1);
   pool.getConnection((err, connection) => {
     if (err) {
-      if (err) {
-        error.handleError(res, err, "Internal error", 500, connection);
-      }
+      error.handleError(res, err, "Internal error", 500, connection);
     }
     connection.query(
       `SELECT * FROM User WHERE Uuid = ?`,
@@ -288,6 +284,40 @@ exports.readImage = (req, res) => {
   }
   return res.json({
     image: image64
+  });
+};
+
+// SELECT * FROM user INNER JOIN genre ON user.GenreId = genre.GenreId
+// INNER JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = "5a0f3e2a-9ac6-4cdb-8f2d-1b437b518cbd"
+
+exports.readProfile = async (req, res) => {
+  console.log("REEEADDDD PROFILE");
+  pool.getConnection((err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      connection.query(
+        `SELECT user.*, genre.Label AS GenreLabel, sexual_orientation.Label AS SexualOrientationLabel FROM user INNER JOIN genre ON user.GenreId = genre.GenreId  INNER JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?`,
+        [req.userUuid],
+        (err, result) => {
+          if (err) {
+            error.handleError(res, err, "Intenal error", 500, connection);
+          } else {
+            console.log(result[0]);
+            return res.json({
+              firstName: result[0].FirstName,
+              lastName: result[0].LastName,
+              pseudo: result[0].UserName,
+              userSize: result[0].userSize,
+              age: result[0].Age,
+              gender: result[0].GenreLabel,
+              sexualPreference: result[0].SexualOrientationLabel,
+              description: result[0].Bio
+            });
+          }
+        }
+      );
+    }
   });
 };
 
