@@ -3,7 +3,7 @@ import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import CardPicture from "./CardPicture";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
-import { updateProfile } from "../../api/";
+import { updateProfile, readProfile } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -12,10 +12,11 @@ import "./ProfileUser.css";
 import { forgotPassword } from "../../api/auth";
 import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
+import queryString from "query-string";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
-const ProfileUser = props => {
+const ProfileUser = ({ props, location }) => {
   const [values, setValues] = useState({
     myTags: [],
     commonTags: [],

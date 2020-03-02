@@ -288,7 +288,6 @@ exports.readImage = (req, res) => {
 };
 
 exports.readProfile = async (req, res) => {
-  console.log("REEEADDDD PROFILE");
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
@@ -302,15 +301,17 @@ exports.readProfile = async (req, res) => {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
             const myTags = result[1].map(e => e.TagLabel);
+            console.log("+++++++++++++++++");
+            console.log(result[1]);
             return res.json({
-              firstName: result[0].FirstName,
-              lastName: result[0].LastName,
-              pseudo: result[0].UserName,
-              userSize: result[0].UserSize,
-              age: result[0].Age,
-              gender: result[0].GenreLabel,
-              sexualPreference: result[0].SexualOrientationLabel,
-              description: result[0].Bio,
+              firstName: result[0][0].FirstName,
+              lastName: result[0][0].LastName,
+              pseudo: result[0][0].UserName,
+              userSize: result[0][0].UserSize,
+              age: result[0][0].Age,
+              gender: result[0][0].GenreLabel,
+              sexualPreference: result[0][0].SexualOrientationLabel,
+              description: result[0][0].Bio,
               myTags
             });
           }

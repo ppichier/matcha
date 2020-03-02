@@ -48,12 +48,12 @@ const Profile = ({ location }) => {
 
     readProfile(values.uuid)
       .then(data => {
-        console.log(data.myTags);
+        console.log(data);
         setInfosUser({ ...data });
       })
       .catch(err => console.log(err));
   }, [location]);
-
+  console.log(infosUser);
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
@@ -136,10 +136,9 @@ const Profile = ({ location }) => {
               <Col>
                 <Row className="row-pictureProfile">
                   <CardPicture
-                    lastName="Pier'Antonio"
-                    pseudo="Ppichier"
-                    city="Paris"
-                    birthday="05/18/1995"
+                    lastName={infosUser.lastName}
+                    pseudo={infosUser.pseudo}
+                    birthday={infosUser.age}
                     nb={1}
                   />
                 </Row>
@@ -183,6 +182,13 @@ const Profile = ({ location }) => {
               <Col>
                 <h3 className="descp">Centres d'intérêt</h3>
                 <div className="descp">
+                  {/* {values.myTags.map((tag, i) => {
+                    return (
+                      <Badge className="mytags mr-2 pl-2 mt-2" key={i}>
+                        #{tag}
+                      </Badge>
+                    );
+                  })} */}
                   <Badge className="mytags mr-2 pl-2 mt-2">#Aventure</Badge>
                   <Badge className="mytags mr-2 pl-2 mt-2">#Vegan</Badge>
                   <Badge className="mytags mr-2 pl-2 mt-2">#bio</Badge>
