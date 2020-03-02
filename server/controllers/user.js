@@ -302,7 +302,7 @@ exports.readProfile = async (req, res) => {
           } else {
             const myTags = result[1].map(e => e.TagLabel);
             console.log("+++++++++++++++++");
-            console.log(result[1]);
+            console.log(result);
             return res.json({
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
