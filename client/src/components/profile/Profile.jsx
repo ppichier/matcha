@@ -129,7 +129,7 @@ const Profile = ({ location }) => {
   return (
     <Fragment>
       <NavbarHeader />
-      <Container>
+      <Container className="my-4">
         <Row>
           <Col md={4} className="mt-5 ">
             <Row>
@@ -182,6 +182,7 @@ const Profile = ({ location }) => {
               <Col>
                 <h3 className="descp">Centres d'intérêt</h3>
                 <div className="descp">
+<<<<<<< HEAD
                   {/* {values.myTags.map((tag, i) => {
                     return (
                       <Badge className="mytags mr-2 pl-2 mt-2" key={i}>
@@ -192,6 +193,19 @@ const Profile = ({ location }) => {
                   <Badge className="mytags mr-2 pl-2 mt-2">#Aventure</Badge>
                   <Badge className="mytags mr-2 pl-2 mt-2">#Vegan</Badge>
                   <Badge className="mytags mr-2 pl-2 mt-2">#bio</Badge>
+=======
+                  {infosUser.myTags.map((tag, i) => {
+                    return (
+                      <Badge key={i} className="mytags mr-2 pl-2 mt-2">
+                        #{tag}
+                      </Badge>
+                    );
+                  })}
+
+                  {/* <Badge className="mytags mr-2 pl-2 mt-2">#Aventure</Badge> */}
+                  {/* <Badge className="mytags mr-2 pl-2 mt-2">#Vegan</Badge> */}
+                  {/* <Badge className="mytags mr-2 pl-2 mt-2">#bio</Badge> */}
+>>>>>>> 71e6fca23f241bfd7d97b0d2bd5e9e6c6b5ae6ee
                 </div>
               </Col>
             </Row>
