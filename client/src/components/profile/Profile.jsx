@@ -26,7 +26,6 @@ const Profile = ({ location }) => {
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
 
   const [infosUser, setInfosUser] = useState({
-    firstName: "",
     gender: "",
     pseudo: "",
     firstName: "",

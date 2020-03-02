@@ -227,13 +227,10 @@ exports.updateProfileValidator = (req, res, next) => {
     });
   }
 
-  if (req.body.myTags !== "undefined") {
-    console.log(req.body.myTags);
-  }
-
   if (req.body.gender === "") {
     req.body.gender = null;
   }
+
   if (req.body.sexualPreference === "") req.body.sexualPreference = null;
 
   next();

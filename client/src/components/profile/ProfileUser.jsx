@@ -20,10 +20,10 @@ const ProfileUser = ({ props, location }) => {
   const [values, setValues] = useState({
     myTags: [],
     commonTags: [],
-    email: "wafae.rharrabti@hotmail.fr",
-    pseudo: "wafa",
-    firstName: "abc",
-    lastName: "def",
+    email: "",
+    pseudo: "",
+    firstName: "",
+    lastName: "",
     age: "17",
     gender: "",
     sexualPreference: "",
@@ -82,6 +82,7 @@ const ProfileUser = ({ props, location }) => {
       </Toast>
     );
   };
+
   const showSuccess = () => {
     return (
       <Toast
@@ -166,6 +167,7 @@ const ProfileUser = ({ props, location }) => {
         showSuccessToast: false
       });
     } else {
+      console.log(values.myTags);
       updateProfile({
         myTags: values.myTags,
         email: values.email,
@@ -180,12 +182,18 @@ const ProfileUser = ({ props, location }) => {
       })
         .then(data => {
           if (data.err) {
-            setValues({ ...values, err: data.err });
+            setValues({
+              ...values,
+              err: data.err,
+              showSuccessToast: false,
+              showErrorToast: true
+            });
           } else {
             console.log(data);
             setValues({
               ...values,
               err: "",
+              msg: data.msg,
               success: true,
               showSuccessToast: true,
               showErrorToast: false

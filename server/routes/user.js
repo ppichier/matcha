@@ -16,7 +16,8 @@ const {
 
 const {
   createUploadDirectory,
-  deletePreviousImage
+  deletePreviousImage,
+  updateTags
 } = require("../middlewares/users");
 
 const { updateProfileValidator } = require("../validator");
@@ -27,6 +28,7 @@ router.post(
   "/profile/updateProfile",
   verifyToken,
   updateProfileValidator,
+  updateTags,
   updateProfile
 );
 router.post(
