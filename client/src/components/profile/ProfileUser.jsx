@@ -20,10 +20,10 @@ const ProfileUser = ({ props, location }) => {
   const [values, setValues] = useState({
     myTags: [],
     commonTags: [],
-    email: "wafae.rharrabti@hotmail.fr",
-    pseudo: "wafa",
-    firstName: "abc",
-    lastName: "def",
+    email: "",
+    pseudo: "",
+    firstName: "",
+    lastName: "",
     age: "17",
     gender: "",
     sexualPreference: "",
@@ -69,6 +69,24 @@ const ProfileUser = ({ props, location }) => {
     setWidthProgressBar(width);
   }, [values]);
 
+  useEffect(() => {
+    const v = queryString.parse(location.search);
+
+    readProfile(v.uuid)
+      .then(data => {
+        console.log(data);
+        setValues({
+          ...data,
+          width: 0,
+          err: "",
+          msg: "",
+          success: "",
+          showErrorToast: false,
+          showSuccessToast: false
+        });
+      })
+      .catch(err => console.log(err));
+  }, [location]);
   const showError = () => {
     return (
       <Toast
@@ -348,6 +366,7 @@ const ProfileUser = ({ props, location }) => {
                           <Form.Label>Je suis </Form.Label>
                           <Form.Control
                             as="select"
+                            value={values.gender}
                             onChange={handleChange("gender")}
                           >
                             <option value=""> Séléctionnez un genre</option>
@@ -363,6 +382,7 @@ const ProfileUser = ({ props, location }) => {
                           <Form.Label>Je cherche</Form.Label>
                           <Form.Control
                             as="select"
+                            value={values.sexualPreference}
                             onChange={handleChange("sexualPreference")}
                           >
                             <option value=""> Séléctionnez un genre</option>
@@ -458,6 +478,7 @@ const ProfileUser = ({ props, location }) => {
                           rows="4"
                           placeholder="A propos de vous"
                           name="bio"
+                          value={values.description}
                           onChange={handleChange("description")}
                         />
                       </Form.Group>

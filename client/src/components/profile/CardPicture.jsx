@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { uploadProfileImage, deleteProfileImage, readImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
+const CardPicture = ({ pseudo, lastName, birthday, nb }) => {
   const [values, setValues] = useState({
     uploading: false,
     formData: new FormData(),
@@ -94,7 +94,7 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
   };
 
   const isShow = birthday => {
-    if (birthday) return <div>Age: {birthday} ans</div>;
+    if (birthday >= 18) return <div>Age: {birthday} ans</div>;
   };
   const cardProfile = () => {
     if (nb === 1) {
@@ -128,7 +128,6 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
                       <div>{lastName}</div>
                       <div className="desc">{pseudo}</div>
                       <div className="desc">{isShow(birthday)}</div>
-                      <div className="desc">{city}</div>
                     </div>
                   </div>
                 </a>
@@ -174,7 +173,6 @@ const CardPicture = ({ pseudo, lastName, city, birthday, nb }) => {
                     </div>
                     <div className="desc">{pseudo}</div>
                     <div className="desc">{isShow(birthday)}</div>
-                    <div className="desc">{city}</div>
                   </div>
                 </div>
               </div>

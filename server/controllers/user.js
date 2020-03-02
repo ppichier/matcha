@@ -4,7 +4,6 @@ const pool = require("../db");
 
 exports.updateProfile = (req, res) => {
   const {
-    myTags,
     email,
     pseudo,
     firstName,
@@ -14,39 +13,70 @@ exports.updateProfile = (req, res) => {
     sexualPreference,
     description,
     userSize,
-    width,
     userUuid
   } = req.body;
-
   pool.getConnection((err, connection) => {
     if (err) {
       return res.status(500).json({
         err: "Internal Error HERE"
       });
-    }
-    connection.query(
-      "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `UserSize` = ?,`Bio` = ? WHERE `Uuid` = ?",
-      [
-        email,
-        pseudo,
-        firstName,
-        lastName,
-        sexualPreference,
-        gender,
-        age,
-        userSize,
-        description,
-        userUuid
-      ],
-      (err, result) => {
-        if (err) {
-          error.handleError(res, err, "Internal error", 500, connection);
-        } else {
-          connection.release();
-          return res.json({ msg: "Profil mis à jour" });
+    } else {
+      connection.query(
+        "SELECT * FROM User WHERE Email = ?; SELECT * FROM User WHERE Username = ?",
+        [email, pseudo],
+        (err, result) => {
+          if (err) {
+            error.handleError(res, err, "Internal error", 500, connection);
+          } else if (result[0].length > 0 && result[0][0].Uuid !== userUuid) {
+            error.handleError(
+              res,
+              err,
+              "Cet email a déjà un compte associé.",
+              409,
+              connection
+            );
+          } else if (result[1].length > 0 && result[1][0].Uuid !== userUuid) {
+            error.handleError(
+              res,
+              err,
+              "Ce pseudo n'est pas disponible.",
+              409,
+              connection
+            );
+          } else {
+            connection.query(
+              "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `UserSize` = ?,`Bio` = ? WHERE `Uuid` = ?",
+              [
+                email,
+                pseudo,
+                firstName,
+                lastName,
+                sexualPreference,
+                gender,
+                age,
+                userSize,
+                description,
+                req.userUuid
+              ],
+              (err, result) => {
+                if (err) {
+                  error.handleError(
+                    res,
+                    err,
+                    "Internal error",
+                    500,
+                    connection
+                  );
+                } else {
+                  connection.release();
+                  return res.json({ msg: "Profil mis à jour" });
+                }
+              }
+            );
+          }
         }
-      }
-    );
+      );
+    }
   });
 };
 
@@ -293,7 +323,7 @@ exports.readProfile = async (req, res) => {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       connection.query(
-        `SELECT user.*, genre.Label AS GenreLabel, sexual_orientation.Label AS SexualOrientationLabel FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
+        `SELECT user.*, genre.GenreId AS GenreId, sexual_orientation.SexualOrientationId AS SexualOrientationId FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
         SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?)`,
         [req.userUuid, req.userUuid],
         (err, result) => {
@@ -301,16 +331,15 @@ exports.readProfile = async (req, res) => {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
             const myTags = result[1].map(e => e.TagLabel);
-            console.log("+++++++++++++++++");
-            console.log(result);
             return res.json({
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
               pseudo: result[0][0].UserName,
+              email: result[0][0].Email,
               userSize: result[0][0].UserSize,
               age: result[0][0].Age,
-              gender: result[0][0].GenreLabel,
-              sexualPreference: result[0][0].SexualOrientationLabel,
+              gender: result[0][0].GenreId,
+              sexualPreference: result[0][0].SexualOrientationId,
               description: result[0][0].Bio,
               myTags
             });

@@ -17,3 +17,9 @@ body .faHeartliked {
   cursor: pointer !important;
   color: rgb(161, 7, 7) !important;
 }
+.mytags-main {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  overflow-y: auto;
+  max-height: 150px !important;
+}

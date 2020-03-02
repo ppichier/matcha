@@ -48,12 +48,11 @@ const Profile = ({ location }) => {
 
     readProfile(values.uuid)
       .then(data => {
-        console.log(data);
         setInfosUser({ ...data });
       })
       .catch(err => console.log(err));
   }, [location]);
-  console.log(infosUser);
+
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
@@ -125,7 +124,22 @@ const Profile = ({ location }) => {
         );
       });
   };
-
+  const isShow = () => {
+    if (infosUser.age >= 18) return <Fragment>{infosUser.age} ans</Fragment>;
+  };
+  const convGenderAndSexualPtoString = () => {
+    if (infosUser.gender === 1) return " un Homme";
+    else if (infosUser.gender === 2) return " une Femme";
+    else if (infosUser.gender === 3) return " une Transféminine";
+    else if (infosUser.gender === 4) return " une Transmasculin";
+    else if (infosUser.gender === 5) return " Bigenre";
+    else if (infosUser.sexualPreference === 1) return " un Homme";
+    else if (infosUser.sexualPreference === 2) return " une Femme";
+    else if (infosUser.sexualPreference === 3) return " une Transféminine";
+    else if (infosUser.sexualPreference === 4) return " une Transmasculin";
+    else if (infosUser.sexualPreference === 5) return " Bigenre";
+    else return "";
+  };
   return (
     <Fragment>
       <NavbarHeader />
@@ -171,28 +185,24 @@ const Profile = ({ location }) => {
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
               <Col>
                 <h3 className="descp">{infosUser.firstName}</h3>
-                <p>{infosUser.gender}</p>
                 <p className="descp">
-                  Je suis une {infosUser.gender}, 28 ans, je cherche un
-                  {infosUser.sexualPreference} pour la vie
+                  Je suis {convGenderAndSexualPtoString()}, {isShow()}, je
+                  cherche
+                  {convGenderAndSexualPtoString()} pour la vie
                 </p>
               </Col>
             </Row>
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
               <Col>
                 <h3 className="descp">Centres d'intérêt</h3>
-                <div className="descp">
+                <div className="descp mytags-main">
                   {infosUser.myTags.map((tag, i) => {
                     return (
-                      <Badge key={i} className="mytags mr-2 pl-2 mt-2">
+                      <Badge key={i} className="mytags  mr-2 pl-2 mt-2">
                         #{tag}
                       </Badge>
                     );
                   })}
-
-                  {/* <Badge className="mytags mr-2 pl-2 mt-2">#Aventure</Badge> */}
-                  {/* <Badge className="mytags mr-2 pl-2 mt-2">#Vegan</Badge> */}
-                  {/* <Badge className="mytags mr-2 pl-2 mt-2">#bio</Badge> */}
                 </div>
               </Col>
             </Row>
