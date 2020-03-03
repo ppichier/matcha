@@ -74,16 +74,24 @@ const ProfileUser = ({ props, location }) => {
 
     readProfile(v.uuid)
       .then(data => {
-        console.log(data);
-        setValues({
-          ...data,
-          width: 0,
-          err: "",
-          msg: "",
-          success: "",
-          showErrorToast: false,
-          showSuccessToast: false
-        });
+        if (data.err) {
+          setValues({
+            ...values,
+            err: data.err,
+            showErrorToast: true,
+            showSuccessToast: false
+          });
+        } else {
+          setValues({
+            ...data,
+            width: 0,
+            err: "",
+            msg: "",
+            success: "",
+            showErrorToast: false,
+            showSuccessToast: false
+          });
+        }
       })
       .catch(err => console.log(err));
   }, [location]);
@@ -198,7 +206,12 @@ const ProfileUser = ({ props, location }) => {
       })
         .then(data => {
           if (data.err) {
-            setValues({ ...values, err: data.err });
+            setValues({
+              ...values,
+              err: data.err,
+              showErrorToast: true,
+              showSuccessToast: false
+            });
           } else {
             console.log(data);
             setValues({

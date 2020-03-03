@@ -324,13 +324,15 @@ exports.readProfile = async (req, res) => {
     } else {
       connection.query(
         `SELECT user.*, genre.GenreId AS GenreId, sexual_orientation.SexualOrientationId AS SexualOrientationId FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
-        SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?)`,
+         SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?);
+         SELECT tag.Label AS CommonTagsLabel FROM  tag`,
         [req.userUuid, req.userUuid],
         (err, result) => {
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
             const myTags = result[1].map(e => e.TagLabel);
+            const commonTags = result[2].map(e => e.CommonTagsLabel);
             return res.json({
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
@@ -341,6 +343,7 @@ exports.readProfile = async (req, res) => {
               gender: result[0][0].GenreId,
               sexualPreference: result[0][0].SexualOrientationId,
               description: result[0][0].Bio,
+              commonTags,
               myTags
             });
           }

@@ -4,10 +4,14 @@ import "../profile/CardPicture";
 import { Row, Col, Form } from "react-bootstrap";
 import CardPicture from "../profile/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
+import NavMenu from "./NavMenu";
+import Slider, { createSliderWithTooltip } from "rc-slider";
+import "rc-slider/assets/index.css";
 // import Navbar from "react-bootstrap/Navbar";
 import "./MatchMe.css";
 
 // import NWReactSlider from "nw-react-slider";
+const SliderWithTooltip = createSliderWithTooltip(Slider);
 
 const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({
@@ -36,24 +40,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       <NavbarHeader />
       {/* <Container> */}
       <Row>
-        <Col md={4} className="pl-5">
-          <Row className="style_menu mt-5">
-            <Col>
-              <Form>
-                <Form.Group as={Col}>
-                  <Form.Label>Age</Form.Label>
-                  <Form.Control
-                    type="range"
-                    placeholder="18"
-                    name="date"
-                    min="18"
-                    max="65"
-                  ></Form.Control>
-                </Form.Group>
-              </Form>
-            </Col>
-          </Row>
-        </Col>
+        <NavMenu />
         <Col className="pl-5 pr-4">
           <Row className="mt-5 ml-4">
             <Row className="styleCard mr-4 mb-4">

@@ -8,12 +8,15 @@
   float: left;
   position: fixed;
   height: 100%;
-  display: table-cell;
+  /* display: table-cell; */
   vertical-align: top;
   background-color: white;
   border-radius: 6px;
   width: 30%;
   flex-wrap: wrap;
+  display: flex !important;
+  margin-right: -15px;
+  margin-left: -15px;
 }
 .styleCard {
   background-color: white;
