@@ -62,8 +62,21 @@ exports.signup = (req, res) => {
                   );
                 } else {
                   connection.query(
-                    "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    [userUuid, email, hash, pseudo, firstName, lastName, 0],
+                    "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [
+                      userUuid,
+                      email,
+                      hash,
+                      pseudo,
+                      firstName,
+                      lastName,
+                      0,
+                      6,
+                      6,
+                      17,
+                      129,
+                      ""
+                    ],
                     (err, result) => {
                       if (err) {
                         error.handleError(

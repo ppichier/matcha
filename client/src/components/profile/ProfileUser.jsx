@@ -40,36 +40,6 @@ const ProfileUser = ({ props, location }) => {
   const [widthProgressBar, setWidthProgressBar] = useState(0);
 
   useEffect(() => {
-    // const { width, ...rest } = values;
-    // udpateProgressBar();
-    const elements = [
-      "pseudo",
-      "email",
-      "firstName",
-      "lastName",
-      "userSize",
-      "age",
-      "gender",
-      "sexualPreference",
-      "myTags",
-      "description"
-    ];
-    let width = 0;
-    for (const element of elements) {
-      if (values[element].length !== 0) {
-        width += 10;
-      }
-      if (element === "age" && values.age.toString() === "17") {
-        width -= 10;
-      }
-      if (element === "userSize" && values.userSize.toString() === "129") {
-        width -= 10;
-      }
-    }
-    setWidthProgressBar(width);
-  }, [values]);
-
-  useEffect(() => {
     const v = queryString.parse(location.search);
 
     readProfile(v.uuid)
@@ -95,6 +65,45 @@ const ProfileUser = ({ props, location }) => {
       })
       .catch(err => console.log(err));
   }, [location]);
+
+  useEffect(() => {
+    // const { width, ...rest } = values;
+    // udpateProgressBar();
+    const elements = [
+      "pseudo",
+      "email",
+      "firstName",
+      "lastName",
+      "userSize",
+      "age",
+      "gender",
+      "sexualPreference",
+      "myTags",
+      "description"
+    ];
+    let width = 0;
+    for (const element of elements) {
+      if (values[element] && values[element].length !== 0) {
+        width += 10;
+      }
+      if (
+        values[element] &&
+        element === "age" &&
+        values.age.toString() === "17"
+      ) {
+        width -= 10;
+      }
+      if (
+        values[element] &&
+        element === "userSize" &&
+        values.userSize.toString() === "129"
+      ) {
+        width -= 10;
+      }
+    }
+    setWidthProgressBar(width);
+  }, [values]);
+
   const showError = () => {
     return (
       <Toast
