@@ -333,6 +333,15 @@ exports.readProfile = async (req, res) => {
           } else {
             const myTags = result[1].map(e => e.TagLabel);
             const commonTags = result[2].map(e => e.CommonTagsLabel);
+            console.log("++++++++++");
+            console.log(myTags);
+            console.log(commonTags);
+            console.log("++++++++++");
+            const commonTagsTmp = commonTags.map(ct => {
+              if (myTags.findIndex(mt => mt === ct) > -1)
+                return { label: ct, checked: true };
+              else return { label: ct, checked: false };
+            });
             return res.json({
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
@@ -343,8 +352,8 @@ exports.readProfile = async (req, res) => {
               gender: result[0][0].GenreId,
               sexualPreference: result[0][0].SexualOrientationId,
               description: result[0][0].Bio,
-              commonTags,
-              myTags
+              commonTags: commonTagsTmp,
+              myTags: []
             });
           }
         }
@@ -356,3 +365,10 @@ exports.readProfile = async (req, res) => {
 exports.changePage = (req, res) => {
   return res.json({ auth: true });
 };
+
+// exports.deleteTag = (req, res) => {
+//   return res.json({
+//     commonTags: [],
+//     myTags: []
+//   });
+// };

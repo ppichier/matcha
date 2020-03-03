@@ -11,12 +11,14 @@ const {
   readImage,
   readProfile,
   changePage,
-  updateProfile
+  updateProfile,
+  deleteTag
 } = require("../controllers/user");
 
 const {
   createUploadDirectory,
-  deletePreviousImage
+  deletePreviousImage,
+  updateTags
 } = require("../middlewares/users");
 
 const { updateProfileValidator } = require("../validator");
@@ -27,6 +29,7 @@ router.post(
   "/profile/updateProfile",
   verifyToken,
   updateProfileValidator,
+  updateTags,
   updateProfile
 );
 router.post(

@@ -52,6 +52,7 @@ const ProfileUser = ({ props, location }) => {
             showSuccessToast: false
           });
         } else {
+          console.log(data);
           setValues({
             ...data,
             width: 0,
@@ -117,6 +118,7 @@ const ProfileUser = ({ props, location }) => {
       </Toast>
     );
   };
+
   const showSuccess = () => {
     return (
       <Toast
@@ -146,7 +148,25 @@ const ProfileUser = ({ props, location }) => {
     setValues(tmp);
   };
 
-  // const udpateProgressBar = () => {};
+  const handleClickCommonTag = (tag, i) => event => {
+    const lenTag = validatedTag(tag);
+    if (lenTag.err !== null) {
+      setValues({
+        ...values,
+        err: lenTag.err,
+        showErrorToast: true,
+        showSuccessToast: false
+      });
+    } else {
+      const a = values.commonTags;
+      a.splice(i, 1);
+      a.splice(i, 0, { label: tag, checked: event.target.checked });
+      setValues({
+        ...values,
+        commonTags: a
+      });
+    }
+  };
 
   const handlePress = event => {
     if (event.key === "Enter") {
@@ -185,6 +205,14 @@ const ProfileUser = ({ props, location }) => {
   };
 
   const handleDeleteTag = i => () => {
+    // deleteTag()
+    //   .then(data => {
+    //     console.log(data);
+    //     setValues({ ...values, myTags: data.myTags });
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
     const tab = [...values.myTags];
     tab.splice(i, 1);
     setValues({ ...values, myTags: tab });
@@ -192,6 +220,7 @@ const ProfileUser = ({ props, location }) => {
 
   const handleSubmit = event => {
     const verif = verifValidated(values);
+
     if (verif.err !== null) {
       setValues({
         ...values,
@@ -201,8 +230,14 @@ const ProfileUser = ({ props, location }) => {
         showSuccessToast: false
       });
     } else {
+      const joinTags = [...values.myTags];
+      values.commonTags.map(e => {
+        if (e.checked === true) return joinTags.push(e.label);
+        else return;
+      });
+      // console.log(joinTags);
       updateProfile({
-        myTags: values.myTags,
+        myTags: joinTags,
         email: values.email,
         pseudo: values.pseudo,
         firstName: values.firstName,
@@ -226,6 +261,7 @@ const ProfileUser = ({ props, location }) => {
             setValues({
               ...values,
               err: "",
+              msg: data.msg,
               success: true,
               showSuccessToast: true,
               showErrorToast: false
@@ -429,32 +465,22 @@ const ProfileUser = ({ props, location }) => {
                         <Form.Label>
                           Veuillez sélectionner vos intérêts :
                         </Form.Label>
-                        <Row>
-                          <Col>
-                            <Form.Check
-                              type="checkbox"
-                              id="musique"
-                              label="Musique"
-                              name="commonTags"
-                            />
-                          </Col>
-                          <Col>
-                            <Form.Check
-                              type="checkbox"
-                              id="vegan"
-                              label="vegan"
-                              name="commonTags"
-                            />
-                          </Col>
-                          <Col>
-                            <Form.Check
-                              type="checkbox"
-                              id="bio"
-                              label="bio"
-                              name="commonTags"
-                            />
-                          </Col>
-                        </Row>
+                        <div className="commontags">
+                          {values.commonTags.map((e, i) => {
+                            return (
+                              <Col key={i}>
+                                <Form.Check
+                                  key={i}
+                                  type="checkbox"
+                                  id={e.label}
+                                  label={e.label}
+                                  checked={e.checked}
+                                  onChange={handleClickCommonTag(e.label, i)}
+                                />
+                              </Col>
+                            );
+                          })}
+                        </div>
                       </Form.Group>
                       <Form.Group>
                         <Form.Label>Centres d'intérêt</Form.Label>

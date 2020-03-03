@@ -128,15 +128,16 @@ export const Picture = data => {
     .catch(err => console.log(err));
 };
 
-// export const createProduct = (userId, token, product) => {
-//   return fetch(`${API}/profile/${userId}`, {
+// export const deleteTag = tag => {
+//   let jwt = JSON.parse(localStorage.getItem("jwt"));
+//   return fetch(`${API}/profile/deleteTag`, {
 //     method: "POST",
 //     headers: {
 //       Accept: "application/json",
-//       Authorization: `Bearer ${token}`
+//       Authorization: `Bearer ${jwt.token}`
 //     },
-//     body: product //Product is a form-data type
+//     body: JSON.stringify({ tag })
 //   })
-//     .then(response => response.json())
-//     .catch(err => console.error(err));
+//     .then(res => res.json())
+//     .catch(err => console.log(err));
 // };

@@ -21,6 +21,11 @@
   flex-wrap: wrap !important;
 }
 
+.commontags {
+  overflow-y: auto;
+  max-height: 150px !important;
+}
+
 .mytags-main {
   display: flex !important;
   flex-wrap: wrap !important;

@@ -2,6 +2,7 @@ const formidable = require("formidable");
 const fs = require("fs");
 const pool = require("../db");
 const error = require("../controllers/error");
+const _ = require("lodash");
 
 exports.createUploadDirectory = (req, res, next) => {
   let form = new formidable.IncomingForm();
@@ -83,7 +84,7 @@ exports.deletePreviousImage = (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) {
       return res.status(500).json({
-        err: "Internal Error HERE"
+        err: "Internal Error"
       });
     }
     connection.query(
@@ -102,6 +103,145 @@ exports.deletePreviousImage = (req, res, next) => {
           }
           connection.release();
           next();
+        }
+      }
+    );
+  });
+};
+
+const updateUserTags = (req, res, next, connection, myTags) => {
+  connection.query(
+    "SELECT userId FROM User WHERE Uuid = ?",
+    [req.userUuid],
+    (err, result) => {
+      if (err) error.handleError(res, err, "Internal error", 500, connection);
+      else {
+        const id = result[0].userId;
+        connection.query(
+          "SELECT * FROM Tag; DELETE FROM User_tag WHERE userId = ?",
+          [id],
+          (err, result) => {
+            if (err)
+              error.handleError(res, err, "Internal error", 500, connection);
+            else {
+              for (let i = 0; i < myTags.length; i++) {
+                let idx = result[0].findIndex(e => e.Label === myTags[i]);
+                let a = result[0][idx].TagId;
+                // if (result[1].findIndex(e => e.TagId === a) === -1) {
+                connection.query(
+                  "INSERT INTO User_tag (userId, tagId) VALUES (?, ?)",
+                  [id, a],
+                  (err, result) => {
+                    if (err)
+                      error.handleError(
+                        res,
+                        err,
+                        "Internal error",
+                        500,
+                        connection
+                      );
+                  }
+                );
+                // }
+              }
+              connection.release();
+              next();
+            }
+          }
+        );
+      }
+    }
+  );
+};
+
+exports.updateTags = (req, res, next) => {
+  let myTags = req.body.myTags;
+  if (myTags === "undefined") {
+    return res.status(500).json({
+      err: "Tags error server"
+    });
+  }
+
+  if (myTags.length > 20) {
+    return res.status(400).json({
+      err: "La limite du nombre de tags est de 20."
+    });
+  }
+
+  if (myTags.filter(tag => tag.length > 12).length > 0) {
+    return res.status(400).json({
+      err: "La longueur max d'un tag est de 12 caractères."
+    });
+  }
+
+  let tagsTmp = _.uniq(
+    myTags.map((tag, i) => {
+      return tag
+        .trim()
+        .replace(/ +/g, " ")
+        .toLowerCase();
+    })
+  );
+
+  console.log(tagsTmp);
+
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({
+        err: "Internal Error"
+      });
+    }
+
+    // UPDATE COMMON TAGS
+    connection.query(
+      "SELECT `Label` FROM Tag",
+      [req.userUuid],
+      (err, result) => {
+        if (err) {
+          error.handleError(res, err, "Internal error", 500, connection);
+        } else {
+          commonTags = result.map(tag => {
+            return tag.Label;
+          });
+          console.log(commonTags);
+          const differenceTags = _.difference(tagsTmp, commonTags);
+          console.log(differenceTags);
+
+          if (differenceTags.length > 0) {
+            //Add differenceTags into Tag table
+            let queryValues = "";
+            let queryParams = [];
+            differenceTags.forEach((e, i, differenceTags) => {
+              queryValues += "(?)";
+              queryParams.push(e);
+              if (i !== differenceTags.length - 1) {
+                queryValues += ",";
+              }
+            });
+            console.log("+++++++++++++");
+            console.log(queryValues);
+            console.log(queryParams);
+            console.log("+++++++++++++");
+            connection.query(
+              "INSERT INTO Tag (`Label`) VALUES " + queryValues,
+              queryParams,
+              (err, result) => {
+                if (err)
+                  error.handleError(
+                    res,
+                    err,
+                    "Internal error",
+                    500,
+                    connection
+                  );
+                else {
+                  updateUserTags(req, res, next, connection, tagsTmp);
+                }
+              }
+            );
+          } else {
+            updateUserTags(req, res, next, connection, tagsTmp);
+          }
         }
       }
     );
