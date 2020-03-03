@@ -11,7 +11,8 @@ const {
   readImage,
   readProfile,
   changePage,
-  updateProfile
+  updateProfile,
+  deleteTag
 } = require("../controllers/user");
 
 const {

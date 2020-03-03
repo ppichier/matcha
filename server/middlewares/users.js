@@ -116,35 +116,34 @@ const updateUserTags = (req, res, next, connection, myTags) => {
     (err, result) => {
       if (err) error.handleError(res, err, "Internal error", 500, connection);
       else {
-        console.log("YOOOO");
         const id = result[0].userId;
-        console.log(id);
         connection.query(
-          "SELECT * FROM Tag; SELECT * FROM User_tag WHERE userId = ?",
+          "SELECT * FROM Tag; DELETE FROM User_tag WHERE userId = ?",
           [id],
           (err, result) => {
             if (err)
               error.handleError(res, err, "Internal error", 500, connection);
             else {
-              console.log(result);
-              console.log(myTags);
-              let a = result[0]
-                .filter(e => result[0].indexOf(e.Label) !== -1)
-                .map(e => e.TagId);
-
-              // myTags.map(tag => {
-              //   return result[0].forEach(e => {
-              //     console.log(tag);
-              //     console.log(e.Label);
-              //     console.log(e.TagId);
-              //     if (tag === e.Label) {
-              //       console.log("TROUVVEEE");
-              //       return e.TagId;
-              //     } else return;
-              //   });
-              // });
-              console.log("END");
-              console.log(a);
+              for (let i = 0; i < myTags.length; i++) {
+                let idx = result[0].findIndex(e => e.Label === myTags[i]);
+                let a = result[0][idx].TagId;
+                // if (result[1].findIndex(e => e.TagId === a) === -1) {
+                connection.query(
+                  "INSERT INTO User_tag (userId, tagId) VALUES (?, ?)",
+                  [id, a],
+                  (err, result) => {
+                    if (err)
+                      error.handleError(
+                        res,
+                        err,
+                        "Internal error",
+                        500,
+                        connection
+                      );
+                  }
+                );
+                // }
+              }
               connection.release();
               next();
             }
@@ -237,15 +236,11 @@ exports.updateTags = (req, res, next) => {
                   );
                 else {
                   updateUserTags(req, res, next, connection, tagsTmp);
-                  // connection.release();
-                  // next();
                 }
               }
             );
           } else {
             updateUserTags(req, res, next, connection, tagsTmp);
-            // connection.release();
-            // next();
           }
         }
       }

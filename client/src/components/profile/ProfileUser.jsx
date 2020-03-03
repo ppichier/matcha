@@ -19,11 +19,14 @@ const SliderWithTooltip = createSliderWithTooltip(Slider);
 const ProfileUser = ({ props, location }) => {
   const [values, setValues] = useState({
     myTags: [],
-    commonTags: [],
-    email: "",
-    pseudo: "",
-    firstName: "",
-    lastName: "",
+    commonTags: [
+      { label: "musique", checked: true },
+      { label: "nature", checked: true }
+    ],
+    email: "pierantonio.pichierri@gmail.com",
+    pseudo: "ppichier",
+    firstName: "Pier'Antonio",
+    lastName: "Pichierri",
     age: "17",
     gender: "",
     sexualPreference: "",
@@ -112,7 +115,25 @@ const ProfileUser = ({ props, location }) => {
     setValues(tmp);
   };
 
-  // const udpateProgressBar = () => {};
+  const handleClickCommonTag = (tag, i) => event => {
+    const lenTag = validatedTag(tag);
+    if (lenTag.err !== null) {
+      setValues({
+        ...values,
+        err: lenTag.err,
+        showErrorToast: true,
+        showSuccessToast: false
+      });
+    } else {
+      const a = values.commonTags;
+      a.splice(i, 1);
+      a.splice(i, 0, { label: tag, checked: event.target.checked });
+      setValues({
+        ...values,
+        commonTags: a
+      });
+    }
+  };
 
   const handlePress = event => {
     if (event.key === "Enter") {
@@ -151,6 +172,14 @@ const ProfileUser = ({ props, location }) => {
   };
 
   const handleDeleteTag = i => () => {
+    // deleteTag()
+    //   .then(data => {
+    //     console.log(data);
+    //     setValues({ ...values, myTags: data.myTags });
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
     const tab = [...values.myTags];
     tab.splice(i, 1);
     setValues({ ...values, myTags: tab });
@@ -158,6 +187,7 @@ const ProfileUser = ({ props, location }) => {
 
   const handleSubmit = event => {
     const verif = verifValidated(values);
+
     if (verif.err !== null) {
       setValues({
         ...values,
@@ -167,9 +197,14 @@ const ProfileUser = ({ props, location }) => {
         showSuccessToast: false
       });
     } else {
-      console.log(values.myTags);
+      const joinTags = [...values.myTags];
+      values.commonTags.map(e => {
+        if (e.checked === true) return joinTags.push(e.label);
+        else return;
+      });
+      // console.log(joinTags);
       updateProfile({
-        myTags: values.myTags,
+        myTags: joinTags,
         email: values.email,
         pseudo: values.pseudo,
         firstName: values.firstName,
@@ -396,7 +431,20 @@ const ProfileUser = ({ props, location }) => {
                           Veuillez sélectionner vos intérêts :
                         </Form.Label>
                         <Row>
-                          <Col>
+                          {values.commonTags.map((e, i) => {
+                            return (
+                              <Col key={i}>
+                                <Form.Check
+                                  type="checkbox"
+                                  id={e.label}
+                                  label={e.label}
+                                  checked={e.checked}
+                                  onChange={handleClickCommonTag(e.label, i)}
+                                />
+                              </Col>
+                            );
+                          })}
+                          {/* <Col>
                             <Form.Check
                               type="checkbox"
                               id="musique"
@@ -419,7 +467,7 @@ const ProfileUser = ({ props, location }) => {
                               label="bio"
                               name="commonTags"
                             />
-                          </Col>
+                          </Col> */}
                         </Row>
                       </Form.Group>
                       <Form.Group>

@@ -301,7 +301,6 @@ exports.readProfile = async (req, res) => {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
             const myTags = result[1].map(e => e.TagLabel);
-            console.log("+++++++++++++++++");
             console.log(result);
             return res.json({
               firstName: result[0][0].FirstName,
@@ -324,3 +323,10 @@ exports.readProfile = async (req, res) => {
 exports.changePage = (req, res) => {
   return res.json({ auth: true });
 };
+
+// exports.deleteTag = (req, res) => {
+//   return res.json({
+//     commonTags: [],
+//     myTags: []
+//   });
+// };
