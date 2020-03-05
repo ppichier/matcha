@@ -1,14 +1,14 @@
 import React, { useState, Fragment } from "react";
 import "../profile/CardPicture.css";
 import "../profile/CardPicture";
-import { Row, Col, Form, Container } from "react-bootstrap";
+import { Row, Col, Container } from "react-bootstrap";
 import CardPicture from "../profile/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import FilterProfile from "./FilterProfile";
 import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
-// import Navbar from "react-bootstrap/Navbar";
 import "./MatchMe.css";
+import SortProfile from "./SortProfile";
 
 // import NWReactSlider from "nw-react-slider";
 const SliderWithTooltip = createSliderWithTooltip(Slider);
@@ -26,23 +26,17 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
     // const formData = new FormData();
     setValues(tmp);
   };
-  const age = birthday => {
-    birthday = new Date(birthday);
-    return ((new Date().getTime() - birthday.getTime()) / 31536000000).toFixed(
-      0
-    );
-  };
-  const isShow = birthday => {
-    if (birthday) return <div>Age: {age(birthday)}</div>;
-  };
+
   return (
     <Fragment>
       <NavbarHeader />
       <Container fluid className="my-3">
         <Row>
           <Col md={3} style={{ height: "100%" }} className="py-3">
+            <SortProfile />
             <FilterProfile />
           </Col>
+
           {/* <Row> */}
           <Col className="">
             <Row style={{ justifyContent: "center" }}>
@@ -50,7 +44,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                 <CardPicture
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
-                  city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
@@ -60,7 +53,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                 <CardPicture
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
-                  city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
@@ -70,7 +62,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                 <CardPicture
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
-                  city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
@@ -80,7 +71,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                 <CardPicture
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
-                  city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
