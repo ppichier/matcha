@@ -346,6 +346,7 @@ exports.readProfile = async (req, res) => {
             });
             console.log(result);
             console.log("Return object read profile");
+            connection.release();
             return res.json({
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
