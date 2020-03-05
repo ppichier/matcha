@@ -1,28 +1,8 @@
-.style_row {
+.style-menu {
   background-color: white;
   border-radius: 6px;
-  width: 100%;
-  flex-wrap: wrap;
-}
-.style_menu {
-  float: left;
-  position: fixed;
-  height: 100%;
-  /* display: table-cell; */
-  vertical-align: top;
-  background-color: white;
-  border-radius: 6px;
-  width: 30%;
-  flex-wrap: wrap;
-  display: flex !important;
-  margin-right: -15px;
-  margin-left: -15px;
 }
 .styleCard {
   background-color: white;
   border-radius: 6px;
-
-  display: flex !important;
-  flex-wrap: wrap;
-  justify-content: centre;
 }

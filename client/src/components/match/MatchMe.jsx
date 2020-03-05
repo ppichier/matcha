@@ -1,10 +1,10 @@
 import React, { useState, Fragment } from "react";
 import "../profile/CardPicture.css";
 import "../profile/CardPicture";
-import { Row, Col, Form } from "react-bootstrap";
+import { Row, Col, Form, Container } from "react-bootstrap";
 import CardPicture from "../profile/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
-import NavMenu from "./NavMenu";
+import FilterProfile from "./FilterProfile";
 import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 // import Navbar from "react-bootstrap/Navbar";
@@ -38,13 +38,15 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   return (
     <Fragment>
       <NavbarHeader />
-      {/* <Container> */}
-      <Row>
-        <NavMenu />
-        <Col className="pl-5 pr-4">
-          <Row className="mt-5 ml-4">
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+      <Container fluid className="my-3">
+        <Row>
+          <Col md={3} style={{ height: "100%" }} className="py-3">
+            <FilterProfile />
+          </Col>
+          {/* <Row> */}
+          <Col className="">
+            <Row style={{ justifyContent: "center" }}>
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
@@ -52,134 +54,120 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Wafae"
-                  pseudo="Warharra"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Jules"
-                  pseudo="Jumourot"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Judith"
-                  pseudo="Jpoulvel"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Myriam"
-                  pseudo="Manki"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
-                {" "}
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Edd"
-                  pseudo="Ylaissyi"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Mohammed"
-                  pseudo="Moslama"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Valentin"
-                  pseudo="Vrossi"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Alexandra"
-                  pseudo="Perrin"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Yacine"
-                  pseudo="Ychair"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Stephen"
-                  pseudo="Stelie"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
-            </Row>
-            <Row className="styleCard mr-4 mb-4">
-              <Col>
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
                 <CardPicture
-                  lastName="Fadia"
-                  pseudo="Zfadia"
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
                   nb={1}
                 />
-              </Col>
+              </div>
             </Row>
-          </Row>
-        </Col>
-      </Row>
-      {/* </Container> */}
+          </Col>
+        </Row>
+      </Container>
     </Fragment>
   );
 };

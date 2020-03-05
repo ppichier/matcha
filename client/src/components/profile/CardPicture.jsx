@@ -100,40 +100,40 @@ const CardPicture = ({ pseudo, lastName, birthday, nb }) => {
     if (nb === 1) {
       return (
         <Fragment>
-          <Container>
-            <Row>
-              <div className="profile-header-container">
-                <a href="/profile">
-                  <div>
-                    {handleImage()}
-                    <div className="rank-label-container">
-                      <span className="label label-default rank-label">
-                        1000{" "}
-                        <FontAwesomeIcon
-                          icon={faHeart}
-                          className="fa-lg mr-1 faHeartliked"
-                        />
-                        <FontAwesomeIcon
-                          icon={faHeart}
-                          className="fa-lg mr-1 faHeartliked"
-                        />
-                        <FontAwesomeIcon
-                          icon={faHeart}
-                          className="fa-lg mr-1 faHeartliked"
-                        />
-                      </span>
-                    </div>
+          {/* <Container> */}
+          {/* <Row> */}
+          <div className="profile-header-container">
+            <a href="/profile">
+              <div>
+                {handleImage()}
+                <div className="rank-label-container">
+                  <span className="label label-default rank-label">
+                    1000{" "}
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className="fa-lg mr-1 faHeartliked"
+                    />
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className="fa-lg mr-1 faHeartliked"
+                    />
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className="fa-lg mr-1 faHeartliked"
+                    />
+                  </span>
+                </div>
 
-                    <div className="info">
-                      <div>{lastName}</div>
-                      <div className="desc">{pseudo}</div>
-                      <div className="desc">{isShow(birthday)}</div>
-                    </div>
-                  </div>
-                </a>
+                <div className="info">
+                  <div>{lastName}</div>
+                  <div className="desc">{pseudo}</div>
+                  <div className="desc">{isShow(birthday)}</div>
+                </div>
               </div>
-            </Row>
-          </Container>
+            </a>
+          </div>
+          {/* </Row> */}
+          {/* </Container> */}
         </Fragment>
       );
     } else {

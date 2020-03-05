@@ -465,21 +465,24 @@ const ProfileUser = ({ props, location }) => {
                         <Form.Label>
                           Veuillez sélectionner vos intérêts :
                         </Form.Label>
+
                         <div className="commontags">
-                          {values.commonTags.map((e, i) => {
-                            return (
-                              <Col key={i}>
-                                <Form.Check
-                                  key={i}
-                                  type="checkbox"
-                                  id={e.label}
-                                  label={e.label}
-                                  checked={e.checked}
-                                  onChange={handleClickCommonTag(e.label, i)}
-                                />
-                              </Col>
-                            );
-                          })}
+                          <Row>
+                            {values.commonTags.map((e, i) => {
+                              return (
+                                <Col key={i}>
+                                  <Form.Check
+                                    key={i}
+                                    type="checkbox"
+                                    id={e.label}
+                                    label={e.label}
+                                    checked={e.checked}
+                                    onChange={handleClickCommonTag(e.label, i)}
+                                  />
+                                </Col>
+                              );
+                            })}
+                          </Row>
                         </div>
                       </Form.Group>
                       <Form.Group>

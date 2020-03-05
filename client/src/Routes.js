@@ -9,7 +9,6 @@ import RecoverPassword from "./components/login/RecoverPassword";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import NotFound from "./components/404/NotFound";
 import CustomRoute from "./components/auth/CustomRoute";
-import NavMenu from "./components/match/NavMenu";
 
 const Routes = () => {
   return (
@@ -30,7 +29,6 @@ const Routes = () => {
           exact
           component={RecoverPassword}
         ></Route>
-        <Route path="/nav" exact component={NavMenu}></Route>
         <Route path="" component={NotFound} />
       </Switch>
     </BrowserRouter>
