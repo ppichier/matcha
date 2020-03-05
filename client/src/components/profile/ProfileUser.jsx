@@ -34,7 +34,13 @@ const ProfileUser = ({ props, location }) => {
     msg: "",
     success: false,
     showErrorToast: false,
-    showSuccessToast: false
+    showSuccessToast: false,
+    imageProfileSet: false
+  });
+
+  const [imagesChild, setImagesChild] = useState({
+    profileImage: false,
+    secondaryImages: false
   });
 
   const [widthProgressBar, setWidthProgressBar] = useState(0);
@@ -68,8 +74,6 @@ const ProfileUser = ({ props, location }) => {
   }, [location]);
 
   useEffect(() => {
-    // const { width, ...rest } = values;
-    // udpateProgressBar();
     const elements = [
       "pseudo",
       "email",
@@ -80,30 +84,55 @@ const ProfileUser = ({ props, location }) => {
       "gender",
       "sexualPreference",
       "myTags",
+      "commonTags",
       "description"
     ];
+
     let width = 0;
     for (const element of elements) {
-      if (values[element] && values[element].length !== 0) {
-        width += 10;
+      if (
+        values[element] &&
+        element === "commonTags" &&
+        values.myTags.length === 0 &&
+        values.commonTags.filter(e => e.checked).length > 0
+      ) {
+        width += 8.3333;
+      } else if (
+        values[element] &&
+        element === "myTags" &&
+        values.myTags.length > 0
+      ) {
+        width += 8.3333;
+      }
+      if (
+        values[element] &&
+        element !== "commonTags" &&
+        element !== "myTags" &&
+        values[element].length !== 0
+      ) {
+        width += 8.3333;
       }
       if (
         values[element] &&
         element === "age" &&
         values.age.toString() === "17"
       ) {
-        width -= 10;
+        width -= 8.3333;
       }
       if (
         values[element] &&
         element === "userSize" &&
         values.userSize.toString() === "129"
       ) {
-        width -= 10;
+        width -= 8.3333;
       }
     }
+
+    width = imagesChild.profileImage ? (width += 8.3333) : width;
+    // width = imagesChild.secondaryImages ? (width += 10) : width;
+
     setWidthProgressBar(width);
-  }, [values]);
+  }, [values, imagesChild]);
 
   const showError = () => {
     return (
@@ -205,14 +234,6 @@ const ProfileUser = ({ props, location }) => {
   };
 
   const handleDeleteTag = i => () => {
-    // deleteTag()
-    //   .then(data => {
-    //     console.log(data);
-    //     setValues({ ...values, myTags: data.myTags });
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
     const tab = [...values.myTags];
     tab.splice(i, 1);
     setValues({ ...values, myTags: tab });
@@ -231,11 +252,16 @@ const ProfileUser = ({ props, location }) => {
       });
     } else {
       const joinTags = [...values.myTags];
-      values.commonTags.map(e => {
-        if (e.checked === true) return joinTags.push(e.label);
-        else return;
-      });
-      // console.log(joinTags);
+      for (let i = 0; i < values.commonTags.length; i++) {
+        if (values.commonTags[i].checked === true)
+          joinTags.push(values.commonTags[i].label);
+      }
+      // values.commonTags.map(e => {
+      //   if (e.checked === true) joinTags.push(e.label);
+      //   // if (e.checked === true) return joinTags.push(e.label);
+      //   // else return;
+      //   return;
+      // });
       updateProfile({
         myTags: joinTags,
         email: values.email,
@@ -299,6 +325,14 @@ const ProfileUser = ({ props, location }) => {
       .catch(err => console.log(err));
   };
 
+  const imageProfileSet = value => {
+    setImagesChild({ ...imagesChild, profileImage: value });
+  };
+
+  // const imageProfileSet = value => {
+  //   setImagesChild({ ...imagesChild, profileImage: value });
+  // };
+
   return (
     <Fragment>
       <NavbarHeader />
@@ -313,6 +347,7 @@ const ProfileUser = ({ props, location }) => {
                     lastName={values.lastName}
                     city={values.city}
                     birthday={values.age}
+                    imageProfileSet={value => imageProfileSet(value)}
                   />
                 </Row>
                 <Row
@@ -427,7 +462,7 @@ const ProfileUser = ({ props, location }) => {
                             value={values.gender}
                             onChange={handleChange("gender")}
                           >
-                            <option value=""> Séléctionnez un genre</option>
+                            <option value="6"> Séléctionnez un genre</option>
                             <option value="1"> Un Homme </option>
                             <option value="2"> Une Femme </option>
                             <option value="3"> une Transféminine</option>
@@ -443,7 +478,7 @@ const ProfileUser = ({ props, location }) => {
                             value={values.sexualPreference}
                             onChange={handleChange("sexualPreference")}
                           >
-                            <option value=""> Séléctionnez un genre</option>
+                            <option value="6"> Séléctionnez un genre</option>
                             <option value="1"> Un Homme </option>
                             <option value="2"> Une Femme </option>
                             <option value="3"> une Transféminine</option>
@@ -542,7 +577,7 @@ const ProfileUser = ({ props, location }) => {
                       <ProgressBar
                         striped
                         variant="info"
-                        label={widthProgressBar + "%"}
+                        label={Math.round(widthProgressBar) + "%"}
                         now={widthProgressBar}
                         max={100}
                       />

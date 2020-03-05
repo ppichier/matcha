@@ -162,7 +162,7 @@ exports.uploadSecondaryImages = (req, res) => {
 };
 
 exports.deleteProfileImage = (req, res) => {
-  const { userUuid } = req.body;
+  const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
@@ -172,20 +172,23 @@ exports.deleteProfileImage = (req, res) => {
       [userUuid],
       (err, result) => {
         if (err) {
-          error.handleError(res, err, "Intenal error", 500, connection);
+          error.handleError(res, err, "Internal error", 500, connection);
         } else {
+          //bug if result[0].ImageProfile is undefined
+          console.log(userUuid);
           const image = result[0].ImageProfile;
+          console.log(image);
           connection.query(
             `UPDATE User SET ImageProfile = ? WHERE Uuid = ?`,
             [null, userUuid],
             (err, result) => {
               if (err) {
-                error.handleError(res, err, "Intenal error", 500, connection);
+                error.handleError(res, err, "Internal error", 500, connection);
               } else if (image === null) {
                 return error.handleError(
                   res,
                   err,
-                  "Intenal error",
+                  "Internal error",
                   500,
                   connection
                 );
@@ -216,7 +219,8 @@ exports.deleteProfileImage = (req, res) => {
 };
 
 exports.deleteSecondaryImage = (req, res) => {
-  const { userUuid, imageIdRemove } = req.body;
+  const { imageIdRemove } = req.body;
+  const userUuid = req.userUuid;
   let deleteImage = "Image" + (imageIdRemove + 1);
   pool.getConnection((err, connection) => {
     if (err) {
@@ -322,26 +326,26 @@ exports.readProfile = async (req, res) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
+      console.log("Query end read profile");
       connection.query(
         `SELECT user.*, genre.GenreId AS GenreId, sexual_orientation.SexualOrientationId AS SexualOrientationId FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
          SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?);
          SELECT tag.Label AS CommonTagsLabel FROM  tag`,
         [req.userUuid, req.userUuid],
         (err, result) => {
+          console.log("Query finish read profile");
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
             const myTags = result[1].map(e => e.TagLabel);
             const commonTags = result[2].map(e => e.CommonTagsLabel);
-            console.log("++++++++++");
-            console.log(myTags);
-            console.log(commonTags);
-            console.log("++++++++++");
             const commonTagsTmp = commonTags.map(ct => {
               if (myTags.findIndex(mt => mt === ct) > -1)
                 return { label: ct, checked: true };
               else return { label: ct, checked: false };
             });
+            console.log(result);
+            console.log("Return object read profile");
             return res.json({
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
@@ -360,6 +364,7 @@ exports.readProfile = async (req, res) => {
       );
     }
   });
+  console.log("End read profile");
 };
 
 exports.changePage = (req, res) => {
