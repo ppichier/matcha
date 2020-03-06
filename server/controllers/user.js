@@ -333,7 +333,6 @@ exports.readProfile = async (req, res) => {
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
-            connection.release();
             const myTags = result[1].map(e => e.TagLabel);
             const commonTags = result[2].map(e => e.CommonTagsLabel);
             const commonTagsTmp = commonTags.map(ct => {
