@@ -58,7 +58,6 @@ const ProfileUser = ({ props, location }) => {
             showSuccessToast: false
           });
         } else {
-          console.log(data);
           setValues({
             ...data,
             width: 0,
@@ -283,7 +282,6 @@ const ProfileUser = ({ props, location }) => {
               showSuccessToast: false
             });
           } else {
-            console.log(data);
             setValues({
               ...values,
               err: "",
