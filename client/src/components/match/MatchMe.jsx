@@ -32,7 +32,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       <NavbarHeader />
       <Container fluid className="my-3">
         <Row>
-          <Col md={3} style={{ height: "100%" }} className="py-3">
+          <Col md={3} style={{ height: "100%" }} className="py-3 ">
             <SortProfile />
             <FilterProfile />
           </Col>

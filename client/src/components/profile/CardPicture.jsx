@@ -140,7 +140,7 @@ const CardPicture = ({ pseudo, lastName, birthday, nb }) => {
       return (
         <Fragment>
           <Container>
-            <Row>
+            <Row style={{ justifyContent: "center" }}>
               <div className="profile-header-container">
                 <div>
                   {handleImage()}
