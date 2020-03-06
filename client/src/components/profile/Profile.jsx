@@ -2,7 +2,7 @@ import React, { useState, Fragment, useEffect } from "react";
 import { Carousel, Container, Row, Col, Badge, Form } from "react-bootstrap";
 import "./Profile.css";
 import "./ProfileUser.css";
-import CardPicture from "./CardPicture";
+import CardPicture from "../match/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { readProfile, readSecondaryImages } from "../../api/";
@@ -152,7 +152,6 @@ const Profile = ({ location }) => {
                     lastName={infosUser.lastName}
                     pseudo={infosUser.pseudo}
                     birthday={infosUser.age}
-                    nb={1}
                   />
                 </Row>
                 <Row

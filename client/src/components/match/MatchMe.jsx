@@ -1,8 +1,7 @@
 import React, { useState, Fragment } from "react";
-import "../profile/CardPicture.css";
-import "../profile/CardPicture";
+import "./CardPicture.css";
 import { Row, Col, Container } from "react-bootstrap";
-import CardPicture from "../profile/CardPicture";
+import CardPicture from "./CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import FilterProfile from "./FilterProfile";
 import Slider, { createSliderWithTooltip } from "rc-slider";
@@ -45,7 +44,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
                   birthday="05/18/1992"
-                  nb={1}
                 />
               </div>
 
@@ -63,7 +61,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
                   birthday="05/18/1992"
-                  nb={1}
                 />
               </div>
 
@@ -72,17 +69,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   lastName="Pier'Antonio"
                   pseudo="Ppichier"
                   birthday="05/18/1992"
-                  nb={1}
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                  nb={1}
                 />
               </div>
 
@@ -92,16 +78,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
-                  nb={1}
-                />
-              </div>
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                  nb={1}
                 />
               </div>
 
@@ -111,7 +87,14 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
-                  nb={1}
+                />
+              </div>
+              <div className="styleCard py-3 px-3 mx-3 my-3">
+                <CardPicture
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
+                  city="Paris"
+                  birthday="05/18/1992"
                 />
               </div>
 
@@ -121,7 +104,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
-                  nb={1}
                 />
               </div>
 
@@ -131,7 +113,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
-                  nb={1}
                 />
               </div>
 
@@ -141,7 +122,6 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
-                  nb={1}
                 />
               </div>
 
@@ -151,7 +131,15 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                   pseudo="Ppichier"
                   city="Paris"
                   birthday="05/18/1992"
-                  nb={1}
+                />
+              </div>
+
+              <div className="styleCard py-3 px-3 mx-3 my-3">
+                <CardPicture
+                  lastName="Pier'Antonio"
+                  pseudo="Ppichier"
+                  city="Paris"
+                  birthday="05/18/1992"
                 />
               </div>
             </Row>

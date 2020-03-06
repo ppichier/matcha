@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
-import CardPicture from "./CardPicture";
+import ProfilePicture from "./ProfilePicture";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
 import { updateProfile, readProfile } from "../../api/";
 import ProgressBar from "react-bootstrap/ProgressBar";
@@ -340,7 +340,7 @@ const ProfileUser = ({ props, location }) => {
             <Row>
               <Col>
                 <Row className="row-pictureProfile py-4">
-                  <CardPicture
+                  <ProfilePicture
                     pseudo={values.pseudo}
                     lastName={values.lastName}
                     city={values.city}
