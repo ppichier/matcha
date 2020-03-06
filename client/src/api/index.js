@@ -140,3 +140,17 @@ export const Picture = data => {
 //     .then(res => res.json())
 //     .catch(err => console.log(err));
 // };
+export const filterProfile = data => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/profile/updateProfile`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt.token}`
+    },
+    body: JSON.stringify({ ...data, userUuid: jwt.user._id })
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};

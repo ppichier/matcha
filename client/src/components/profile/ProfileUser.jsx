@@ -354,7 +354,7 @@ const ProfileUser = ({ props, location }) => {
                 >
                   <Form.Check
                     type="switch"
-                    id="custom-switch"
+                    id="switch"
                     label="Activer la localisation"
                   />
                 </Row>
