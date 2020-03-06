@@ -162,7 +162,7 @@ exports.uploadSecondaryImages = (req, res) => {
 };
 
 exports.deleteProfileImage = (req, res) => {
-  const { userUuid } = req.body;
+  const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
@@ -172,20 +172,21 @@ exports.deleteProfileImage = (req, res) => {
       [userUuid],
       (err, result) => {
         if (err) {
-          error.handleError(res, err, "Intenal error", 500, connection);
+          error.handleError(res, err, "Internal error", 500, connection);
         } else {
+          //!if result[0].ImageProfile is undefined
           const image = result[0].ImageProfile;
           connection.query(
             `UPDATE User SET ImageProfile = ? WHERE Uuid = ?`,
             [null, userUuid],
             (err, result) => {
               if (err) {
-                error.handleError(res, err, "Intenal error", 500, connection);
+                error.handleError(res, err, "Internal error", 500, connection);
               } else if (image === null) {
                 return error.handleError(
                   res,
                   err,
-                  "Intenal error",
+                  "Internal error",
                   500,
                   connection
                 );
@@ -216,7 +217,8 @@ exports.deleteProfileImage = (req, res) => {
 };
 
 exports.deleteSecondaryImage = (req, res) => {
-  const { userUuid, imageIdRemove } = req.body;
+  const { imageIdRemove } = req.body;
+  const userUuid = req.userUuid;
   let deleteImage = "Image" + (imageIdRemove + 1);
   pool.getConnection((err, connection) => {
     if (err) {
@@ -333,15 +335,12 @@ exports.readProfile = async (req, res) => {
           } else {
             const myTags = result[1].map(e => e.TagLabel);
             const commonTags = result[2].map(e => e.CommonTagsLabel);
-            console.log("++++++++++");
-            console.log(myTags);
-            console.log(commonTags);
-            console.log("++++++++++");
             const commonTagsTmp = commonTags.map(ct => {
               if (myTags.findIndex(mt => mt === ct) > -1)
                 return { label: ct, checked: true };
               else return { label: ct, checked: false };
             });
+            connection.release();
             return res.json({
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,

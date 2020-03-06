@@ -46,13 +46,12 @@ export const uploadSecondaryImages = data => {
 export const deleteProfileImage = () => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/deleteProfileImage`, {
-    method: "DELETE",
+    method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${jwt.token}`
-    },
-    body: JSON.stringify({ userUuid: jwt.user._id })
+    }
   })
     .then(res => res.json())
     .catch(err => console.log(err));
@@ -61,13 +60,13 @@ export const deleteProfileImage = () => {
 export const deleteSecondaryImage = data => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/deleteSecondaryImage`, {
-    method: "DELETE",
+    method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${jwt.token}`
     },
-    body: JSON.stringify({ ...data, userUuid: jwt.user._id })
+    body: JSON.stringify({ ...data })
   })
     .then(res => res.json())
     .catch(err => console.log(err));
@@ -108,7 +107,7 @@ export const readProfile = uuid => {
       Authorization: `Bearer ${jwt.token}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ uuid })
+    body: JSON.stringify({ uuid: "TESTUUID" })
   })
     .then(res => res.json())
     .catch(err => console.log(err));

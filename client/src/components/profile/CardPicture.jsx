@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { uploadProfileImage, deleteProfileImage, readImage } from "../../api/";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-const CardPicture = ({ pseudo, lastName, birthday, nb }) => {
+
+const CardPicture = ({ pseudo, lastName, birthday, nb, imageProfileSet }) => {
   const [values, setValues] = useState({
     uploading: false,
     formData: new FormData(),
@@ -16,6 +17,7 @@ const CardPicture = ({ pseudo, lastName, birthday, nb }) => {
   const [base64Image, setBase64Image] = useState("");
 
   useEffect(() => {
+    // if (base64Image !== "" && base64Image !== null) imageProfileSet(true);
     readImage()
       .then(data => {
         setBase64Image(data.image);
@@ -27,6 +29,7 @@ const CardPicture = ({ pseudo, lastName, birthday, nb }) => {
     const value = event.target.files[0];
     const jwt = JSON.parse(localStorage.getItem("jwt"));
     if (value !== undefined) {
+      imageProfileSet(true);
       values.formData.set("photo", value);
       values.formData.set("userUuid", jwt.user._id);
       uploadProfileImage(values.formData)
@@ -43,6 +46,7 @@ const CardPicture = ({ pseudo, lastName, birthday, nb }) => {
   };
 
   const removeImage = () => {
+    imageProfileSet(false);
     deleteProfileImage()
       .then(() => {
         setBase64Image("");

@@ -215,6 +215,7 @@ exports.signin = async (req, res) => {
               connection
             );
           } else if (result.length === 1) {
+            const userUuid = result[0].Uuid;
             try {
               const match = await bcrypt.compare(
                 password,
@@ -242,18 +243,19 @@ exports.signin = async (req, res) => {
                           500,
                           connection
                         );
+                      } else {
+                        const token = generateJwt(userUuid);
+                        connection.release();
+                        return res.json({
+                          token: token,
+                          user: {
+                            _id: userUuid
+                          },
+                          msg: "Authentification réussie"
+                        });
                       }
                     }
                   );
-                  const token = generateJwt(result[0].Uuid);
-                  connection.release();
-                  return res.json({
-                    token: token,
-                    user: {
-                      _id: result[0].Uuid
-                    },
-                    msg: "Authentification réussie"
-                  });
                 }
               } else {
                 connection.release();

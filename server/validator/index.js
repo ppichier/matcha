@@ -206,7 +206,7 @@ exports.updateProfileValidator = (req, res, next) => {
     });
   }
 
-  if (req.body.gender !== "" && (req.body.gender < 1 || req.body.gender > 5)) {
+  if (req.body.gender !== "" && (req.body.gender < 1 || req.body.gender > 6)) {
     return res.status(400).json({
       err: "Error value gender"
     });
@@ -220,7 +220,7 @@ exports.updateProfileValidator = (req, res, next) => {
 
   if (
     req.body.sexualPreference !== "" &&
-    (req.body.sexualPreference < 1 || req.body.sexualPreference > 5)
+    (req.body.sexualPreference < 1 || req.body.sexualPreference > 6)
   ) {
     return res.status(400).json({
       err: "Error value sexual preference"
