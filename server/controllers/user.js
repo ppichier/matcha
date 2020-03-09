@@ -352,7 +352,7 @@ exports.readProfile = async (req, res) => {
               sexualPreference: result[0][0].SexualOrientationId,
               description: result[0][0].Bio,
               commonTags: commonTagsTmp,
-              myTags: []
+              myTags: myTags
             });
           }
         }

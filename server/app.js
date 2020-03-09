@@ -9,6 +9,7 @@ require("dotenv").config();
 //import routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const matchRoutes = require("./routes/match");
 
 //app
 const app = express();
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 //routes middlewares
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
+app.use("/api", matchRoutes);
 
 const port = process.env.PORT || 8000;
 

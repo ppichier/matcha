@@ -4,14 +4,14 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import { sortProfile } from "../../api";
 
 const SortProfile = () => {
-  const [values, setValues] = useState("");
+  const [filter, setFilter] = useState("");
   const handleChange = i => event => {
-    setValues(i);
+    setFilter(i);
     sortProfile({
-      values
+      filter
     }).catch(err => console.log(err));
   };
-  // console.log(values);
+
   return (
     <Fragment>
       <DropdownButton

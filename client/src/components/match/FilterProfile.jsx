@@ -8,7 +8,7 @@ import { filterProfile } from "../../api";
 import makeAnimated from "react-select/animated";
 
 import queryString from "query-string";
-import { readProfile } from "../../api/user";
+import { readCommonTag } from "../../api";
 
 const FilterProfile = location => {
   const [values, setValues] = useState({
@@ -19,25 +19,10 @@ const FilterProfile = location => {
       { value: "strawberry", label: "Strawberry" },
       { value: "vanilla", label: "Vanilla" }
     ],
-    age: [
-      {
-        min: 18,
-        max: 64
-      }
-    ],
-    location: [
-      {
-        min: 0,
-        max: 0
-      }
-    ],
-    popularite: [0, 100],
-    userSize: [
-      {
-        min: 0,
-        max: 0
-      }
-    ],
+    age: [0, 0],
+    location: [0, 0],
+    popularite: [0, 0],
+    userSize: [0, 0],
     err: "",
     msg: ""
   });
@@ -46,7 +31,7 @@ const FilterProfile = location => {
 
   useEffect(() => {
     const v = queryString.parse(location.search);
-    readProfile(v.uuid)
+    readCommonTag(v.uuid)
       .then(data => {
         setValues({
           ...data,
@@ -56,7 +41,7 @@ const FilterProfile = location => {
       })
       .catch(err => console.log(err));
   }, [location]);
-
+  console.log(values.commonTags);
   const handleChangeTags = tags => {
     console.log(tags);
     if (tags === null) {
@@ -78,15 +63,13 @@ const FilterProfile = location => {
   );
 
   const handleChange = (name, i) => event => {
-    const a = values[name];
-    a.splice(i, 1);
-    a.splice(i, 0, { min: event[0], max: event[1] });
+    let b = [event[0], event[1]];
     setValues({
       ...values,
-      [name]: a
+      [name]: b
     });
   };
-
+  console.log(values.age);
   const handleSubmit = event => {
     filterProfile({
       age: values.age,
