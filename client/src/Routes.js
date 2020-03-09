@@ -10,12 +10,15 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 import NotFound from "./components/404/NotFound";
 import CustomRoute from "./components/auth/CustomRoute";
 
+import ProfileMap from "./components/profile/ProfileMap";
+
 const Routes = () => {
   return (
     <BrowserRouter>
       <Switch>
         <CustomRoute path="/" exact></CustomRoute>
         <Route path="/login" exact component={Login}></Route>;
+        <Route path="/map" exact component={ProfileMap}></Route>;
         <PrivateRoute
           path="/profile/me"
           exact

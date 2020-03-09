@@ -13,7 +13,10 @@ exports.updateProfile = (req, res) => {
     sexualPreference,
     description,
     userSize,
-    userUuid
+    lat,
+    lng,
+    userUuid,
+    localisationActive
   } = req.body;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -44,8 +47,12 @@ exports.updateProfile = (req, res) => {
               connection
             );
           } else {
+            console.log("------------");
+            console.log(lat);
+            console.log(lng);
+            console.log("------------");
             connection.query(
-              "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `UserSize` = ?,`Bio` = ? WHERE `Uuid` = ?",
+              "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `UserSize` = ?,`Bio` = ?, `Lat` = ?, `Lng` = ?, `LocalisationActive` = ? WHERE `Uuid` = ?",
               [
                 email,
                 pseudo,
@@ -56,6 +63,9 @@ exports.updateProfile = (req, res) => {
                 age,
                 userSize,
                 description,
+                lat,
+                lng,
+                localisationActive,
                 req.userUuid
               ],
               (err, result) => {
@@ -352,7 +362,10 @@ exports.readProfile = async (req, res) => {
               sexualPreference: result[0][0].SexualOrientationId,
               description: result[0][0].Bio,
               commonTags: commonTagsTmp,
-              myTags: []
+              myTags: [],
+              lat: result[0][0].Lat,
+              lng: result[0][0].Lng,
+              localisationActive: result[0][0].LocalisationActive
             });
           }
         }

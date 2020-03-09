@@ -13,6 +13,7 @@ import { forgotPassword } from "../../api/auth";
 import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import queryString from "query-string";
+import ProfileMap from "./ProfileMap";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
@@ -35,7 +36,10 @@ const ProfileUser = ({ props, location }) => {
     success: false,
     showErrorToast: false,
     showSuccessToast: false,
-    imageProfileSet: false
+    imageProfileSet: false,
+    localisationActive: false,
+    lat: 48.865,
+    lng: 2.3551
   });
 
   const [imagesChild, setImagesChild] = useState({
@@ -261,6 +265,9 @@ const ProfileUser = ({ props, location }) => {
       //   // else return;
       //   return;
       // });
+      // send map coordinates and useeffect to display or not the map on the first render
+      console.log(values.lat);
+      // console.log(values.lng);
       updateProfile({
         myTags: joinTags,
         email: values.email,
@@ -271,7 +278,10 @@ const ProfileUser = ({ props, location }) => {
         gender: values.gender,
         sexualPreference: values.sexualPreference,
         userSize: values.userSize,
-        description: values.description
+        description: values.description,
+        lat: values.lat,
+        lng: values.lng,
+        localisationActive: values.localisationActive
       })
         .then(data => {
           if (data.err) {
@@ -327,9 +337,23 @@ const ProfileUser = ({ props, location }) => {
     setImagesChild({ ...imagesChild, profileImage: value });
   };
 
-  // const imageProfileSet = value => {
-  //   setImagesChild({ ...imagesChild, profileImage: value });
-  // };
+  const updateProfilePosition = coord => {
+    setValues({ ...values, lat: coord.lat, lng: coord.lng });
+  };
+
+  const displayMap = () => {
+    if (values.localisationActive) {
+      return (
+        <div style={{ width: "350px", height: "350px" }} className="mt-3">
+          <ProfileMap
+            lat={values.lat}
+            lng={values.lng}
+            updateProfilePosition={coord => updateProfilePosition(coord)}
+          />
+        </div>
+      );
+    } else return <Fragment></Fragment>;
+  };
 
   return (
     <Fragment>
@@ -350,19 +374,28 @@ const ProfileUser = ({ props, location }) => {
                 </Row>
                 <Row
                   className="Row mt-4 py-3"
-                  style={{ justifyContent: "center" }}
+                  style={{ flexDirection: "column", alignItems: "center" }}
                 >
                   <Form.Check
                     type="switch"
                     id="custom-switch"
                     label="Activer la localisation"
+                    checked={values.localisationActive}
+                    onChange={() =>
+                      setValues({
+                        ...values,
+                        localisationActive: !values.localisationActive
+                      })
+                    }
                   />
+                  {displayMap()}
                 </Row>
               </Col>
             </Row>
             <button
               className="btn btn-link btn-block mt-4 text-dark"
               onClick={handleChangePassword}
+              style={{ fontWeight: "bold" }}
             >
               Modifier votre mot de passe
             </button>
