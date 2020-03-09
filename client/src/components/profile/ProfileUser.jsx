@@ -117,18 +117,17 @@ const ProfileUser = ({ props, location }) => {
         values[element] &&
         element !== "commonTags" &&
         element !== "myTags" &&
-        values[element] !== "gender" &&
         values[element].length !== 0
       ) {
         width += 8.3333;
       }
-      if (
-        values[element] &&
-        element === "age" &&
-        values.age.toString() === "17"
-      ) {
-        width -= 8.3333;
-      }
+      // if (
+      //   values[element] &&
+      //   element === "age" &&
+      //   values.age.toString() === "17"
+      // ) {
+      //   width -= 8.3333;
+      // }
       if (
         values[element] &&
         element === "userSize" &&
