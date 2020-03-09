@@ -22,7 +22,6 @@ const SimpleMap = ({ lat, lng, updateProfilePosition }) => {
     let coord = marker.getLatLng();
     setCoordinates({ ...coordinates, lat: coord.lat, lng: coord.lng });
     updateProfilePosition({ lat: coord.lat, lng: coord.lng });
-    console.log(coord);
   };
 
   return (

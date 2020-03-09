@@ -109,8 +109,15 @@ const ProfileUser = ({ props, location }) => {
       }
       if (
         values[element] &&
+        values[element] === "gender" &&
+        values[element] !== "6"
+      )
+        width += 8.3333;
+      if (
+        values[element] &&
         element !== "commonTags" &&
         element !== "myTags" &&
+        values[element] !== "gender" &&
         values[element].length !== 0
       ) {
         width += 8.3333;
@@ -259,15 +266,6 @@ const ProfileUser = ({ props, location }) => {
         if (values.commonTags[i].checked === true)
           joinTags.push(values.commonTags[i].label);
       }
-      // values.commonTags.map(e => {
-      //   if (e.checked === true) joinTags.push(e.label);
-      //   // if (e.checked === true) return joinTags.push(e.label);
-      //   // else return;
-      //   return;
-      // });
-      // send map coordinates and useeffect to display or not the map on the first render
-      console.log(values.lat);
-      // console.log(values.lng);
       updateProfile({
         myTags: joinTags,
         email: values.email,
@@ -344,7 +342,7 @@ const ProfileUser = ({ props, location }) => {
   const displayMap = () => {
     if (values.localisationActive) {
       return (
-        <div style={{ width: "350px", height: "350px" }} className="mt-3">
+        <div className="my-3 map">
           <ProfileMap
             lat={values.lat}
             lng={values.lng}
@@ -360,7 +358,7 @@ const ProfileUser = ({ props, location }) => {
       <NavbarHeader />
       <Container>
         <Row style={{ flexWrap: "wrap" }}>
-          <Col md={4} className="mt-5 ">
+          <Col md={5} className="mt-5 ">
             <Row>
               <Col>
                 <Row className="row-pictureProfile py-4">
@@ -400,7 +398,7 @@ const ProfileUser = ({ props, location }) => {
               Modifier votre mot de passe
             </button>
           </Col>
-          <Col md={8} className="pl-5">
+          <Col md={7} className="pl-5">
             <Row className="mt-5 mb-1 row-picture">
               <Picture />
             </Row>

@@ -64,3 +64,17 @@
   border-color: #00fdff !important;
   background-color: #23d5ab !important;
 }
+
+@media screen and (max-width: 992px) {
+  .map {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .map {
+    width: 350px;
+    height: 350px;
+  }
+}

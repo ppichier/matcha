@@ -183,8 +183,6 @@ exports.updateTags = (req, res, next) => {
     })
   );
 
-  console.log(tagsTmp);
-
   pool.getConnection((err, connection) => {
     if (err) {
       return res.status(500).json({
@@ -203,9 +201,7 @@ exports.updateTags = (req, res, next) => {
           commonTags = result.map(tag => {
             return tag.Label;
           });
-          console.log(commonTags);
           const differenceTags = _.difference(tagsTmp, commonTags);
-          console.log(differenceTags);
 
           if (differenceTags.length > 0) {
             //Add differenceTags into Tag table
@@ -218,10 +214,6 @@ exports.updateTags = (req, res, next) => {
                 queryValues += ",";
               }
             });
-            console.log("+++++++++++++");
-            console.log(queryValues);
-            console.log(queryParams);
-            console.log("+++++++++++++");
             connection.query(
               "INSERT INTO Tag (`Label`) VALUES " + queryValues,
               queryParams,
