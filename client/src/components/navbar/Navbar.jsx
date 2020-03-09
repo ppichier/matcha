@@ -46,7 +46,6 @@ const NavbarHeader = () => {
           <Nav.Link href="#link2">
             <span className="navbar-tab">Chat</span>
             <sup className="sup-notification-text">
-              {" "}
               <Badge
                 style={{ backgroundColor: "#FCAF45", color: "white" }}
                 pill
@@ -57,7 +56,6 @@ const NavbarHeader = () => {
           </Nav.Link>
         </Nav>
       </Navbar.Collapse>
-
       <Navbar.Collapse className="justify-content-end">
         <Nav className="navbar-container">
           <Nav.Link href="#home">

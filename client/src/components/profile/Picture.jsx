@@ -4,7 +4,7 @@ import {
   uploadSecondaryImages,
   deleteSecondaryImage,
   readSecondaryImages
-} from "../../api/";
+} from "../../api/user";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

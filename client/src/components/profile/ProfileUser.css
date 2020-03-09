@@ -59,3 +59,8 @@
   font-weight: bold !important;
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 }
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  border-color: #00fdff !important;
+  background-color: #23d5ab !important;
+}

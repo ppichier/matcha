@@ -1,29 +1,114 @@
-import React, { Component, Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Select from "react-select";
 import "../navbar/Navbar.css";
-import { Col, Form } from "react-bootstrap";
-import Slider, { createSliderWithTooltip } from "rc-slider";
+import { Col, Form, Button } from "react-bootstrap";
+import { Range } from "rc-slider";
 import "rc-slider/assets/index.css";
-const SliderWithTooltip = createSliderWithTooltip(Slider);
+import { filterProfile } from "../../api";
+import makeAnimated from "react-select/animated";
 
-const FilterProfile = () => {
+import queryString from "query-string";
+import { readCommonTag } from "../../api";
+
+const FilterProfile = location => {
   const [values, setValues] = useState({
+    selectedTags: [],
+    commonTags: [],
     options: [
       { value: "chocolate", label: "Chocolate" },
       { value: "strawberry", label: "Strawberry" },
       { value: "vanilla", label: "Vanilla" }
-    ]
+    ],
+    age: [0, 0],
+    location: [0, 0],
+    popularite: [0, 0],
+    userSize: [0, 0],
+    err: "",
+    msg: ""
   });
-  const MyComponent = () => <Select options={values.options} />;
+
+  const animatedComponents = makeAnimated();
+
+  useEffect(() => {
+    const v = queryString.parse(location.search);
+    readCommonTag(v.uuid)
+      .then(data => {
+        setValues({
+          ...data,
+          ...values,
+          commonTags: data.commonTags
+        });
+      })
+      .catch(err => console.log(err));
+  }, [location]);
+  console.log(values.commonTags);
+  const handleChangeTags = tags => {
+    console.log(tags);
+    if (tags === null) {
+      setValues({ ...values, selectedTags: [] });
+    } else {
+      let tmp = tags.map(tag => tag.value);
+      setValues({ ...values, selectedTags: tmp });
+    }
+  };
+
+  const MyComponent = () => (
+    <Select
+      closeMenuOnSelect={false}
+      onChange={handleChangeTags}
+      components={animatedComponents}
+      isMulti
+      options={values.commonTags}
+    />
+  );
+
+  const handleChange = (name, i) => event => {
+    let b = [event[0], event[1]];
+    setValues({
+      ...values,
+      [name]: b
+    });
+  };
+  console.log(values.age);
+  const handleSubmit = event => {
+    filterProfile({
+      age: values.age,
+      userSize: values.userSize,
+      location: values.location,
+      opularite: values.popularite,
+      selectedTags: values.selectedTags
+    })
+      .then(data => {
+        if (data.err) {
+          setValues({
+            ...values,
+            err: data.err
+          });
+        } else {
+          setValues({
+            ...values,
+            err: "",
+            msg: data.msg
+          });
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
   return (
     <Fragment>
-      <Form.Label className="style-menu">Tag</Form.Label>
+      <Form.Label className="style-menu">Tags</Form.Label>
       {MyComponent()}
       <Form className="style-menu">
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Age</Form.Label>
-            <SliderWithTooltip min={17} max={65} marks={{ 18: 18, 65: 65 }} />
+            <Range
+              min={17}
+              max={65}
+              onChange={handleChange("age")}
+              marks={{ 18: 18, 65: 65 }}
+            />
           </Form.Group>
         </Form.Row>
       </Form>
@@ -31,9 +116,10 @@ const FilterProfile = () => {
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Localisation</Form.Label>
-            <SliderWithTooltip
+            <Range
               min={0}
               max={1000}
+              onChange={handleChange("location")}
               marks={{ 0: 0, 1000: 1000 }}
             />
           </Form.Group>
@@ -42,10 +128,11 @@ const FilterProfile = () => {
       <Form className="style-menu">
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
-            <Form.Label>popularité</Form.Label>
-            <SliderWithTooltip
+            <Form.Label>popularite</Form.Label>
+            <Range
               min={0}
               max={1000}
+              onChange={handleChange("popularite")}
               marks={{ 0: 0, 1000: 1000 }}
             />
           </Form.Group>
@@ -55,13 +142,20 @@ const FilterProfile = () => {
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Taille</Form.Label>
-            <SliderWithTooltip
+            <Range
               min={130}
               max={230}
+              onChange={handleChange("userSize")}
               marks={{ 130: 130, 230: 230 }}
             />
           </Form.Group>
         </Form.Row>
+        <Button
+          onClick={() => handleSubmit(values)}
+          className="text-uppercase profile-btn "
+        >
+          Valider
+        </Button>
       </Form>
     </Fragment>
   );
