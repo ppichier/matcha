@@ -3,7 +3,11 @@ import "./ProfilePicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { uploadProfileImage, deleteProfileImage, readImage } from "../../api";
+import {
+  uploadProfileImage,
+  deleteProfileImage,
+  readImage
+} from "../../api/user";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 const ProfilePicture = ({ pseudo, lastName, birthday, imageProfileSet }) => {

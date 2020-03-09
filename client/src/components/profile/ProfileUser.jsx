@@ -3,7 +3,7 @@ import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import ProfilePicture from "./ProfilePicture";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
-import { updateProfile, readProfile } from "../../api/";
+import { updateProfile, readProfile } from "../../api/user";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";

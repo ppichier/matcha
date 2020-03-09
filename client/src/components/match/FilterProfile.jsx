@@ -1,18 +1,19 @@
-import React, { Component, Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Select from "react-select";
 import "../navbar/Navbar.css";
 import { Col, Form, Button } from "react-bootstrap";
 import { Range } from "rc-slider";
 import "rc-slider/assets/index.css";
-import { filterProfile } from "../../api/";
+import { filterProfile } from "../../api";
+import makeAnimated from "react-select/animated";
 
-// import queryString from "query-string";
-// import { readProfile } from "../../api/";
+import queryString from "query-string";
+import { readProfile } from "../../api/user";
 
-const FilterProfile = () => {
+const FilterProfile = location => {
   const [values, setValues] = useState({
-    // myTags: [],
-    // commonTags: [],
+    selectedTags: [],
+    commonTags: [],
     options: [
       { value: "chocolate", label: "Chocolate" },
       { value: "strawberry", label: "Strawberry" },
@@ -30,12 +31,7 @@ const FilterProfile = () => {
         max: 0
       }
     ],
-    popularite: [
-      {
-        min: 0,
-        max: 0
-      }
-    ],
+    popularite: [0, 100],
     userSize: [
       {
         min: 0,
@@ -45,19 +41,42 @@ const FilterProfile = () => {
     err: "",
     msg: ""
   });
-  // useEffect(() => {
-  //   readProfile()
-  //     .then(data => {
-  //       setValues({
-  //         ...values,
-  //         commonTags: data.commonTags
-  //       });
-  //     })
-  //     .catch(err => console.log(err));
-  // }, []);
+
+  const animatedComponents = makeAnimated();
+
+  useEffect(() => {
+    const v = queryString.parse(location.search);
+    readProfile(v.uuid)
+      .then(data => {
+        setValues({
+          ...data,
+          ...values,
+          commonTags: data.commonTags
+        });
+      })
+      .catch(err => console.log(err));
+  }, [location]);
+
+  const handleChangeTags = tags => {
+    console.log(tags);
+    if (tags === null) {
+      setValues({ ...values, selectedTags: [] });
+    } else {
+      let tmp = tags.map(tag => tag.value);
+      setValues({ ...values, selectedTags: tmp });
+    }
+  };
+
   const MyComponent = () => (
-    <Select className="basic-multi-select" isMulti options={values.options} />
+    <Select
+      closeMenuOnSelect={false}
+      onChange={handleChangeTags}
+      components={animatedComponents}
+      isMulti
+      options={values.commonTags}
+    />
   );
+
   const handleChange = (name, i) => event => {
     const a = values[name];
     a.splice(i, 1);
@@ -73,7 +92,8 @@ const FilterProfile = () => {
       age: values.age,
       userSize: values.userSize,
       location: values.location,
-      opularite: values.popularite
+      opularite: values.popularite,
+      selectedTags: values.selectedTags
     })
       .then(data => {
         if (data.err) {
@@ -94,7 +114,7 @@ const FilterProfile = () => {
 
   return (
     <Fragment>
-      <Form.Label className="style-menu">Tag</Form.Label>
+      <Form.Label className="style-menu">Tags</Form.Label>
       {MyComponent()}
       <Form className="style-menu">
         <Form.Row className="px-4 py-4">
@@ -125,7 +145,7 @@ const FilterProfile = () => {
       <Form className="style-menu">
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
-            <Form.Label>popularité</Form.Label>
+            <Form.Label>popularite</Form.Label>
             <Range
               min={0}
               max={1000}
@@ -147,13 +167,13 @@ const FilterProfile = () => {
             />
           </Form.Group>
         </Form.Row>
+        <Button
+          onClick={() => handleSubmit(values)}
+          className="text-uppercase profile-btn "
+        >
+          Valider
+        </Button>
       </Form>
-      <Button
-        onClick={() => handleSubmit(values)}
-        className="text-uppercase style-menu profile-btn "
-      >
-        Valider
-      </Button>
     </Fragment>
   );
 };

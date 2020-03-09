@@ -9,9 +9,6 @@ import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
 
-// import NWReactSlider from "nw-react-slider";
-const SliderWithTooltip = createSliderWithTooltip(Slider);
-
 const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({
     image: [],

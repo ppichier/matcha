@@ -5,7 +5,7 @@ import "./ProfileUser.css";
 import CardPicture from "../match/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { readProfile, readSecondaryImages } from "../../api/";
+import { readProfile, readSecondaryImages } from "../../api/user";
 import queryString from "query-string";
 
 import {

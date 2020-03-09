@@ -3,7 +3,7 @@ import "./CardPicture.css";
 import { Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { readImage } from "../../api/";
+import { readImage } from "../../api/user";
 
 const CardPicture = ({ pseudo, lastName, birthday }) => {
   const [base64Image, setBase64Image] = useState("");
