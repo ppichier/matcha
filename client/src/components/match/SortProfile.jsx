@@ -4,11 +4,13 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import { sortProfile } from "../../api";
 
 const SortProfile = () => {
-  const [filter, setFilter] = useState("");
-  const handleChange = i => event => {
-    setFilter(i);
+  const [sort, setSort] = useState("");
+  console.log(sort);
+
+  const handleChange = trie => () => {
+    setSort(trie);
     sortProfile({
-      filter
+      sort: sort
     }).catch(err => console.log(err));
   };
 
@@ -20,23 +22,26 @@ const SortProfile = () => {
         variant="outline-info"
         className="style-menu px-4 py-4 my-3 mt-1"
       >
-        <Dropdown.Item value="1" onClick={handleChange(1)}>
+        <Dropdown.Item value="1" onClick={handleChange("age+")}>
           Du + jeune au + âgé
         </Dropdown.Item>
-        <Dropdown.Item value="2" onClick={handleChange(2)}>
+        <Dropdown.Item value="2" onClick={handleChange("age-")}>
           Du + âgé au + jeune
         </Dropdown.Item>
-        <Dropdown.Item value="3" onClick={handleChange(3)}>
+        <Dropdown.Item value="3" onClick={handleChange("distance+")}>
           Du + loin au + près
         </Dropdown.Item>
-        <Dropdown.Item value="4" onClick={handleChange(4)}>
-          Du + tag en commun
+        <Dropdown.Item value="4" onClick={handleChange("distance-")}>
+          Du + près au + loin
         </Dropdown.Item>
-        <Dropdown.Item value="5" onClick={handleChange(5)}>
+        <Dropdown.Item value="5" onClick={handleChange("score+")}>
           Du + populaire au - populaire
         </Dropdown.Item>
-        <Dropdown.Item value="6" onClick={handleChange(6)}>
+        <Dropdown.Item value="6" onClick={handleChange("score-")}>
           Du - populaire au + populaire
+        </Dropdown.Item>
+        <Dropdown.Item value="7" onClick={handleChange("tag")}>
+          Trier par tag
         </Dropdown.Item>
       </DropdownButton>
     </Fragment>
