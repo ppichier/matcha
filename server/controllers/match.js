@@ -27,9 +27,12 @@ exports.readCommonTag = async (req, res) => {
   });
 };
 exports.filterProfile = (req, res) => {
-  const { age, location, popularite, userSize } = req.body;
+  const { age, location, score, userSize, selectedTags } = req.body;
+  console.log(age);
+  console.log(selectedTags);
 };
 
 exports.sortProfile = (req, res) => {
-  const {} = req.body;
+  const { sort } = req.body;
+  console.log(sort);
 };

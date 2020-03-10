@@ -14,11 +14,6 @@ const FilterProfile = location => {
   const [values, setValues] = useState({
     selectedTags: [],
     commonTags: [],
-    options: [
-      { value: "chocolate", label: "Chocolate" },
-      { value: "strawberry", label: "Strawberry" },
-      { value: "vanilla", label: "Vanilla" }
-    ],
     age: [0, 0],
     location: [0, 0],
     score: [0, 0],
@@ -43,7 +38,6 @@ const FilterProfile = location => {
   }, [location]);
 
   const handleChangeTags = tags => {
-    console.log(tags);
     if (tags === null) {
       setValues({ ...values, selectedTags: [] });
     } else {

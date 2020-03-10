@@ -7,10 +7,10 @@ const SortProfile = () => {
   const [sort, setSort] = useState("");
   console.log(sort);
 
-  const handleChange = trie => () => {
-    setSort(trie);
+  const handleChange = target => () => {
+    setSort(target);
     sortProfile({
-      sort: sort
+      sort: target
     }).catch(err => console.log(err));
   };
 
