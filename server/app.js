@@ -3,8 +3,9 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const chalk = require("chalk");
-// const formData = require("express-form-data");
 require("dotenv").config();
+
+const faker = require("./faker");
 
 //import routes
 const authRoutes = require("./routes/auth");
@@ -18,7 +19,8 @@ const app = express();
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
-// app.use(formData.parse());
+
+faker.generateFakeProfiles();
 
 //routes middlewares
 app.use("/api", authRoutes);
