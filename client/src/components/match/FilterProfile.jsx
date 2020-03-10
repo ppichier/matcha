@@ -21,7 +21,7 @@ const FilterProfile = location => {
     ],
     age: [0, 0],
     location: [0, 0],
-    popularite: [0, 0],
+    score: [0, 0],
     userSize: [0, 0],
     err: "",
     msg: ""
@@ -41,7 +41,7 @@ const FilterProfile = location => {
       })
       .catch(err => console.log(err));
   }, [location]);
-  console.log(values.commonTags);
+
   const handleChangeTags = tags => {
     console.log(tags);
     if (tags === null) {
@@ -69,13 +69,13 @@ const FilterProfile = location => {
       [name]: b
     });
   };
-  console.log(values.age);
+
   const handleSubmit = event => {
     filterProfile({
       age: values.age,
       userSize: values.userSize,
       location: values.location,
-      opularite: values.popularite,
+      score: values.score,
       selectedTags: values.selectedTags
     })
       .then(data => {
@@ -132,7 +132,7 @@ const FilterProfile = location => {
             <Range
               min={0}
               max={1000}
-              onChange={handleChange("popularite")}
+              onChange={handleChange("score")}
               marks={{ 0: 0, 1000: 1000 }}
             />
           </Form.Group>
