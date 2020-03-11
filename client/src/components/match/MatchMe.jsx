@@ -9,10 +9,39 @@ import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
 
+// one fetch for list of profiles
+// x fetch for x images
+
 const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({
     image: [],
-    uploading: false
+    uploading: false,
+    profiles: [
+      {
+        pseudo: "ppichier",
+        firstName: "Pier'Antonio",
+        popularity: 100,
+        age: 28
+      },
+      {
+        pseudo: "ppichier",
+        firstName: "Pier'Antonio",
+        popularity: 100,
+        age: 28
+      },
+      {
+        pseudo: "ppichier",
+        firstName: "Pier'Antonio",
+        popularity: 100,
+        age: 28
+      },
+      {
+        pseudo: "ppichier",
+        firstName: "Pier'Antonio",
+        popularity: 100,
+        age: 28
+      }
+    ]
   });
   const handleChange = event => {
     event.preventDefault();
@@ -21,6 +50,20 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
     const tmp = { ...values, image: [...values.image, files] };
     // const formData = new FormData();
     setValues(tmp);
+  };
+
+  const card = () => {
+    return values.profiles.map((profile, i) => {
+      return (
+        <div className="styleCard py-3 px-3 mx-3 my-3" key={i}>
+          <CardPicture
+            lastName="Pier'Antonio"
+            pseudo={profile.pseudo}
+            birthday="05/18/1992"
+          />
+        </div>
+      );
+    });
   };
 
   return (
@@ -35,111 +78,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
 
           {/* <Row> */}
           <Col className="">
-            <Row style={{ justifyContent: "center" }}>
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  birthday="05/18/1992"
-                  nb={1}
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-
-              <div className="styleCard py-3 px-3 mx-3 my-3">
-                <CardPicture
-                  lastName="Pier'Antonio"
-                  pseudo="Ppichier"
-                  city="Paris"
-                  birthday="05/18/1992"
-                />
-              </div>
-            </Row>
+            <Row style={{ justifyContent: "center" }}>{card()}</Row>
           </Col>
         </Row>
       </Container>

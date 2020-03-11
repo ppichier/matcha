@@ -33,7 +33,6 @@ const ProfileUser = ({ props, location }) => {
     width: 0,
     err: "",
     msg: "",
-    success: false,
     showErrorToast: false,
     showSuccessToast: false,
     imageProfileSet: false,
@@ -51,6 +50,9 @@ const ProfileUser = ({ props, location }) => {
 
   useEffect(() => {
     const v = queryString.parse(location.search);
+    console.log(v);
+
+    //Send uuid profile
 
     readProfile(v.uuid)
       .then(data => {
@@ -67,7 +69,6 @@ const ProfileUser = ({ props, location }) => {
             width: 0,
             err: "",
             msg: "",
-            success: "",
             showErrorToast: false,
             showSuccessToast: false
           });
@@ -255,7 +256,6 @@ const ProfileUser = ({ props, location }) => {
       setValues({
         ...values,
         err: verif.err,
-        success: false,
         showErrorToast: true,
         showSuccessToast: false
       });
@@ -293,7 +293,6 @@ const ProfileUser = ({ props, location }) => {
               ...values,
               err: "",
               msg: data.msg,
-              success: true,
               showSuccessToast: true,
               showErrorToast: false
             });

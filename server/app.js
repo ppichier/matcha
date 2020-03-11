@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const chalk = require("chalk");
 require("dotenv").config();
 
-const faker = require("./faker");
+// const faker = require("./faker");
 
 //import routes
 const authRoutes = require("./routes/auth");
@@ -20,7 +20,7 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 
-faker.generateFakeProfiles();
+// faker.generateFakeProfiles();
 
 //routes middlewares
 app.use("/api", authRoutes);
