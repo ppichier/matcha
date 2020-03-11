@@ -238,14 +238,14 @@ const ProfileUser = ({ props, location }) => {
   };
 
   const ageFormatter = v => {
-    if (toString(v) === "17") {
+    if (v.toString() === "17") {
       return "Age";
     }
     return `${v} ans`;
   };
 
   const cmFormatter = v => {
-    if (toString(v) === "129") {
+    if (v.toString() === "129") {
       return "Taille";
     }
     return `${v}cm`;
@@ -357,6 +357,46 @@ const ProfileUser = ({ props, location }) => {
     } else return <Fragment></Fragment>;
   };
 
+  const getLocation = e => {
+    const showPosition = position => {
+      setValues({
+        ...values,
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        localisationActive: true
+      });
+    };
+
+    const notAllowedPosition = () => {
+      //check for ip to localize
+      setValues({
+        ...values,
+        localisationActive: false
+      });
+    };
+
+    if (e.target.checked) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          showPosition,
+          notAllowedPosition
+        );
+      } else {
+        setSecondaryValues({
+          msg: "",
+          err: "Geolocalistation non supporté par le navigateur.",
+          showErrorToast: true,
+          showSuccessToast: false
+        });
+      }
+    } else {
+      setValues({
+        ...values,
+        localisationActive: false
+      });
+    }
+  };
+
   return (
     <Fragment>
       <NavbarHeader />
@@ -383,12 +423,9 @@ const ProfileUser = ({ props, location }) => {
                     id="switch"
                     label="Activer la localisation"
                     checked={values.localisationActive}
-                    onChange={() =>
-                      setValues({
-                        ...values,
-                        localisationActive: !values.localisationActive
-                      })
-                    }
+                    onChange={e => {
+                      getLocation(e);
+                    }}
                   />
                   {displayMap()}
                 </Row>
