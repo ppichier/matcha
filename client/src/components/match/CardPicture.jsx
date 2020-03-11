@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { readImage } from "../../api/user";
 
-const CardPicture = ({ pseudo, lastName, birthday }) => {
+const CardPicture = ({ pseudo, firstName, birthday }) => {
   const [base64Image, setBase64Image] = useState("");
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const CardPicture = ({ pseudo, lastName, birthday }) => {
             </div>
 
             <div className="info">
-              <div>{lastName}</div>
+              <div>{firstName}</div>
               <div className="desc">{pseudo}</div>
               <div className="desc">{isShow(birthday)}</div>
             </div>
