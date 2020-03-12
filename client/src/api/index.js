@@ -44,3 +44,18 @@ export const readCommonTag = uuid => {
     .then(res => res.json())
     .catch(err => console.log(err));
 };
+
+export const firstFilter = () => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/match/firstFilter`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt.token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ userUuid: jwt.user._id })
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};

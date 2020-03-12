@@ -122,7 +122,7 @@ const FilterProfile = location => {
       <Form className="style-menu">
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
-            <Form.Label>popularite</Form.Label>
+            <Form.Label> Popularite</Form.Label>
             <Range
               min={0}
               max={1000}

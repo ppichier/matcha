@@ -168,6 +168,7 @@ exports.uploadSecondaryImages = (req, res) => {
 };
 
 exports.deleteProfileImage = (req, res) => {
+  console.log("++++++++++");
   const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -264,6 +265,7 @@ exports.deleteSecondaryImage = (req, res) => {
                     );
                   } else {
                     connection.release();
+
                     return res.json({
                       msg: "image delete"
                     });

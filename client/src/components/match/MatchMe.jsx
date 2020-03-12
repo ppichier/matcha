@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import "./CardPicture.css";
 import { Row, Col, Container } from "react-bootstrap";
 import CardPicture from "./CardPicture";
@@ -8,6 +8,7 @@ import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
+import { firstFilter } from "../../api";
 
 // one fetch for list of profiles
 // x fetch for x images
@@ -43,6 +44,9 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       }
     ]
   });
+  useEffect(() => {
+    firstFilter();
+  }, []);
   const handleChange = event => {
     event.preventDefault();
 
