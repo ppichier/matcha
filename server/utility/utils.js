@@ -11,7 +11,6 @@ exports.getUserTags = userId => {
           `SELECT tag.* FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId FROM user WHERE Uuid = ?);`,
           [userId],
           (err, result) => {
-            console.log(result);
             if (err) {
               reject("Internal Error");
             } else {
