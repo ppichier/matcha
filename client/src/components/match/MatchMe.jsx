@@ -8,6 +8,7 @@ import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
+import { useEffect } from "react";
 
 // one fetch for list of profiles
 // x fetch for x images
@@ -21,28 +22,33 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       },
       {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       },
       {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       },
       {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       }
     ]
   });
+
   const handleChange = event => {
     event.preventDefault();
 

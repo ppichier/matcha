@@ -30,10 +30,6 @@ const ProfileUser = ({ props, location }) => {
     sexualPreference: "",
     description: "",
     userSize: "129",
-    // err: "",
-    // msg: "",
-    // showErrorToast: false,
-    // showSuccessToast: false,
     imageProfileSet: false,
     localisationActive: false,
     lat: 48.865,
@@ -257,7 +253,7 @@ const ProfileUser = ({ props, location }) => {
     setValues({ ...values, myTags: tab });
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     const verif = verifValidated(values);
 
     if (verif.err !== null) {
@@ -273,6 +269,16 @@ const ProfileUser = ({ props, location }) => {
         if (values.commonTags[i].checked === true)
           joinTags.push(values.commonTags[i].label);
       }
+      let lat = values.lat;
+      let lng = values.lat;
+      if (!values.localisationActive) {
+        let res = await fetch(`https://geolocation-db.com/json/`, {
+          method: "GET"
+        }).catch(err => console.log(err));
+        let coords = await res.json();
+        lat = coords.latitude;
+        lng = coords.longitude;
+      }
       updateProfile({
         myTags: joinTags,
         email: values.email,
@@ -284,8 +290,8 @@ const ProfileUser = ({ props, location }) => {
         sexualPreference: values.sexualPreference,
         userSize: values.userSize,
         description: values.description,
-        lat: values.lat,
-        lng: values.lng,
+        lat,
+        lng,
         localisationActive: values.localisationActive
       })
         .then(data => {
