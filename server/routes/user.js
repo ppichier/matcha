@@ -12,7 +12,8 @@ const {
   readProfile,
   changePage,
   updateProfile,
-  deleteTag
+  deleteTag,
+  readGuestProfile
 } = require("../controllers/user");
 
 const {
@@ -49,8 +50,9 @@ router.post("/profile/deleteProfileImage", verifyToken, deleteProfileImage);
 router.post("/profile/deleteSecondaryImage", verifyToken, deleteSecondaryImage);
 
 router.get("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
-router.get("/profile/readImage", verifyToken, readImage);
+router.post("/profile/readImage", verifyToken, readImage);
 router.post("/profile/readProfile", verifyToken, readProfile);
+router.post("/profile/readGuestProfile", verifyToken, readGuestProfile);
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);
 

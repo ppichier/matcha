@@ -6,6 +6,20 @@
   background-color: white;
   border-radius: 6px;
 }
+
+.styleCard:hover {
+  /* border: 2px solid; */
+  background: linear-gradient(
+    -45deg,
+    #ee7752,
+    #fad5c0,
+    #23a6d5,
+    #23d5ab
+  ) !important;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
 .btn-outline-info {
   width: 100%;
 }

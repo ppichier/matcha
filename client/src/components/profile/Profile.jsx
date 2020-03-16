@@ -5,7 +5,7 @@ import "./ProfileUser.css";
 import CardPicture from "../match/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { readProfile, readSecondaryImages } from "../../api/user";
+import { readGuestProfile, readSecondaryImages } from "../../api/user";
 import queryString from "query-string";
 
 import {
@@ -14,17 +14,17 @@ import {
   faUserSlash,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
+import { Redirect } from "react-router-dom";
 
-const Profile = ({ location }) => {
+const Profile = ({ location, history }) => {
   const [values, setValues] = useState({
     indexImages: 0,
     directionImages: null,
     fakeCount: false,
     like: 0
   });
-
+  const [currentUuid, setCurrentUuid] = useState("");
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
-
   const [infosUser, setInfosUser] = useState({
     gender: "",
     pseudo: "",
@@ -34,20 +34,26 @@ const Profile = ({ location }) => {
     age: "",
     sexualPreference: "",
     description: "",
-    myTags: []
+    myTags: [],
+    redirect: false
   });
 
   useEffect(() => {
-    const values = queryString.parse(location.search);
-    readSecondaryImages()
+    const query = queryString.parse(location.search);
+    setCurrentUuid(query.uuid);
+    readSecondaryImages() // SECONDARY UUID NOT IMPLEMENTED
       .then(data => {
         setBase64Images(data.images);
       })
       .catch(err => console.log(err));
 
-    readProfile(values.uuid)
+    readGuestProfile(query.uuid)
       .then(data => {
-        setInfosUser({ ...data });
+        if (data.err) {
+          setInfosUser({ ...infosUser, redirect: true });
+        } else {
+          setInfosUser({ ...data });
+        }
       })
       .catch(err => console.log(err));
   }, [location]);
@@ -60,18 +66,21 @@ const Profile = ({ location }) => {
     };
     setValues(tmp);
   };
+
   const handleFakeCount = () => {
     let tmp;
     if (values.fakeCount === false) tmp = { ...values, fakeCount: true };
     else tmp = { ...values, fakeCount: false };
     setValues(tmp);
   };
+
   const handleLike = () => {
     let tmp;
     if (values.like === 0) tmp = { ...values, like: 1 };
     else tmp = { ...values, like: 0 };
     setValues(tmp);
   };
+
   const handleiconLike = () => {
     if (values.like === 0)
       return (
@@ -90,6 +99,7 @@ const Profile = ({ location }) => {
         />
       );
   };
+
   const handleiconfakeCount = () => {
     if (values.fakeCount === true)
       return (
@@ -108,6 +118,7 @@ const Profile = ({ location }) => {
         />
       );
   };
+
   const handleImages = () => {
     return base64Images
       .filter(e => e !== "")
@@ -123,28 +134,39 @@ const Profile = ({ location }) => {
         );
       });
   };
+
   const isShow = () => {
     if (infosUser.age >= 18) return <Fragment>{infosUser.age} ans</Fragment>;
   };
+
   const convGender = () => {
-    if (infosUser.gender === 1) return " un Homme ßß";
-    if (infosUser.gender === 2) return " une Femme ";
-    if (infosUser.gender === 3) return " une Transféminine ";
-    if (infosUser.gender === 4) return " une Transmasculin ";
-    if (infosUser.gender === 5) return " Bigenre ";
+    if (infosUser.gender === 1) return "un Homme";
+    if (infosUser.gender === 2) return "une Femme";
+    if (infosUser.gender === 3) return "une Transféminine";
+    if (infosUser.gender === 4) return "une Transmasculin";
+    if (infosUser.gender === 5) return "Bigenre";
     else return "";
   };
   const convSexualPtoString = () => {
-    if (infosUser.sexualPreference === 1) return " un Homme ";
-    else if (infosUser.sexualPreference === 2) return " une Femme ";
-    else if (infosUser.sexualPreference === 3) return " une Transféminine ";
-    else if (infosUser.sexualPreference === 4) return " une Transmasculin ";
-    else if (infosUser.sexualPreference === 5) return " Bigenre ";
+    if (infosUser.sexualPreference === 1) return "un Homme";
+    else if (infosUser.sexualPreference === 2) return "une Femme";
+    else if (infosUser.sexualPreference === 3) return "une Transféminine";
+    else if (infosUser.sexualPreference === 4) return "une Transmasculin";
+    else if (infosUser.sexualPreference === 5) return "Bigenre";
     else return "";
+  };
+
+  const redirectUser = () => {
+    if (infosUser.redirect) {
+      return <Redirect to="/match" />;
+    } else {
+      return <Fragment />;
+    }
   };
 
   return (
     <Fragment>
+      {redirectUser()}
       <NavbarHeader />
       <Container className="my-4">
         <Row>
@@ -156,6 +178,7 @@ const Profile = ({ location }) => {
                     lastName={infosUser.lastName}
                     pseudo={infosUser.pseudo}
                     birthday={infosUser.age}
+                    userUuid={currentUuid}
                   />
                 </Row>
                 <Row
@@ -183,7 +206,6 @@ const Profile = ({ location }) => {
               {handleImages()}
             </Carousel>
 
-            {/* </Row> */}
             <Row className="mb-4 pt-3 pb-4 mt-4 Row">
               <Col>
                 <h3 className="descp">{infosUser.firstName}</h3>

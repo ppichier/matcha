@@ -42,8 +42,8 @@ exports.generateFakeProfiles = () => {
             tags: _.uniq(userTags),
             lastConnexion: lastConnexion[Math.round(Math.random())], //generate date
             emailValidate: 1,
-            genreId: Math.floor(Math.random() * 7), // generate random 0-6
-            sexualOrientationId: Math.floor(Math.random() * 7), // generate random 0-6
+            genreId: Math.floor(Math.random() * 6) + 1, // generate random 0-6
+            sexualOrientationId: Math.floor(Math.random() * 6) + 1, // generate random 0-6
             age: Math.floor(Math.random() * (66 - 18)) + 18, //generate random between 18 - 65
             userSize: Math.floor(Math.random() * (231 - 130)) + 130, //generate random betweem  130 230
             bio: faker.lorem.text(),
@@ -57,7 +57,7 @@ exports.generateFakeProfiles = () => {
           // PARIS 48.881303,2.329421
 
           connection.query(
-            "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio, Lat, Lng, LocalisationActive, Score) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio, Lat, Lng, LocalisationActive, Score, ImageProfile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
               people.uuid,
               people.email,
@@ -74,7 +74,8 @@ exports.generateFakeProfiles = () => {
               people.lat,
               people.lng,
               people.localisationActive,
-              people.popularity
+              people.popularity,
+              people.imageProfile
             ],
             (err, result) => {
               if (err)

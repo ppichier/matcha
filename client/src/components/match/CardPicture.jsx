@@ -1,20 +1,26 @@
 import React, { useState, Fragment, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./CardPicture.css";
 import { Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { readImage } from "../../api/user";
 
-const CardPicture = ({ pseudo, firstName, birthday }) => {
+const CardPicture = ({ pseudo, firstName, age, score, userUuid }) => {
   const [base64Image, setBase64Image] = useState("");
+  const [fakeImage, setFakeImage] = useState("");
 
   useEffect(() => {
-    readImage()
+    readImage(userUuid)
       .then(data => {
-        setBase64Image(data.image);
+        if (data.image) setBase64Image(data.image);
+        else if (data.imageFakeProfile) {
+          setBase64Image("");
+          setFakeImage(data.imageFakeProfile);
+        }
       })
       .catch(err => console.log(err));
-  }, [base64Image]);
+  }, [base64Image, userUuid]);
 
   const handleImage = () => {
     if (base64Image) {
@@ -30,20 +36,33 @@ const CardPicture = ({ pseudo, firstName, birthday }) => {
         </div>
       );
     }
+    if (fakeImage) {
+      return (
+        <div>
+          <label htmlFor="single" className="imgProfile mb-0">
+            <Image
+              className="profile-header-img"
+              src={fakeImage}
+              roundedCircle
+            />
+          </label>
+        </div>
+      );
+    }
   };
 
-  const isShow = birthday => {
-    if (birthday >= 18) return <div>Age: {birthday} ans</div>;
+  const isShow = age => {
+    if (age >= 18) return <div>Age: {age} ans</div>;
   };
   return (
     <Fragment>
       <div className="profile-header-container">
-        <a href="/profile">
+        <Link to={`/profile?uuid=${userUuid}`}>
           <div>
             {handleImage()}
             <div className="rank-label-container">
               <span className="label label-default rank-label">
-                1000{" "}
+                {score}
                 <FontAwesomeIcon
                   icon={faHeart}
                   className="fa-lg mr-1 faHeartliked"
@@ -62,10 +81,10 @@ const CardPicture = ({ pseudo, firstName, birthday }) => {
             <div className="info">
               <div>{firstName}</div>
               <div className="desc">{pseudo}</div>
-              <div className="desc">{isShow(birthday)}</div>
+              <div className="desc">{isShow(age)}</div>
             </div>
           </div>
-        </a>
+        </Link>
       </div>
     </Fragment>
   );

@@ -307,24 +307,65 @@ exports.readSecondaryImages = (req, res) => {
 };
 
 exports.readImage = (req, res) => {
-  //TODO userid different
+  console.log("UserUuid: ", req.userUuid);
+  console.log("GuestUuid: ", req.body.guestUuid);
+  let uuid = req.body.guestUuid ? req.body.guestUuid : req.userUuid;
   let image64 = "";
-  if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
-    filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+  if (fs.existsSync(__dirname + `/../images/${uuid}/`)) {
+    filesName = fs.readdirSync(__dirname + `/../images/${uuid}/`);
     filesNameTmp = filesName.map(e => e.substring(0, 12));
     let j = filesNameTmp.indexOf("imageProfile");
     if (j !== -1) {
       const bitmap = fs.readFileSync(
-        __dirname + `/../images/${req.userUuid}/` + filesName[j]
+        __dirname + `/../images/${uuid}/` + filesName[j]
       );
       image64 = new Buffer.from(bitmap).toString("base64");
+      return res.json({
+        image: image64,
+        imageFakeProfile: null
+      });
     } else {
-      image64 = null;
+      return res.json({
+        image: null,
+        imageFakeProfile:
+          "https://image.flaticon.com/icons/png/512/1177/1177577.png"
+      });
     }
+  } else {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        error.handleError(res, err, "Internal error", 500, connection);
+      } else {
+        connection.query(
+          "SELECT ImageProfile FROM User WHERE Uuid = ?",
+          [uuid],
+          (err, result) => {
+            console.log(result);
+            if (err) {
+              error.handleError(res, err, "Internal error", 500, connection);
+            } else if (result.length === 0 || result[0].ImageProfile === null) {
+              connection.release();
+              console.log("guestuuid link fix");
+              return res.json({
+                image: null,
+                imageFakeProfile:
+                  "https://image.flaticon.com/icons/png/512/1177/1177577.png"
+              });
+            } else {
+              connection.release();
+              console.log("guestuuid link fake");
+              return res.json({
+                image: null,
+                imageFakeProfile: result[0].ImageProfile
+              });
+            }
+          }
+        );
+      }
+    });
   }
-  return res.json({
-    image: image64
-  });
+
+  // }
 };
 
 exports.readProfile = async (req, res) => {
@@ -372,13 +413,48 @@ exports.readProfile = async (req, res) => {
   });
 };
 
+exports.readGuestProfile = async (req, res) => {
+  const uuid = req.body.guestUuid;
+  pool.getConnection((err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      connection.query(
+        `SELECT user.*, genre.GenreId AS GenreId, sexual_orientation.SexualOrientationId AS SexualOrientationId FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
+         SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?);
+         SELECT tag.Label AS CommonTagsLabel FROM  tag`,
+        [uuid, uuid],
+        (err, result) => {
+          if (err) {
+            error.handleError(res, err, "Intenal error", 500, connection);
+          } else if (result[0].length === 0) {
+            error.handleError(res, err, "invalid uuid", 404, connection);
+          } else {
+            console.log(result);
+            const myTags = result[1].map(e => e.TagLabel);
+            connection.release();
+            return res.json({
+              firstName: result[0][0].FirstName,
+              lastName: result[0][0].LastName,
+              pseudo: result[0][0].UserName,
+              email: result[0][0].Email,
+              userSize: result[0][0].UserSize,
+              age: result[0][0].Age,
+              gender: result[0][0].GenreId,
+              sexualPreference: result[0][0].SexualOrientationId,
+              description: result[0][0].Bio,
+              myTags,
+              lat: result[0][0].Lat,
+              lng: result[0][0].Lng,
+              localisationActive: result[0][0].LocalisationActive
+            });
+          }
+        }
+      );
+    }
+  });
+};
+
 exports.changePage = (req, res) => {
   return res.json({ auth: true });
 };
-
-// exports.deleteTag = (req, res) => {
-//   return res.json({
-//     commonTags: [],
-//     myTags: []
-//   });
-// };

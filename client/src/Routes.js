@@ -19,9 +19,6 @@ const Routes = () => {
     return <Fragment></Fragment>;
   }
 
-  
-
-
   return (
     <BrowserRouter>
       <Switch>

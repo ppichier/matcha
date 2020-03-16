@@ -17,39 +17,14 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({
     image: [],
     uploading: false,
-    profiles: [
-      {
-        pseudo: "ppichier",
-        firstName: "Pier'Antonio",
-        popularity: 100,
-        age: 28,
-        distance: 2.5
-      },
-      {
-        pseudo: "ppichier",
-        firstName: "Pier'Antonio",
-        popularity: 100,
-        age: 28,
-        distance: 2.5
-      },
-      {
-        pseudo: "ppichier",
-        firstName: "Pier'Antonio",
-        popularity: 100,
-        age: 28,
-        distance: 2.5
-      },
-      {
-        pseudo: "ppichier",
-        firstName: "Pier'Antonio",
-        popularity: 100,
-        age: 28,
-        distance: 2.5
-      }
-    ]
+    profiles: []
   });
+
   useEffect(() => {
-    firstFilter();
+    firstFilter().then(data => {
+      console.log(data);
+      setValues({ ...values, profiles: data.profiles });
+    });
   }, []);
 
   const handleChange = event => {
@@ -66,9 +41,11 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       return (
         <div className="styleCard py-3 px-3 mx-3 my-3" key={i}>
           <CardPicture
-            firstName="Pier'Antonio"
+            firstName={profile.firstName}
             pseudo={profile.pseudo}
-            birthday="05/18/1992"
+            age={profile.age}
+            score={profile.score}
+            userUuid={profile.userUuid} //change dynamic in URL
           />
         </div>
       );

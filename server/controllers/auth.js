@@ -535,6 +535,7 @@ exports.logout = (req, res) => {
           if (err) {
             error.handleError(res, err, "Internal error", 500, connection);
           } else {
+            connection.release();
             return res.json({
               msg: "Deconnexion réussie"
             });
