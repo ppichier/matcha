@@ -10,7 +10,7 @@ import {
 } from "../../api/user";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-const ProfilePicture = ({ pseudo, lastName, birthday, imageProfileSet }) => {
+const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
   const [values, setValues] = useState({
     uploading: false,
     formData: new FormData(),
@@ -122,7 +122,7 @@ const ProfilePicture = ({ pseudo, lastName, birthday, imageProfileSet }) => {
               />
               <div className="info">
                 <div className="pt-2">
-                  <h4>{lastName}</h4>
+                  <h4>{firstName}</h4>
                 </div>
                 <div className="desc">{pseudo}</div>
                 <div className="desc">{isShow(birthday)}</div>

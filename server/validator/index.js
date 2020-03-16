@@ -56,7 +56,7 @@ exports.userSignupValidator = (req, res, next) => {
   const regexPseudo = /^[0-9a-zA-Z&#($_);.+!-]{1,}$/;
   if (!regexPseudo.test(String(req.body.pseudo))) {
     return res.status(400).json({
-      err: "Pseudo is not valid"
+      err: "Le pseudo n'est pas valide"
     });
   }
 
@@ -91,7 +91,7 @@ exports.userSigninValidator = (req, res, next) => {
     req.body.password.trim().length === 0
   ) {
     return res.status(400).json({
-      err: "All fields are required"
+      err: "Tous les champs sont requis"
     });
   }
 
@@ -108,7 +108,7 @@ exports.forgotPasswordValidator = (req, res, next) => {
     req.body.email.trim().length === 0
   ) {
     return res.status(400).json({
-      err: "All fields are required"
+      err: "Tous les champs sont requis"
     });
   }
   const rgxEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -130,7 +130,7 @@ exports.recoverPasswordValidator = (req, res, next) => {
     req.body.password.length > 30
   ) {
     return res.status(400).json({
-      err: "All fields are required"
+      err: "Tous les champs sont requis"
     });
   }
 
@@ -178,7 +178,7 @@ exports.updateProfileValidator = (req, res, next) => {
   const regexPseudo = /^[0-9a-zA-Z&#($_);.+!-]{1,}$/;
   if (!regexPseudo.test(String(req.body.pseudo))) {
     return res.status(400).json({
-      err: "Pseudo is not valid"
+      err: "Le pseudo n'est pas valide"
     });
   }
 

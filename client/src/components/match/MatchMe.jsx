@@ -22,25 +22,29 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       },
       {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       },
       {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       },
       {
         pseudo: "ppichier",
         firstName: "Pier'Antonio",
         popularity: 100,
-        age: 28
+        age: 28,
+        distance: 2.5
       }
     ]
   });
@@ -61,7 +65,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       return (
         <div className="styleCard py-3 px-3 mx-3 my-3" key={i}>
           <CardPicture
-            lastName="Pier'Antonio"
+            firstName="Pier'Antonio"
             pseudo={profile.pseudo}
             birthday="05/18/1992"
           />

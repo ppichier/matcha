@@ -30,15 +30,17 @@ const ProfileUser = ({ props, location }) => {
     sexualPreference: "",
     description: "",
     userSize: "129",
-    width: 0,
-    err: "",
-    msg: "",
-    showErrorToast: false,
-    showSuccessToast: false,
     imageProfileSet: false,
     localisationActive: false,
     lat: 48.865,
     lng: 2.3551
+  });
+
+  const [secondaryValues, setSecondaryValues] = useState({
+    err: "",
+    msg: "",
+    showErrorToast: false,
+    showSuccessToast: false
   });
 
   const [imagesChild, setImagesChild] = useState({
@@ -57,16 +59,17 @@ const ProfileUser = ({ props, location }) => {
     readProfile(v.uuid)
       .then(data => {
         if (data.err) {
-          setValues({
-            ...values,
+          setSecondaryValues({
             err: data.err,
+            msg: "",
             showErrorToast: true,
             showSuccessToast: false
           });
         } else {
           setValues({
-            ...data,
-            width: 0,
+            ...data
+          });
+          setSecondaryValues({
             err: "",
             msg: "",
             showErrorToast: false,
@@ -149,11 +152,13 @@ const ProfileUser = ({ props, location }) => {
       <Toast
         style={{ backgroundColor: "red", maxWidth: "none" }}
         animation
-        onClose={() => setValues({ ...values, showErrorToast: false })}
-        show={values.showErrorToast}
+        onClose={() =>
+          setSecondaryValues({ ...setSecondaryValues, showErrorToast: false })
+        }
+        show={secondaryValues.showErrorToast}
         className="mt-2"
       >
-        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
+        <Toast.Header closeButton={false}>{secondaryValues.err}</Toast.Header>
       </Toast>
     );
   };
@@ -163,11 +168,13 @@ const ProfileUser = ({ props, location }) => {
       <Toast
         style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
         animation
-        onClose={() => setValues({ ...values, showSuccessToast: false })}
-        show={values.showSuccessToast}
+        onClose={() =>
+          setSecondaryValues({ ...secondaryValues, showSuccessToast: false })
+        }
+        show={secondaryValues.showSuccessToast}
         className="mt-2"
       >
-        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
+        <Toast.Header closeButton={false}>{secondaryValues.msg}</Toast.Header>
       </Toast>
     );
   };
@@ -178,20 +185,19 @@ const ProfileUser = ({ props, location }) => {
     } else {
       value = event.target.value;
     }
-    const tmp = {
-      ...values,
-      [name]: value,
+    setValues({ ...values, [name]: value });
+    setSecondaryValues({
+      ...setSecondaryValues,
       showSuccessToast: false,
       showErrorToast: false
-    };
-    setValues(tmp);
+    });
   };
 
   const handleClickCommonTag = (tag, i) => event => {
     const lenTag = validatedTag(tag);
     if (lenTag.err !== null) {
-      setValues({
-        ...values,
+      setSecondaryValues({
+        msg: "",
         err: lenTag.err,
         showErrorToast: true,
         showSuccessToast: false
@@ -212,32 +218,30 @@ const ProfileUser = ({ props, location }) => {
       event.preventDefault();
       const lenTag = validatedTag(event.target.value);
       if (lenTag.err !== null) {
-        const tmp = {
-          ...values,
+        setSecondaryValues({
+          msg: "",
           err: lenTag.err,
           showErrorToast: true,
           showSuccessToast: false
-        };
-        setValues(tmp);
+        });
       } else {
-        const tmp = {
+        setValues({
           ...values,
           myTags: [...values.myTags, event.target.value]
-        };
-        setValues(tmp);
+        });
       }
     }
   };
 
   const ageFormatter = v => {
-    if (toString(v) === "17") {
+    if (v.toString() === "17") {
       return "Age";
     }
     return `${v} ans`;
   };
 
   const cmFormatter = v => {
-    if (toString(v) === "129") {
+    if (v.toString() === "129") {
       return "Taille";
     }
     return `${v}cm`;
@@ -249,12 +253,12 @@ const ProfileUser = ({ props, location }) => {
     setValues({ ...values, myTags: tab });
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     const verif = verifValidated(values);
 
     if (verif.err !== null) {
-      setValues({
-        ...values,
+      setSecondaryValues({
+        msg: "",
         err: verif.err,
         showErrorToast: true,
         showSuccessToast: false
@@ -264,6 +268,16 @@ const ProfileUser = ({ props, location }) => {
       for (let i = 0; i < values.commonTags.length; i++) {
         if (values.commonTags[i].checked === true)
           joinTags.push(values.commonTags[i].label);
+      }
+      let lat = values.lat;
+      let lng = values.lng;
+      if (!values.localisationActive) {
+        let res = await fetch(`https://geolocation-db.com/json/`, {
+          method: "GET"
+        }).catch(err => console.log(err));
+        let coords = await res.json();
+        lat = coords.latitude;
+        lng = coords.longitude;
       }
       updateProfile({
         myTags: joinTags,
@@ -276,21 +290,20 @@ const ProfileUser = ({ props, location }) => {
         sexualPreference: values.sexualPreference,
         userSize: values.userSize,
         description: values.description,
-        lat: values.lat,
-        lng: values.lng,
+        lat,
+        lng,
         localisationActive: values.localisationActive
       })
         .then(data => {
           if (data.err) {
-            setValues({
-              ...values,
+            setSecondaryValues({
+              msg: "",
               err: data.err,
               showErrorToast: true,
               showSuccessToast: false
             });
           } else {
-            setValues({
-              ...values,
+            setSecondaryValues({
               err: "",
               msg: data.msg,
               showSuccessToast: true,
@@ -309,16 +322,15 @@ const ProfileUser = ({ props, location }) => {
     })
       .then(data => {
         if (data.err) {
-          setValues({
-            ...values,
+          setSecondaryValues({
+            msg: "",
             err: data.err,
             showErrorToast: true,
             showSuccessToast: false
           });
         } else if (data.msg) {
-          setValues({
-            ...values,
-            email: "",
+          setSecondaryValues({
+            // email: "",
             err: "",
             msg: data.msg,
             showErrorToast: false,
@@ -351,6 +363,46 @@ const ProfileUser = ({ props, location }) => {
     } else return <Fragment></Fragment>;
   };
 
+  const getLocation = e => {
+    const showPosition = position => {
+      setValues({
+        ...values,
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        localisationActive: true
+      });
+    };
+
+    const notAllowedPosition = () => {
+      //check for ip to localize
+      setValues({
+        ...values,
+        localisationActive: false
+      });
+    };
+
+    if (e.target.checked) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          showPosition,
+          notAllowedPosition
+        );
+      } else {
+        setSecondaryValues({
+          msg: "",
+          err: "Geolocalistation non supporté par le navigateur.",
+          showErrorToast: true,
+          showSuccessToast: false
+        });
+      }
+    } else {
+      setValues({
+        ...values,
+        localisationActive: false
+      });
+    }
+  };
+
   return (
     <Fragment>
       <NavbarHeader />
@@ -362,7 +414,7 @@ const ProfileUser = ({ props, location }) => {
                 <Row className="row-pictureProfile py-4">
                   <ProfilePicture
                     pseudo={values.pseudo}
-                    lastName={values.lastName}
+                    firstName={values.firstName}
                     city={values.city}
                     birthday={values.age}
                     imageProfileSet={value => imageProfileSet(value)}
@@ -377,12 +429,9 @@ const ProfileUser = ({ props, location }) => {
                     id="switch"
                     label="Activer la localisation"
                     checked={values.localisationActive}
-                    onChange={() =>
-                      setValues({
-                        ...values,
-                        localisationActive: !values.localisationActive
-                      })
-                    }
+                    onChange={e => {
+                      getLocation(e);
+                    }}
                   />
                   {displayMap()}
                 </Row>
@@ -409,19 +458,19 @@ const ProfileUser = ({ props, location }) => {
                         <Form.Group as={Col} md="6">
                           <Form.Label>Nom</Form.Label>
                           <Form.Control
-                            value={values.firstName}
+                            value={values.lastName}
                             type="text"
                             placeholder="Nom"
-                            onChange={handleChange("firstName")}
+                            onChange={handleChange("lastName")}
                           ></Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md="6">
                           <Form.Label>Prénom</Form.Label>
                           <Form.Control
-                            value={values.lastName}
+                            value={values.firstName}
                             type="text"
                             placeholder="Prenom"
-                            onChange={handleChange("lastName")}
+                            onChange={handleChange("firstName")}
                           ></Form.Control>
                         </Form.Group>
                       </Form.Row>

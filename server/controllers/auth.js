@@ -62,7 +62,7 @@ exports.signup = (req, res) => {
                   );
                 } else {
                   connection.query(
-                    "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio, Lat, Lng, LocalisationActive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio, Lat, Lng, LocalisationActive, Score) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [
                       userUuid,
                       email,
@@ -78,7 +78,8 @@ exports.signup = (req, res) => {
                       "",
                       48.8655,
                       2.3551,
-                      false
+                      false,
+                      0
                     ],
                     (err, result) => {
                       if (err) {

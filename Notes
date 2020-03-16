@@ -1,3 +1,7 @@
+--------------- SUPER MEGA IMPORTANT POUR CORRECTION ! -------------------
+
+## DEL .env in .gitignore before push to vogsphere !!!!!
+
 
 --------------- IMPORTANT ! -------------------
 ## [FRONT] - navbar included one time (layout?)
@@ -9,19 +13,13 @@
 ## [FRONT / BACK] - if user go to / redirect to login if not auth or match if logged
 ## [FRONT] - UI verifyAccount 
 ## [FRONT] - Move functions api/auth.js to ?
+## [FRONT] - delete App.jsx App.css
 
 ## [FRONT-BACK] - if user auth , could not go to /login
 
 ## [BACK] - check type of image upload (png/jpeg ?)
-
-
-
 ## [BACK] - language msg -> french
 ## [BACK] - error 500 when not logged and go to /match
-
-
-
-
 
 
 -------------- Medium features ------------------

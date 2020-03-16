@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Login from "./components/login/Login";
 import MatchMe from "./components/match/MatchMe";
@@ -9,10 +9,19 @@ import RecoverPassword from "./components/login/RecoverPassword";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import NotFound from "./components/404/NotFound";
 import CustomRoute from "./components/auth/CustomRoute";
-
 import ProfileMap from "./components/profile/ProfileMap";
 
+import { API } from "./config";
+
 const Routes = () => {
+  if (API === undefined) {
+    console.error("API adress is not set");
+    return <Fragment></Fragment>;
+  }
+
+  
+
+
   return (
     <BrowserRouter>
       <Switch>
