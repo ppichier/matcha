@@ -1,11 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const chalk = require("chalk");
-require("dotenv").config();
-
-// const faker = require("./faker");
+const faker = require("./faker");
 
 //import routes
 const authRoutes = require("./routes/auth");
@@ -15,12 +14,13 @@ const matchRoutes = require("./routes/match");
 //app
 const app = express();
 
+//faker
+// faker.generateFakeProfiles();
+
 //middlewares
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
-
-// faker.generateFakeProfiles();
 
 //routes middlewares
 app.use("/api", authRoutes);
