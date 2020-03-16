@@ -63,6 +63,10 @@ const ForgotPassword = () => {
         email: values.email
       })
         .then(data => {
+          if (!data) {
+            console.error("Server down");
+            return;
+          }
           if (data.err) {
             setValues({
               ...values,

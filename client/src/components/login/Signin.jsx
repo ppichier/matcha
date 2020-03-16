@@ -31,7 +31,10 @@ const Signin = ({ forgotPassword }) => {
       password: values.password
     })
       .then(data => {
-        if (data.err) {
+        if (!data) {
+          console.error("Server down");
+          return;
+        } else if (data.err) {
           setValues({ ...values, err: data.err });
         } else {
           // set jwt on localstorage sent by the server

@@ -51,6 +51,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   useEffect(() => {
     firstFilter();
   }, []);
+
   const handleChange = event => {
     event.preventDefault();
 

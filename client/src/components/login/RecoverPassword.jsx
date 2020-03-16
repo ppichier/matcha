@@ -59,6 +59,10 @@ const RecoverPassword = ({ location, history }) => {
         uuid: values.uuid
       })
         .then(data => {
+          if (!data) {
+            console.error("Server down");
+            return;
+          }
           if (data.err) {
             setValues({
               ...values,

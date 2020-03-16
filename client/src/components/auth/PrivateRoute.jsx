@@ -12,7 +12,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       if (localStorage.getItem("jwt")) {
         isAuthenticated()
           .then(data => {
-            if (data.auth) {
+            if (data && data.auth) {
               setAuth(true);
             }
             setLoading(false);

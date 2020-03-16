@@ -11,5 +11,5 @@ const {
 router.post("/match/filterProfile", verifyToken, filterProfile);
 router.post("/match/sortProfile", verifyToken, sortProfile);
 router.post("/match/readCommonTag", verifyToken, readCommonTag);
-router.post("/match/firstFilter", verifyToken, firstFilter);
+router.get("/match/firstFilter", verifyToken, firstFilter);
 module.exports = router;
