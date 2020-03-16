@@ -1,27 +1,6 @@
 import { API } from "../config";
 
-// 1- Client side check JWT is not expired. YES.
-// 2- Then check if JWT token is still for an active user on the server. YES/NO possibly
-
-// const logUserOut = token =>{
-//   setTimeout(()=> MyLogoutFunction(), token.expiresIn)
-// }
-
-// export const isAuthenticated = () => {
-//   if (typeof window == "undefined") {
-//     return false;
-//   }
-//   //If jwt undefined in local storage crash !!
-//   if (localStorage.getItem("jwt")) {
-//     return JSON.parse(localStorage.getItem("jwt"));
-//   } else {
-//     return false;
-//   }
-// };
-
 export const isAuthenticated = () => {
-  //If jwt undefined in local storage crash !!
-
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/changePage`, {
     method: "POST",
@@ -35,8 +14,6 @@ export const isAuthenticated = () => {
     .catch(err => console.log(err));
 };
 export const logout = () => {
-  //If jwt undefined in local storage crash !!
-
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   let userUuid = jwt.user._id;
   return fetch(`${API}/logout`, {

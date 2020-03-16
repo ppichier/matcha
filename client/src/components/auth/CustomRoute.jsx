@@ -12,7 +12,10 @@ const CustomRoute = ({ component: Component, ...rest }) => {
       if (localStorage.getItem("jwt")) {
         isAuthenticated()
           .then(data => {
-            if (data.auth) {
+            if (!data) {
+              console.error("Server down");
+              return;
+            } else if (data.auth) {
               setAuth(true);
             }
             setLoading(false);
