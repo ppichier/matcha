@@ -51,6 +51,7 @@ const FilterProfile = location => {
 
   const MyComponent = () => (
     <Select
+      placeholder="Tags"
       closeMenuOnSelect={false}
       onChange={handleChangeTags}
       components={animatedComponents}
@@ -95,7 +96,13 @@ const FilterProfile = location => {
   return (
     <Fragment>
       {/* <Form.Label className="style-menu">Tags</Form.Label> */}
-      <Form style={{ backgroundColor: "#fff" }}>
+      <Form
+        style={{
+          backgroundColor: "#fff",
+          fontWeight: "bold",
+          color: "#808080"
+        }}
+      >
         <Form.Row className="px-4 pt-4">
           <Form.Group as={Col}>{MyComponent()}</Form.Group>
         </Form.Row>
