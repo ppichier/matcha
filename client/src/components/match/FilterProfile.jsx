@@ -28,6 +28,9 @@ const FilterProfile = location => {
     const v = queryString.parse(location.search);
     readCommonTag(v.uuid)
       .then(data => {
+        if (data && data.err) {
+        } else {
+        }
         setValues({
           ...data,
           ...values,
