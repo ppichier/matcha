@@ -92,8 +92,10 @@ const FilterProfile = location => {
   return (
     <Fragment>
       <Form.Label className="style-menu">Tags</Form.Label>
-      {MyComponent()}
       <Form className="style-menu">
+        <Form.Row className="px-4 pt-4">
+          <Form.Group as={Col}>{MyComponent()}</Form.Group>
+        </Form.Row>
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Age</Form.Label>
@@ -105,8 +107,6 @@ const FilterProfile = location => {
             />
           </Form.Group>
         </Form.Row>
-      </Form>
-      <Form className="style-menu">
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Localisation</Form.Label>
@@ -118,8 +118,6 @@ const FilterProfile = location => {
             />
           </Form.Group>
         </Form.Row>
-      </Form>
-      <Form className="style-menu">
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label> Popularite</Form.Label>
@@ -131,8 +129,6 @@ const FilterProfile = location => {
             />
           </Form.Group>
         </Form.Row>
-      </Form>
-      <Form className="style-menu">
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Taille</Form.Label>

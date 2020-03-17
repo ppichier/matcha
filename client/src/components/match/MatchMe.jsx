@@ -56,9 +56,9 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   return (
     <Fragment>
       <NavbarHeader />
-      <Container fluid className="my-3">
+      <Container fluid className="mt-3">
         <Row>
-          <Col md={3} style={{ height: "100%" }} className="py-3 ">
+          <Col md={3}>
             <SortProfile />
             <FilterProfile />
           </Col>
