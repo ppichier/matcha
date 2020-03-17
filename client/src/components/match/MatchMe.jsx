@@ -46,6 +46,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
             age={profile.age}
             score={profile.score}
             userUuid={profile.userUuid} //change dynamic in URL
+            distance={profile.distance}
           />
         </div>
       );

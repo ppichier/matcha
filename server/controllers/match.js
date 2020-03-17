@@ -88,14 +88,14 @@ exports.firstFilter = (req, res) => {
                       firstName: "wafae",
                       score: 89,
                       age: 28,
-                      distance: 2.5,
+                      distance: Math.round(0.45685 * 100) / 100,
                       userUuid: "33d79c12-97aa-40a8-8b91-fe8720e08a28"
                     },
                     {
                       pseudo: "ppichier",
                       firstName: "Pier'Antonio",
                       score: 1,
-                      age: 28,
+                      age: 17,
                       distance: 2.5,
                       userUuid: "cd2b1f92-aa86-40f6-af4f-9285613dbda4"
                     },

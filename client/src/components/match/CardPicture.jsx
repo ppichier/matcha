@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import "./CardPicture.css";
 import { Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { readImage } from "../../api/user";
 
-const CardPicture = ({ pseudo, firstName, age, score, userUuid }) => {
+const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
   const [base64Image, setBase64Image] = useState("");
   const [fakeImage, setFakeImage] = useState("");
 
@@ -52,36 +52,36 @@ const CardPicture = ({ pseudo, firstName, age, score, userUuid }) => {
   };
 
   const isShow = age => {
-    if (age >= 18) return <div>Age: {age} ans</div>;
+    if (age >= 18) return <div>{age} ans</div>;
+    else return <Fragment />;
   };
   return (
     <Fragment>
       <div className="profile-header-container">
-        <Link to={`/profile?uuid=${userUuid}`}>
+        <Link
+          to={`/profile?uuid=${userUuid}`}
+          style={{
+            color: "grey",
+            fontWeight: "500"
+          }}
+        >
           <div>
             {handleImage()}
             <div className="rank-label-container">
               <span className="label label-default rank-label">
                 {score}
                 <FontAwesomeIcon
-                  icon={faHeart}
-                  className="fa-lg mr-1 faHeartliked"
-                />
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="fa-lg mr-1 faHeartliked"
-                />
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="fa-lg mr-1 faHeartliked"
+                  icon={faStar}
+                  className="ml-2 popularity-icon"
                 />
               </span>
             </div>
 
-            <div className="info">
-              <div>{firstName}</div>
-              <div className="desc">{pseudo}</div>
-              <div className="desc">{isShow(age)}</div>
+            <div>
+              <div style={{ fontWeight: "600" }}>{firstName}</div>
+              <div className="desc pt-1">{pseudo}</div>
+              <div className="desc pt-1">{isShow(age)}</div>
+              <div className="desc pt-1">à {distance} km</div>
             </div>
           </div>
         </Link>

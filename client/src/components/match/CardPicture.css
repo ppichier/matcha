@@ -5,7 +5,7 @@
   -webkit-animation: Gradient 15s ease infinite;
   -moz-animation: Gradient 15s ease infinite;
   animation: Gradient 15s ease infinite;
-  font-weight: 600;
+  font-weight: 500;
 }
 @-webkit-keyframes Gradient {
   0% {
@@ -45,12 +45,11 @@
 }
 
 .profile-header-img {
-  cursor: pointer;
   line-height: 1 !important;
   width: 200px;
   height: 200px;
 }
-a {
+/* a {
   padding: 4px 8px 10px;
   margin-bottom: 9px;
   font-size: 18px;
@@ -58,7 +57,7 @@ a {
   line-height: 2 !important;
   display: flex !important;
   justify-content: center;
-}
+} */
 .desc {
   font-size: 13px;
   line-height: 15px;
@@ -66,23 +65,25 @@ a {
   justify-content: center;
   text-transform: capitalize;
 }
-.info {
-  padding: 6px 11px 12px;
-}
 
 .rank-label-container {
   text-align: center;
+  margin-top: -3px;
 }
 
-.label.label-default.rank-label {
+/* rank-label {
   background-color: rgb(81, 210, 183);
   padding: 5px 10px 5px 10px;
   border-radius: 27px;
-}
+} */
 
 .delete {
   position: absolute;
   top: 30%;
   left: -10px;
   cursor: pointer;
+}
+
+.popularity-icon {
+  color: rgb(255, 220, 128);
 }

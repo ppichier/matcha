@@ -13,10 +13,11 @@ body icon {
   cursor: pointer !important;
 }
 
-body .faHeartliked {
+/* body .faHeartliked {
   cursor: pointer !important;
   color: rgb(161, 7, 7) !important;
-}
+} */
+
 .mytags-main {
   display: flex !important;
   flex-wrap: wrap !important;

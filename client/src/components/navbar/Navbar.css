@@ -4,7 +4,7 @@
   -webkit-animation: Gradient 15s ease infinite;
   -moz-animation: Gradient 15s ease infinite;
   animation: Gradient 15s ease infinite;
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .navbar-container > * {
@@ -13,7 +13,6 @@
 
 .navbar-tab {
   color: #fff;
-  font-weight: bold;
 }
 
 @-webkit-keyframes Gradient {

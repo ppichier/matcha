@@ -157,16 +157,67 @@ const Profile = ({ location, history }) => {
   };
 
   const redirectUser = () => {
-    if (infosUser.redirect) {
-      return <Redirect to="/match" />;
+    if (infosUser.redirect === true) {
+      return <Fragment>Profile not valid</Fragment>;
     } else {
-      return <Fragment />;
+      return (
+        <Fragment>
+          <Carousel
+            activeIndex={values.indexImages}
+            direction={values.directionImages}
+            onSelect={handleSelect}
+            className="mt-5"
+          >
+            {handleImages()}
+          </Carousel>
+
+          <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+            <Col>
+              <h3 className="descp">{infosUser.firstName}</h3>
+              <p className="descp">
+                Je suis {convGender()}, {isShow()}, je cherche
+                {convSexualPtoString()} pour la vie
+              </p>
+            </Col>
+          </Row>
+          <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+            <Col>
+              <h3 className="descp">Centres d'intérêt</h3>
+              <div className="descp mytags-main">
+                {infosUser.myTags.map((tag, i) => {
+                  return (
+                    <Badge key={i} className="mytags  mr-2 pl-2 mt-2">
+                      #{tag}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </Col>
+          </Row>
+          <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+            <Col>
+              <h3 className="descp">A propos de moi</h3>
+              <p className="descp">{infosUser.description}</p>
+            </Col>
+          </Row>
+          <Form>
+            <Form.Check
+              style={{ color: "red" }}
+              type="checkbox"
+              id="fake account"
+              label="Signaler un faux compte"
+              name="fake_account"
+              onChange={handleFakeCount}
+            />
+          </Form>
+        </Fragment>
+      );
     }
   };
 
   return (
     <Fragment>
-      {redirectUser()}
+      {/* {redirectUser()} */}
       <NavbarHeader />
       <Container className="my-4">
         <Row>
@@ -197,54 +248,7 @@ const Profile = ({ location, history }) => {
             </Row>
           </Col>
           <Col md={8} className="pl-5">
-            <Carousel
-              activeIndex={values.indexImages}
-              direction={values.directionImages}
-              onSelect={handleSelect}
-              className="mt-5"
-            >
-              {handleImages()}
-            </Carousel>
-
-            <Row className="mb-4 pt-3 pb-4 mt-4 Row">
-              <Col>
-                <h3 className="descp">{infosUser.firstName}</h3>
-                <p className="descp">
-                  Je suis {convGender()}, {isShow()}, je cherche
-                  {convSexualPtoString()} pour la vie
-                </p>
-              </Col>
-            </Row>
-            <Row className="mb-4 pt-3 pb-4 mt-4 Row">
-              <Col>
-                <h3 className="descp">Centres d'intérêt</h3>
-                <div className="descp mytags-main">
-                  {infosUser.myTags.map((tag, i) => {
-                    return (
-                      <Badge key={i} className="mytags  mr-2 pl-2 mt-2">
-                        #{tag}
-                      </Badge>
-                    );
-                  })}
-                </div>
-              </Col>
-            </Row>
-            <Row className="mb-4 pt-3 pb-4 mt-4 Row">
-              <Col>
-                <h3 className="descp">A propos de moi</h3>
-                <p className="descp">{infosUser.description}</p>
-              </Col>
-            </Row>
-            <Form>
-              <Form.Check
-                style={{ color: "red" }}
-                type="checkbox"
-                id="fake account"
-                label="Signaler un faux compte"
-                name="fake_account"
-                onChange={handleFakeCount}
-              />
-            </Form>
+            {redirectUser()}
           </Col>
         </Row>
       </Container>
