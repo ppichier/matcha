@@ -1,10 +1,11 @@
 import React, { useState, Fragment, useEffect } from "react";
 import "./CardPicture.css";
-import { Row, Col, Container } from "react-bootstrap";
+import { Row, Col, Container, Button } from "react-bootstrap";
 import CardPicture from "./CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import FilterProfile from "./FilterProfile";
-import Slider, { createSliderWithTooltip } from "rc-slider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
@@ -48,6 +49,30 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
             userUuid={profile.userUuid} //change dynamic in URL
             distance={profile.distance}
           />
+          <div className="heart-container mb-2 mr-2">
+            <Button
+              variant={profile.isLiked ? "danger" : "outline-secondary"}
+              onClick={() => {
+                let newProfiles = values.profiles.map((profile, j) => {
+                  if (i === j) {
+                    profile.isLiked = !profile.isLiked;
+                    return profile;
+                  } else {
+                    return profile;
+                  }
+                });
+                setValues({ ...values, profiles: newProfiles });
+              }}
+              style={{
+                border: "2px solid",
+                borderRadius: "50%",
+                width: "50px",
+                height: "50px"
+              }}
+            >
+              <FontAwesomeIcon icon={faHeart} />
+            </Button>
+          </div>
         </div>
       );
     });
@@ -64,7 +89,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
           </Col>
 
           {/* <Row> */}
-          <Col className="">
+          <Col>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
           </Col>
         </Row>

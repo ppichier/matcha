@@ -42,6 +42,7 @@
 }
 .profile-header-container {
   text-align: center;
+  position: relative;
 }
 
 .profile-header-img {

@@ -81,7 +81,8 @@ exports.firstFilter = (req, res) => {
                       score: 125,
                       age: 28,
                       distance: 2.5,
-                      userUuid: "434e497d-b71e-4d4d-b5b1-602040a46a35"
+                      userUuid: "434e497d-b71e-4d4d-b5b1-602040a46a35",
+                      isLiked: 0
                     },
                     {
                       pseudo: "waf",
@@ -89,7 +90,8 @@ exports.firstFilter = (req, res) => {
                       score: 89,
                       age: 28,
                       distance: Math.round(0.45685 * 100) / 100,
-                      userUuid: "33d79c12-97aa-40a8-8b91-fe8720e08a28"
+                      userUuid: "33d79c12-97aa-40a8-8b91-fe8720e08a28",
+                      isLiked: 0
                     },
                     {
                       pseudo: "ppichier",
@@ -97,7 +99,8 @@ exports.firstFilter = (req, res) => {
                       score: 1,
                       age: 17,
                       distance: 2.5,
-                      userUuid: "cd2b1f92-aa86-40f6-af4f-9285613dbda4"
+                      userUuid: "cd2b1f92-aa86-40f6-af4f-9285613dbda4",
+                      isLiked: 0
                     },
                     {
                       pseudo: "clia",
@@ -105,7 +108,8 @@ exports.firstFilter = (req, res) => {
                       score: 452,
                       age: 21,
                       distance: 2.5,
-                      userUuid: "d58fe372-88c8-45f2-978d-6224f82d92d6"
+                      userUuid: "d58fe372-88c8-45f2-978d-6224f82d92d6",
+                      isLiked: 1
                     }
                   ];
                   return res.json({
