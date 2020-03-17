@@ -62,7 +62,8 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
           to={`/profile?uuid=${userUuid}`}
           style={{
             color: "grey",
-            fontWeight: "500"
+            fontWeight: "500",
+            textDecoration: "none"
           }}
         >
           <div>
@@ -77,8 +78,10 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
               </span>
             </div>
 
-            <div>
-              <div style={{ fontWeight: "600" }}>{firstName}</div>
+            <div className="pt-3">
+              <div style={{ fontWeight: "600" }} className="pt-1">
+                {firstName}
+              </div>
               <div className="desc pt-1">{pseudo}</div>
               <div className="desc pt-1">{isShow(age)}</div>
               <div className="desc pt-1">à {distance} km</div>
