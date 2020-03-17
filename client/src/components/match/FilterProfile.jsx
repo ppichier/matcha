@@ -91,8 +91,8 @@ const FilterProfile = location => {
 
   return (
     <Fragment>
-      <Form.Label className="style-menu">Tags</Form.Label>
-      <Form className="style-menu">
+      {/* <Form.Label className="style-menu">Tags</Form.Label> */}
+      <Form style={{ backgroundColor: "#fff" }}>
         <Form.Row className="px-4 pt-4">
           <Form.Group as={Col}>{MyComponent()}</Form.Group>
         </Form.Row>
@@ -140,12 +140,16 @@ const FilterProfile = location => {
             />
           </Form.Group>
         </Form.Row>
-        <Button
-          onClick={() => handleSubmit(values)}
-          className="text-uppercase profile-btn "
-        >
-          Valider
-        </Button>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            onClick={() => handleSubmit(values)}
+            className="text-uppercase mx-4 mb-4"
+            variant="outline-info"
+            style={{ letterSpacing: "1px", fontWeight: "bold" }}
+          >
+            Valider
+          </Button>
+        </div>
       </Form>
     </Fragment>
   );
