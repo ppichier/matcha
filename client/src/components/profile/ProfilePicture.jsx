@@ -2,7 +2,7 @@ import React, { useState, Fragment, useEffect } from "react";
 import "./ProfilePicture.css";
 import { Row, Container, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 import {
   uploadProfileImage,
   deleteProfileImage,
@@ -101,15 +101,7 @@ const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
                 <span className="label label-default rank-label">
                   100{" "}
                   <FontAwesomeIcon
-                    icon={faHeart}
-                    className="fa-lg mr-1 faHeartliked"
-                  />
-                  <FontAwesomeIcon
-                    icon={faHeart}
-                    className="fa-lg mr-1 faHeartliked"
-                  />
-                  <FontAwesomeIcon
-                    icon={faHeart}
+                    icon={faStar}
                     className="fa-lg mr-1 faHeartliked"
                   />
                 </span>

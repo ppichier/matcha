@@ -3,7 +3,7 @@ import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import ProfilePicture from "./ProfilePicture";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
-import { updateProfile, readProfile } from "../../api/user";
+import { updateProfile, readProfile, readImage } from "../../api/user";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -81,70 +81,32 @@ const ProfileUser = ({ props, location }) => {
   }, [location]);
 
   useEffect(() => {
-    const elements = [
-      "pseudo",
-      "email",
-      "firstName",
-      "lastName",
-      "userSize",
-      "age",
-      "gender",
-      "sexualPreference",
-      "myTags",
-      "commonTags",
-      "description"
-    ];
+    let w = 0;
+    w = values.pseudo && values.pseudo.length > 0 ? (w += 8.3333) : w;
+    w = values.email && values.email.length > 0 ? (w += 8.3333) : w;
+    w = values.firstName && values.firstName.length > 0 ? (w += 8.3333) : w;
+    w = values.lastName && values.lastName.length > 0 ? (w += 8.3333) : w;
+    w = values.userSize && values.userSize > 129 ? (w += 8.3333) : w;
+    w = values.age && values.age > 17 ? (w += 8.3333) : w;
+    w = values.description && values.description.length > 0 ? (w += 8.3333) : w;
+    w = values.gender && values.gender.toString() !== "6" ? (w += 8.3333) : w;
+    w =
+      values.sexualPreference && values.sexualPreference.toString() !== "6"
+        ? (w += 8.3333)
+        : w;
+    w =
+      values.myTags.length > 0 ||
+      values.commonTags.filter(e => e.checked).length > 0
+        ? (w += 8.3333)
+        : w;
+    w = values.localisationActive ? (w += 8.3333) : w;
 
-    let width = 0;
-    for (const element of elements) {
-      if (
-        values[element] &&
-        element === "commonTags" &&
-        values.myTags.length === 0 &&
-        values.commonTags.filter(e => e.checked).length > 0
-      ) {
-        width += 8.3333;
-      } else if (
-        values[element] &&
-        element === "myTags" &&
-        values.myTags.length > 0
-      ) {
-        width += 8.3333;
-      }
-      if (
-        values[element] &&
-        values[element] === "gender" &&
-        values[element] !== "6"
-      )
-        width += 8.3333;
-      if (
-        values[element] &&
-        element !== "commonTags" &&
-        element !== "myTags" &&
-        values[element].length !== 0
-      ) {
-        width += 8.3333;
-      }
-      // if (
-      //   values[element] &&
-      //   element === "age" &&
-      //   values.age.toString() === "17"
-      // ) {
-      //   width -= 8.3333;
-      // }
-      if (
-        values[element] &&
-        element === "userSize" &&
-        values.userSize.toString() === "129"
-      ) {
-        width -= 8.3333;
-      }
-    }
-
-    width = imagesChild.profileImage ? (width += 8.3333) : width;
-    // width = imagesChild.secondaryImages ? (width += 10) : width;
-
-    setWidthProgressBar(width);
+    readImage()
+      .then(data => {
+        w = data.image === null ? w : (w += 8.3333);
+        setWidthProgressBar(w);
+      })
+      .catch(err => console.log(err));
   }, [values, imagesChild]);
 
   const showError = () => {
