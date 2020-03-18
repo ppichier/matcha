@@ -123,6 +123,7 @@ const Signup = () => {
             className="form-control"
             value={values.email}
             required
+            autoComplete="on"
           />
         </div>
         <div className="form-group">
@@ -133,6 +134,7 @@ const Signup = () => {
             className="form-control"
             value={values.pseudo}
             required
+            autoComplete="on"
           />
         </div>
         <div className="form-group">
@@ -143,6 +145,7 @@ const Signup = () => {
             className="form-control"
             value={values.firstName}
             required
+            autoComplete="on"
           />
         </div>
         <div className="form-group">
@@ -153,6 +156,7 @@ const Signup = () => {
             className="form-control"
             value={values.lastName}
             required
+            autoComplete="on"
           />
         </div>
         <div className="form-group">
@@ -163,6 +167,7 @@ const Signup = () => {
             className="form-control"
             value={values.password}
             required
+            autoComplete="on"
           />
         </div>
         <button

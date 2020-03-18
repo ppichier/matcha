@@ -135,6 +135,8 @@ const RecoverPassword = ({ location, history }) => {
                   type="email"
                   className="form-control"
                   value={values.email}
+                  required
+                  autoComplete="on"
                 ></input>
               </div>
               <div className="form-group">
@@ -144,6 +146,8 @@ const RecoverPassword = ({ location, history }) => {
                   type="password"
                   className="form-control"
                   value={values.password}
+                  required
+                  autoComplete="on"
                 ></input>
               </div>
               <button

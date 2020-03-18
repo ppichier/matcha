@@ -68,6 +68,8 @@ const Signin = ({ forgotPassword }) => {
             type="text"
             className="form-control"
             value={values.pseudo}
+            autoComplete="on"
+            required
           ></input>
         </div>
         <div className="form-group">
@@ -77,6 +79,8 @@ const Signin = ({ forgotPassword }) => {
             type="password"
             className="form-control"
             value={values.password}
+            required
+            autoComplete="on"
           ></input>
         </div>
         <button

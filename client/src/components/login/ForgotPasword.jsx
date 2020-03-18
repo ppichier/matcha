@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./ForgotPassword.css";
 import { forgotPassword } from "../../api/auth";
 import { Toast } from "react-bootstrap";
 import { verifValidatedEmail } from "../functions/utils";
@@ -98,20 +99,14 @@ const ForgotPassword = () => {
             type="email"
             className="form-control"
             value={values.email}
+            required
+            autoComplete="on"
           ></input>
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <button
             type="submit"
-            className="btn btn-primary text-uppercase "
-            style={{
-              backgroundColor: "#fad5c0",
-              borderColor: "#fad5c0",
-              letterSpacing: "2px",
-              textTransform: "uppercase",
-              fontWeight: "bold",
-              boxShadow: "none"
-            }}
+            className="btn btn-primary text-uppercase forget-btn"
           >
             Valider
           </button>
