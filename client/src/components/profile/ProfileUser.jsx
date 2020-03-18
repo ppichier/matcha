@@ -3,7 +3,12 @@ import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import ProfilePicture from "./ProfilePicture";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
-import { updateProfile, readProfile, readImage } from "../../api/user";
+import {
+  updateProfile,
+  readProfile,
+  readImage,
+  readSecondaryImages
+} from "../../api/user";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -30,7 +35,6 @@ const ProfileUser = ({ props, location }) => {
     sexualPreference: "",
     description: "",
     userSize: "129",
-    imageProfileSet: false,
     localisationActive: false,
     lat: 48.865,
     lng: 2.3551
@@ -81,30 +85,34 @@ const ProfileUser = ({ props, location }) => {
   }, [location]);
 
   useEffect(() => {
+    const inc = 7.6923;
     let w = 0;
-    w = values.pseudo && values.pseudo.length > 0 ? (w += 8.3333) : w;
-    w = values.email && values.email.length > 0 ? (w += 8.3333) : w;
-    w = values.firstName && values.firstName.length > 0 ? (w += 8.3333) : w;
-    w = values.lastName && values.lastName.length > 0 ? (w += 8.3333) : w;
-    w = values.userSize && values.userSize > 129 ? (w += 8.3333) : w;
-    w = values.age && values.age > 17 ? (w += 8.3333) : w;
-    w = values.description && values.description.length > 0 ? (w += 8.3333) : w;
-    w = values.gender && values.gender.toString() !== "6" ? (w += 8.3333) : w;
+    w = values.pseudo && values.pseudo.length > 0 ? (w += inc) : w;
+    w = values.email && values.email.length > 0 ? (w += inc) : w;
+    w = values.firstName && values.firstName.length > 0 ? (w += inc) : w;
+    w = values.lastName && values.lastName.length > 0 ? (w += inc) : w;
+    w = values.userSize && values.userSize > 129 ? (w += inc) : w;
+    w = values.age && values.age > 17 ? (w += inc) : w;
+    w = values.description && values.description.length > 0 ? (w += inc) : w;
+    w = values.gender && values.gender.toString() !== "6" ? (w += inc) : w;
     w =
       values.sexualPreference && values.sexualPreference.toString() !== "6"
-        ? (w += 8.3333)
+        ? (w += inc)
         : w;
     w =
       values.myTags.length > 0 ||
       values.commonTags.filter(e => e.checked).length > 0
-        ? (w += 8.3333)
+        ? (w += inc)
         : w;
-    w = values.localisationActive ? (w += 8.3333) : w;
+    w = values.localisationActive ? (w += inc) : w;
 
     readImage()
       .then(data => {
-        w = data.image === null ? w : (w += 8.3333);
-        setWidthProgressBar(w);
+        w = data.image === null ? w : (w += inc);
+        readSecondaryImages().then(data => {
+          w = data.images.filter(e => e !== "").length > 0 ? (w += inc) : w;
+          setWidthProgressBar(w);
+        });
       })
       .catch(err => console.log(err));
   }, [values, imagesChild]);
@@ -307,6 +315,10 @@ const ProfileUser = ({ props, location }) => {
     setImagesChild({ ...imagesChild, profileImage: value });
   };
 
+  const imageSecondarySet = value => {
+    setImagesChild({ ...imagesChild, secondaryImages: value });
+  };
+
   const updateProfilePosition = coord => {
     setValues({ ...values, lat: coord.lat, lng: coord.lng });
   };
@@ -352,7 +364,7 @@ const ProfileUser = ({ props, location }) => {
       } else {
         setSecondaryValues({
           msg: "",
-          err: "Geolocalistation non supporté par le navigateur.",
+          err: "Geolocalistation non supportée par le navigateur.",
           showErrorToast: true,
           showSuccessToast: false
         });
@@ -409,7 +421,7 @@ const ProfileUser = ({ props, location }) => {
           </Col>
           <Col md={7} className="pl-5">
             <Row className="mt-5 mb-1 row-picture">
-              <Picture />
+              <Picture imageSecondarySet={value => imageSecondarySet(value)} />
             </Row>
             <Row className="pt-4 row-infos">
               <Col>

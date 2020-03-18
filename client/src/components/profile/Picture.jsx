@@ -13,7 +13,7 @@ import {
   faBowlingBall
 } from "@fortawesome/free-solid-svg-icons";
 
-const Picture = () => {
+const Picture = ({ imageSecondarySet }) => {
   const [values, setValues] = useState({
     formData: new FormData(),
     uploading: false,
@@ -57,6 +57,7 @@ const Picture = () => {
             uploading: false,
             msg: data.msg
           });
+          if (data.images.length > 0) imageSecondarySet(true);
           setBase64Images(data.images);
         }
       })
@@ -68,6 +69,9 @@ const Picture = () => {
     path_image[id] = "";
     deleteSecondaryImage({ imageIdRemove: id })
       .then(() => {
+        if (path_image.filter(e => e !== "").length === 0)
+          imageSecondarySet(false);
+        else imageSecondarySet(true);
         setBase64Images(path_image);
         setValues({ ...values });
       })

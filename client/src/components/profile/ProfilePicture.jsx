@@ -32,7 +32,6 @@ const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
     const value = event.target.files[0];
     const jwt = JSON.parse(localStorage.getItem("jwt"));
     if (value !== undefined) {
-      imageProfileSet(true);
       values.formData.set("photo", value);
       values.formData.set("userUuid", jwt.user._id);
       uploadProfileImage(values.formData)
@@ -40,6 +39,7 @@ const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
           if (data.err) {
             setValues({ ...values, err: data.err });
           } else {
+            imageProfileSet(true);
             setValues({ ...values, msg: data.msg });
             setBase64Image(data.image);
           }
@@ -49,10 +49,10 @@ const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
   };
 
   const removeImage = () => {
-    imageProfileSet(false);
     deleteProfileImage()
       .then(() => {
         setBase64Image("");
+        imageProfileSet(false);
       })
       .catch(err => console.log(err));
   };
