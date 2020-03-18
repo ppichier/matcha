@@ -164,6 +164,7 @@ const getIds = (userUuid, userLikedUuid, connection) => {
 };
 
 const addRowUserLike = (userId, userLikedId, connection) => {
+  // Checi if B likes A -> yes : socketio emit notif
   return new Promise((resolve, reject) => {
     console.log("add");
     connection.query(
@@ -191,6 +192,7 @@ const addRowUserLike = (userId, userLikedId, connection) => {
 };
 
 const deleteRowUserLike = (userId, userLikedId, connection) => {
+  // Checi if B likes A -> yes : socketio emit notif - delete messages
   return new Promise((resolve, reject) => {
     console.log("delete");
     connection.query(
