@@ -1,4 +1,3 @@
-const fs = require("fs");
 const error = require("./error");
 const pool = require("../db");
 const utils = require("../utility/utils");
@@ -143,3 +142,95 @@ exports.firstFilter = (req, res) => {
 // ORDER BY
 // DISTANCE ASC
 // LIMIT 0, 10
+
+/* ADD or DELETE row in user_like */
+
+const getIds = (userUuid, userLikedUuid, connection) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "SELECT UserId FROM user WHERE Uuid = ?; SELECT UserId FROM user WHERE Uuid = ?",
+      [[userUuid], [userLikedUuid]],
+      (err, result) => {
+        if (err) reject(500);
+        else {
+          resolve({
+            userId: result[0][0].UserId,
+            userLikedId: result[1][0].UserId
+          });
+        }
+      }
+    );
+  });
+};
+
+const addRowUserLike = (userId, userLikedId, connection) => {
+  return new Promise((resolve, reject) => {
+    console.log("add");
+    connection.query(
+      "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?",
+      [userId, userLikedId],
+      (err, result) => {
+        if (err) reject(500);
+        else if (result.length !== 0) resolve({ msg: "like" });
+        else {
+          connection.query(
+            "INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?)",
+            [userId, userLikedId],
+            (err, result) => {
+              if (err) reject(500);
+              else {
+                connection.release();
+                resolve({ msg: "like" });
+              }
+            }
+          );
+        }
+      }
+    );
+  });
+};
+
+const deleteRowUserLike = (userId, userLikedId, connection) => {
+  return new Promise((resolve, reject) => {
+    console.log("delete");
+    connection.query(
+      "DELETE FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?",
+      [userId, userLikedId],
+      (err, result) => {
+        if (err) reject(500);
+        else {
+          connection.release();
+          resolve({ msg: "dislike" });
+        }
+      }
+    );
+  });
+};
+
+exports.heartClick = (req, res) => {
+  console.log(req.body);
+  pool.getConnection(async (err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      try {
+        let { userId, userLikedId } = await getIds(
+          req.userUuid,
+          req.body.userUuid,
+          connection
+        );
+        let p = {};
+        if (req.body.isLiked) {
+          p = await addRowUserLike(userId, userLikedId, connection);
+        } else {
+          p = await deleteRowUserLike(userId, userLikedId, connection);
+        }
+        return res.json(p);
+      } catch {
+        error.handleError(res, err, "Internal error", 500, connection);
+      }
+    }
+  });
+};
+
+/* end user_like */

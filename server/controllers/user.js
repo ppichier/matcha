@@ -98,21 +98,20 @@ exports.uploadProfileImage = (req, res) => {
   image64 = new Buffer.from(bitmap).toString("base64");
   pool.getConnection((err, connection) => {
     if (err) {
-      return res.status(500).json({
-        err: "Internal Error HERE"
-      });
-    }
-    connection.query(
-      "UPDATE `user` SET `ImageProfile`= ? WHERE Uuid= ?",
-      [file.path, userUuid],
-      (err, result) => {
-        if (err) {
-          error.handleError(res, err, "Intenal error", 500, connection);
-        } else {
-          connection.release();
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      connection.query(
+        "UPDATE `user` SET `ImageProfile`= ? WHERE Uuid= ?",
+        [file.path, userUuid],
+        (err, result) => {
+          if (err) {
+            error.handleError(res, err, "Internal error", 500, connection);
+          } else {
+            connection.release();
+          }
         }
-      }
-    );
+      );
+    }
   });
 
   return res.json({
@@ -307,8 +306,8 @@ exports.readSecondaryImages = (req, res) => {
 };
 
 exports.readImage = (req, res) => {
-  console.log("UserUuid: ", req.userUuid);
-  console.log("GuestUuid: ", req.body.guestUuid);
+  // console.log("UserUuid: ", req.userUuid);
+  // console.log("GuestUuid: ", req.body.guestUuid);
   let uuid = req.body.guestUuid ? req.body.guestUuid : req.userUuid;
   let image64 = "";
   if (fs.existsSync(__dirname + `/../images/${uuid}/`)) {
@@ -340,12 +339,10 @@ exports.readImage = (req, res) => {
           "SELECT ImageProfile FROM User WHERE Uuid = ?",
           [uuid],
           (err, result) => {
-            console.log(result);
             if (err) {
               error.handleError(res, err, "Internal error", 500, connection);
             } else if (result.length === 0 || result[0].ImageProfile === null) {
               connection.release();
-              console.log("guestuuid link fix");
               return res.json({
                 image: null,
                 imageFakeProfile:
@@ -353,7 +350,6 @@ exports.readImage = (req, res) => {
               });
             } else {
               connection.release();
-              console.log("guestuuid link fake");
               return res.json({
                 image: null,
                 imageFakeProfile: result[0].ImageProfile

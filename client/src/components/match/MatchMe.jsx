@@ -9,7 +9,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
-import { firstFilter } from "../../api";
+import { firstFilter, heartClick } from "../../api";
 
 // one fetch for list of profiles
 // x fetch for x images
@@ -37,6 +37,24 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
     setValues(tmp);
   };
 
+  const onHeartClick = i => {
+    let userLiked = {
+      userUuid: "",
+      isLiked: 0
+    };
+    let newProfiles = values.profiles.map((profile, j) => {
+      if (i === j) {
+        profile.isLiked = !profile.isLiked;
+        userLiked.userUuid = profile.userUuid;
+        userLiked.isLiked = profile.isLiked;
+        return profile;
+      } else return profile;
+    });
+    heartClick(userLiked).then(() => {
+      setValues({ ...values, profiles: newProfiles });
+    });
+  };
+
   const card = () => {
     return values.profiles.map((profile, i) => {
       return (
@@ -52,17 +70,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
           <div className="heart-container mb-2 mr-2">
             <Button
               variant={profile.isLiked ? "danger" : "outline-secondary"}
-              onClick={() => {
-                let newProfiles = values.profiles.map((profile, j) => {
-                  if (i === j) {
-                    profile.isLiked = !profile.isLiked;
-                    return profile;
-                  } else {
-                    return profile;
-                  }
-                });
-                setValues({ ...values, profiles: newProfiles });
-              }}
+              onClick={() => onHeartClick(i)}
               style={{
                 border: "2px solid",
                 borderRadius: "50%",

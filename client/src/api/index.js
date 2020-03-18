@@ -1,5 +1,13 @@
 import { API } from "../config";
 
+//CREER MATCHA.JS !!!!!!!!!!!!
+//CREER MATCHA.JS !!!!!!!!!!!!
+//CREER MATCHA.JS !!!!!!!!!!!!
+//CREER MATCHA.JS !!!!!!!!!!!!
+//CREER MATCHA.JS !!!!!!!!!!!!
+//CREER MATCHA.JS !!!!!!!!!!!!
+//CREER MATCHA.JS !!!!!!!!!!!!
+//CREER MATCHA.JS !!!!!!!!!!!!
 export const filterProfile = data => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/match/filterProfile`, {
@@ -54,6 +62,21 @@ export const firstFilter = () => {
       Authorization: `Bearer ${jwt.token}`,
       "Content-Type": "application/json"
     }
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
+export const heartClick = userLiked => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/match/heartClick`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt.token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ ...userLiked })
   })
     .then(res => res.json())
     .catch(err => console.log(err));
