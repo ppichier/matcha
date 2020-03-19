@@ -9,8 +9,8 @@ import RecoverPassword from "./components/login/RecoverPassword";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import NotFound from "./components/404/NotFound";
 import CustomRoute from "./components/auth/CustomRoute";
-import ProfileMap from "./components/profile/ProfileMap";
-
+// import ProfileMap from "./components/profile/ProfileMap";
+import Chat from "./components/chat/Chat";
 import { API } from "./config";
 
 const Routes = () => {
@@ -24,7 +24,7 @@ const Routes = () => {
       <Switch>
         <CustomRoute path="/" exact></CustomRoute>
         <Route path="/login" exact component={Login}></Route>;
-        <Route path="/map" exact component={ProfileMap}></Route>;
+        {/* <Route path="/map" exact component={ProfileMap}></Route>; */}
         <PrivateRoute
           path="/profile/me"
           exact
@@ -32,6 +32,7 @@ const Routes = () => {
         ></PrivateRoute>
         <PrivateRoute path="/profile" exact component={Profile}></PrivateRoute>;
         <PrivateRoute path="/match" exact component={MatchMe}></PrivateRoute>;
+        <PrivateRoute path="/chat" exact component={Chat}></PrivateRoute>;
         <Route path="/verifyAccount" exact component={VerifyAccount}></Route>;
         <Route
           path="/recoverPassword"

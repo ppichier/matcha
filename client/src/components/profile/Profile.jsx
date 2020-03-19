@@ -40,6 +40,10 @@ const Profile = ({ location, history }) => {
 
   useEffect(() => {
     const query = queryString.parse(location.search);
+    if (!query.uuid) {
+      setInfosUser({ ...infosUser, redirect: true });
+      return;
+    }
     setCurrentUuid(query.uuid);
     readSecondaryImages() // SECONDARY UUID NOT IMPLEMENTED
       .then(data => {
