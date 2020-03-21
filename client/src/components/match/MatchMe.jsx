@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import "./CardPicture.css";
 import { Row, Col, Container, Button } from "react-bootstrap";
 import CardPicture from "./CardPicture";
@@ -12,7 +12,7 @@ import SortProfile from "./SortProfile";
 import { firstFilter, heartClick } from "../../api";
 
 // one fetch for list of profiles
-// x fetch for x images
+// x fetch for x imagess
 
 const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({

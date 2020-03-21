@@ -3,7 +3,7 @@ import { Route, Redirect } from "react-router-dom";
 import { isAuthenticated } from "../../api/auth";
 import CustomSpinner from "./Spinner";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = ({ component: Component, socket, ...rest }) => {
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(false);
 
@@ -29,7 +29,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   if (loading) {
     return <CustomSpinner />;
   } else if (auth) {
-    return <Route {...rest} render={props => <Component {...props} />} />;
+    return (
+      <Route
+        {...rest}
+        render={props => <Component {...props} socket={socket} />}
+      />
+    );
   } else {
     return (
       <Route

@@ -12,36 +12,61 @@ import CustomRoute from "./components/auth/CustomRoute";
 // import ProfileMap from "./components/profile/ProfileMap";
 import Chat from "./components/chat/Chat";
 import { API } from "./config";
+import SocketContext from "./socket/socket-context";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:8000");
 
 const Routes = () => {
   if (API === undefined) {
-    console.error("API adress is not set");
+    console.error("API address is not set");
     return <Fragment></Fragment>;
   }
 
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  console.log(jwt);
+  if (jwt && jwt.token) {
+    socket.emit("register", jwt.token, data => {
+      console.log(data);
+    });
+  }
+
   return (
-    <BrowserRouter>
-      <Switch>
-        <CustomRoute path="/" exact></CustomRoute>
-        <Route path="/login" exact component={Login}></Route>;
-        {/* <Route path="/map" exact component={ProfileMap}></Route>; */}
-        <PrivateRoute
-          path="/profile/me"
-          exact
-          component={ProfileUser}
-        ></PrivateRoute>
-        <PrivateRoute path="/profile" exact component={Profile}></PrivateRoute>;
-        <PrivateRoute path="/match" exact component={MatchMe}></PrivateRoute>;
-        <PrivateRoute path="/chat" exact component={Chat}></PrivateRoute>;
-        <Route path="/verifyAccount" exact component={VerifyAccount}></Route>;
-        <Route
-          path="/recoverPassword"
-          exact
-          component={RecoverPassword}
-        ></Route>
-        <Route path="" component={NotFound} />
-      </Switch>
-    </BrowserRouter>
+    <SocketContext.Provider socket={socket}>
+      <BrowserRouter>
+        <Switch>
+          <CustomRoute path="/" exact></CustomRoute>
+          <Route path="/login" exact component={Login}></Route>;
+          {/* <Route path="/map" exact component={ProfileMap}></Route>; */}
+          <PrivateRoute
+            path="/profile/me"
+            exact
+            component={ProfileUser}
+          ></PrivateRoute>
+          <PrivateRoute
+            path="/profile"
+            exact
+            component={Profile}
+          ></PrivateRoute>
+          ;<PrivateRoute path="/match" exact component={MatchMe}></PrivateRoute>
+          ;
+          <PrivateRoute
+            path="/chat"
+            exact
+            component={Chat}
+            socket={socket}
+          ></PrivateRoute>
+          ;<Route path="/verifyAccount" exact component={VerifyAccount}></Route>
+          ;
+          <Route
+            path="/recoverPassword"
+            exact
+            component={RecoverPassword}
+          ></Route>
+          <Route path="" component={NotFound} />
+        </Switch>
+      </BrowserRouter>
+    </SocketContext.Provider>
   );
 };
 
