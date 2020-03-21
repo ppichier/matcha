@@ -15,7 +15,7 @@ const matchRoutes = require("./routes/match");
 const app = express();
 
 //faker
-// faker.generateFakeProfiles();
+  // faker.generateFakeProfiles();
 
 //middlewares
 app.use(morgan("dev"));

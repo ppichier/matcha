@@ -54,7 +54,7 @@ const Signin = ({ forgotPassword }) => {
     if (values.redirect) {
       // and check valid token ??
       // fake loader ??
-      return <Redirect to="/profile" />;
+      return <Redirect to="/profile/me" />;
     }
   };
 

@@ -2,6 +2,7 @@ const fs = require("fs");
 const error = require("./error");
 const pool = require("../db");
 const utils = require("../utility/utils");
+var _ = require('lodash');
 
 exports.readCommonTag = async (req, res) => {
   pool.getConnection((err, connection) => {
@@ -27,19 +28,10 @@ exports.readCommonTag = async (req, res) => {
     }
   });
 };
-exports.filterProfile = (req, res) => {
+exports.filterProfile = async (req, res) => {
   const { age, location, score, userSize, selectedTags } = req.body;
-  console.log(age);
-  console.log(selectedTags);
-};
-
-exports.sortProfile = (req, res) => {
-  const { sort } = req.body;
-  console.log(sort);
-};
-
-exports.firstFilter = (req, res) => {
-  const userUuid = req.userUuid;
+   const userUuid = req.userUuid;
+   let tagsParams = [];
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
@@ -52,66 +44,181 @@ exports.firstFilter = (req, res) => {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
             let tagsTmp = [];
+            if(selectedTags.length === 0){               
+              try {
+                tagsTmp = await utils.getUserTags(userUuid);
+              } catch {
+                error.handleError(res, err, "Intenal error", 500, connection);
+              }
+              tagsParams = [0];
+              if(tagsTmp.length > 0)
+              {
+                let tags = tagsTmp.map(tag => tag.TagId);
+                tagsParams = (tags.join());
+              }
+            }
+            else {
+                tagsParams = await utils.validatorFilter(selectedTags);
+            }
+            const ageFilter = (age[0] === 0 && age[1] === 0)  ? [17, 66] : age;
+            const locationFilter = (location[0] === 0 && location[1] === 0) ? [0, 100000] : location;
+            const scoreFilter = (score[0] === 0 && score[1] === 0) ? [0, 1000] : score;
+            const userSizeFilter = (userSize[0] === 0 && userSize[1] === 0) ? [129, 230] : userSize;
+            const lat = result[0].Lat;
+            const lng = result[0].Lng;
+            const userIdUser = result[0].UserId;
+            const genreId = result[0].GenreId;
+            const sexualOrientationId = result[0].SexualOrientationId;
+            connection.query(
+              'SELECT *, ( 6371 * ACOS( COS(RADIANS(80.41570744)) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(54.8437554)) + SIN(RADIANS(80.41570744)) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId = ? AND SexualOrientationId = ? AND age > ? AND age < ? AND score > ? And score < ? AND userSize > ? And userSize < ? ORDER BY DISTANCE ASC  LIMIT ?; SELECT count(*) AS nombre , T.UserId FROM user_tag T, user U WHERE tagId IN (?) AND U.UserId = T.UserId AND U.GenreId = ? AND U.SexualOrientationId = ? GROUP BY T.UserId ORDER BY count(*) DESC',
+              [sexualOrientationId, genreId, ageFilter[0], ageFilter[1], scoreFilter[0], scoreFilter[1], userSizeFilter[0], userSizeFilter[1], (0, 20), tagsParams, sexualOrientationId,genreId],
+              async (err, result) => {
+                  
+                if (err) {
+                  error.handleError(res, err, "Intenal error", 500, connection);
+                } else {
+                  let profiles = [];
+                  let profilestmp = result[0].map(p => {
+                    tmp = 0;
+                    if(result[1].length > 0)
+                    {
+                      let resTag = result[1].map(t => {
+                        if(p.UserId === t.UserId && p.UserId !== userIdUser && p.distance >= locationFilter[0] && p.distance <= locationFilter[1])
+                        {
+                          let distanceRound = Math.round(p.DISTANCE * 100) / 100;
+                          tmp = t.UserId
+                          profiles.unshift({
+                            pseudo: p.UserName,
+                            firstName: p.FirstName,
+                            score: p.Score,
+                            age: p.Age,
+                            distance: distanceRound,
+                            userUuid: p.Uuid,
+                            UserId : p.UserId,
+                            isLiked: 0,
+                            numberTag: t.nombre
+                          })
+                        }
+                      })
+                    }
+                    if(p.UserId !== tmp && p.UserId !== userIdUser && p.distance >= locationFilter[0] && p.distance <= locationFilter[1])
+                    {
+                      let distanceRound = Math.round(p.DISTANCE * 100) / 100;
+                        profiles.push({
+                          pseudo: p.UserName,
+                          firstName: p.FirstName,
+                          score: p.Score,
+                          age: p.Age,
+                          distance: distanceRound,
+                          userUuid: p.Uuid,
+                          UserId : p.UserId,
+                          isLiked: 0,
+                          numberTag: 0
+                        })
+                    }
+                  })  
+                  profiles = await utils.sortProfile(profiles);
+                  connection.release();                  
+                  return res.json({
+                    profiles
+                  });
+                }
+              }
+            );
+          }
+        });
+    }
+  });
+}
+
+
+exports.sortProfile = (req, res) => {
+  const { sort } = req.body;
+};
+
+exports.firstFilter =  (req, res) => {
+  const userUuid = req.userUuid;
+  pool.getConnection((err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      connection.query(
+        "SELECT * FROM  user WHERE Uuid = ?",
+        [userUuid],
+         async (err, result) => {
+          if (err) {
+            error.handleError(res, err, "Intenal error", 500, connection);
+          } else {
+            let tagsTmp = [];
             try {
               tagsTmp = await utils.getUserTags(userUuid);
             } catch {
               error.handleError(res, err, "Intenal error", 500, connection);
             }
-            let tags = tagsTmp.map(tag => tag.TagId);
-            let tagsParams = tags.join();
-
+            let tagsParams = [0];
+            if(tagsTmp.length > 0)
+            {
+              let tags = tagsTmp.map(tag => tag.TagId);
+              let tagsParams = (tags.join());
+            }
             const lat = result[0].Lat;
             const lng = result[0].Lng;
-            const genreId = result[0].GenreId;
-            const sexualOrientationId = result[0].SexualOrientationId;
+            const userIdUser = result[0].UserId;
+            const genreId = (result[0].GenreId === 6 || result[0].GenreId === 5) ? [1, 2, 5, 6] : result[0].GenreId;
+           const sexualOrientationId = (result[0].SexualOrientationId === 6 || result[0].SexualOrientationId === 5) ? [1, 2, 5, 6] : result[0].SexualOrientationId
+           const moreProfile = [0, 20]; ///pour revenyer plus de profile 
             connection.query(
-              `SELECT *, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId = ? AND SexualOrientationId = ? ORDER BY DISTANCE ASC LIMIT 0,10;
-            SELECT count(*) AS nombre , user_tag.UserId FROM user_tag, user WHERE (tagId IN (${tagsParams})) AND (user.GenreId = ?) AND (user.SexualOrientationId = ?) GROUP BY user_tag.UserId ORDER BY count(*) DESC`,
-              [sexualOrientationId, genreId, sexualOrientationId, genreId],
-              (err, result) => {
+              `SELECT *, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ORDER BY DISTANCE ASC LIMIT ?;
+               SELECT count(*) AS nombre , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC`,
+              [sexualOrientationId, genreId, moreProfile, sexualOrientationId,genreId],
+              async (err, result) => {
+                  console.log("=====================")
+                  console.log(result);
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);
                 } else {
-                  connection.release();
-                  console.log(result);
-                  let profiles = [
+                  let profiles = [];
+                  let profilestmp = result[0].map(p => {
+                    tmp = 0;
+                    if(result[1].length > 0)
                     {
-                      pseudo: "CHAR856",
-                      firstName: "Charlotte",
-                      score: 125,
-                      age: 28,
-                      distance: 2.5,
-                      userUuid: "434e497d-b71e-4d4d-b5b1-602040a46a35",
-                      isLiked: 0
-                    },
-                    {
-                      pseudo: "waf",
-                      firstName: "wafae",
-                      score: 89,
-                      age: 28,
-                      distance: Math.round(0.45685 * 100) / 100,
-                      userUuid: "33d79c12-97aa-40a8-8b91-fe8720e08a28",
-                      isLiked: 0
-                    },
-                    {
-                      pseudo: "ppichier",
-                      firstName: "Pier'Antonio",
-                      score: 1,
-                      age: 17,
-                      distance: 2.5,
-                      userUuid: "cd2b1f92-aa86-40f6-af4f-9285613dbda4",
-                      isLiked: 0
-                    },
-                    {
-                      pseudo: "clia",
-                      firstName: "cola",
-                      score: 452,
-                      age: 21,
-                      distance: 2.5,
-                      userUuid: "d58fe372-88c8-45f2-978d-6224f82d92d6",
-                      isLiked: 1
+                      let resTag = result[1].map(t => {
+                        if(p.UserId === t.UserId && p.UserId !== userIdUser)
+                        {
+                          let distanceRound = Math.round(p.DISTANCE * 100) / 100;
+                          tmp = t.UserId
+                          profiles.unshift({
+                            pseudo: p.UserName,
+                            firstName: p.FirstName,
+                            score: p.Score,
+                            age: p.Age,
+                            distance: distanceRound,
+                            userUuid: p.Uuid,
+                            UserId : p.UserId,
+                            isLiked: 0,
+                            numberTag: t.nombre
+                          })
+                        }
+                      })
                     }
-                  ];
+                    if(p.UserId !== tmp && p.UserId !== userIdUser)
+                    {
+                        let distanceRound = Math.round(p.DISTANCE * 100) / 100;
+                        profiles.push({
+                          pseudo: p.UserName,
+                          firstName: p.FirstName,
+                          score: p.Score,
+                          age: p.Age,
+                          distance: distanceRound,
+                          userUuid: p.Uuid,
+                          UserId : p.UserId,
+                          isLiked: 0,
+                          numberTag: 0
+                        })
+                    }
+                  })  
+                  profiles = await utils.sortProfile(profiles);
+                  connection.release();                  
                   return res.json({
                     profiles
                   });
@@ -124,22 +231,3 @@ exports.firstFilter = (req, res) => {
     }
   });
 };
-
-// SELECT
-// *,
-// (
-//     6371 * ACOS(
-//         COS(RADIANS(48.86550000)) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(2.35510000)) + SIN(RADIANS(48.86550000)) * SIN(RADIANS(Lat))
-//     )
-// ) AS DISTANCE
-// FROM
-// USER
-
-// LEFT JOIN (SELECT count(*) AS nombre , user_tag.UserId FROM user_tag, user)
-
-// ON USER.UserId = user_tag.UserId
-// WHERE
-// user.GenreId = 1 AND user.SexualOrientationId = 2 AND (user_tag.tagId IN (3)) AND (user.GenreId = 2) AND (user.SexualOrientationId = 1)
-// ORDER BY
-// DISTANCE ASC
-// LIMIT 0, 10
