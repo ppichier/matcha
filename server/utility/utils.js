@@ -1,7 +1,6 @@
 const error = require("../controllers/error");
 const pool = require("../db");
-var _ = require('lodash');
-
+const _ = require("lodash");
 
 exports.getUserTags = userId => {
   return new Promise((resolve, reject) => {
@@ -49,8 +48,9 @@ exports.validatorFilter = selectedTags => {
 };
 
 exports.sortProfile = profiles => {
-  return new Promise((resolve, reject) => {
-      var sortProfiles = _.orderBy(profiles, ['distance', 'numberTag', 'score'], ['asc','desc','desc']);
-      resolve(sortProfiles);    
-  });
+  return _.orderBy(
+    profiles,
+    ["distance", "tagsNumber", "score"],
+    ["asc", "desc", "desc"]
+  );
 };

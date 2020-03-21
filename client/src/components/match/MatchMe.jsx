@@ -19,12 +19,14 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
     image: [],
     uploading: false,
     profiles: [],
-    moreProfile:[]
+    moreProfile: []
   });
   useEffect(() => {
-    firstFilter().then(data => {
-      setValues({ ...values, profiles: data.profiles });
-    });
+    firstFilter()
+      .then(data => {
+        setValues({ ...values, profiles: data.profiles });
+      })
+      .catch(err => console.log(err));
   }, []);
 
   // const handleChange = event => {
@@ -35,7 +37,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   //   // const formData = new FormData();
   //   setValues(tmp);
   // };
-  const handleChange = () => {}
+  const handleChange = () => {};
 
   const card = () => {
     return values.profiles.map((profile, i) => {
@@ -89,7 +91,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
           </Col>
           <Col>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
-            <div style={{ display: "flex", width: "50%"}}>
+            <div style={{ display: "flex", width: "50%" }}>
               <Button
                 onClick={handleChange()}
                 className="text-uppercase mb-4 center-block"
@@ -100,7 +102,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
               </Button>
             </div>
           </Col>
-        </Row>     
+        </Row>
       </Container>
     </Fragment>
   );
