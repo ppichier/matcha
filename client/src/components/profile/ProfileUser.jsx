@@ -515,8 +515,8 @@ const ProfileUser = ({ props, location }) => {
                             <option value="6"> Séléctionnez un genre</option>
                             <option value="1"> Un Homme </option>
                             <option value="2"> Une Femme </option>
-                            <option value="3"> une Transféminine</option>
-                            <option value="4"> une Transmasculin</option>
+                            <option value="3"> une Transmasculin</option>
+                            <option value="4"> une Transféminine</option>
                             <option value="5">Bigenre</option>
                           </Form.Control>
                         </Form.Group>
@@ -531,8 +531,8 @@ const ProfileUser = ({ props, location }) => {
                             <option value="6"> Séléctionnez un genre</option>
                             <option value="1"> Un Homme </option>
                             <option value="2"> Une Femme </option>
-                            <option value="3"> une Transféminine</option>
-                            <option value="4"> une Transmasculin</option>
+                            <option value="3"> une Transmasculin</option>
+                            <option value="4"> une Transféminine</option>
                             <option value="5">Bigenre</option>
                           </Form.Control>
                         </Form.Group>

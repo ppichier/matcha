@@ -18,24 +18,26 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   const [values, setValues] = useState({
     image: [],
     uploading: false,
-    profiles: []
+    profiles: [],
+    moreProfile: []
   });
-
   useEffect(() => {
-    firstFilter().then(data => {
-      console.log(data);
-      setValues({ ...values, profiles: data.profiles });
-    });
+    firstFilter()
+      .then(data => {
+        setValues({ ...values, profiles: data.profiles });
+      })
+      .catch(err => console.log(err));
   }, []);
 
-  const handleChange = event => {
-    event.preventDefault();
+  // const handleChange = event => {
+  //   event.preventDefault();
 
-    const files = Array.from(event.target.files);
-    const tmp = { ...values, image: [...values.image, files] };
-    // const formData = new FormData();
-    setValues(tmp);
-  };
+  //   const files = Array.from(event.target.files);
+  //   const tmp = { ...values, image: [...values.image, files] };
+  //   // const formData = new FormData();
+  //   setValues(tmp);
+  // };
+  const handleChange = () => {};
 
   const onHeartClick = i => {
     let userLiked = {
@@ -95,10 +97,18 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
             <SortProfile />
             <FilterProfile />
           </Col>
-
-          {/* <Row> */}
           <Col>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
+            <div style={{ display: "flex", width: "50%" }}>
+              <Button
+                onClick={handleChange()}
+                className="text-uppercase mb-4 center-block"
+                variant="outline-info"
+                style={{ letterSpacing: "1px", fontWeight: "bold" }}
+              >
+                Charger plus
+              </Button>
+            </div>
           </Col>
         </Row>
       </Container>

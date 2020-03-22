@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import Select from "react-select";
 import "../navbar/Navbar.css";
 import { Col, Form, Button } from "react-bootstrap";
-import { Range } from "rc-slider";
+import Slider, { Range, createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import { filterProfile } from "../../api";
 import makeAnimated from "react-select/animated";
@@ -10,14 +10,16 @@ import makeAnimated from "react-select/animated";
 import queryString from "query-string";
 import { readCommonTag } from "../../api";
 
+const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
+
 const FilterProfile = location => {
   const [values, setValues] = useState({
     selectedTags: [],
     commonTags: [],
-    age: [0, 0],
+    age: [17, 17],
     location: [0, 0],
     score: [0, 0],
-    userSize: [0, 0],
+    userSize: [129, 129],
     err: "",
     msg: ""
   });
@@ -109,47 +111,66 @@ const FilterProfile = location => {
         <Form.Row className="px-4 pt-4">
           <Form.Group as={Col}>{MyComponent()}</Form.Group>
         </Form.Row>
+        {/* <Form.Row className="px-4 py-4">
+          <Form.Group as={Col}>
+            <Form.Label>Age</Form.Label>
+            <SliderWithTooltip
+              min={17}
+              max={65}
+              value={[values.age[0], values.age[1]]}
+              onChange={handleChange("age")}
+              marks={{ 18: 18, 65: 65 }}
+            />
+          </Form.Group>
+        </Form.Row> */}
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Age</Form.Label>
-            <Range
+            <SliderWithTooltip
               min={17}
               max={65}
+              value={[values.age[0], values.age[1]]}
               onChange={handleChange("age")}
               marks={{ 18: 18, 65: 65 }}
+              tipFormatter={v => (v.toString() === "17" ? "Aucun" : `${v}ans`)}
             />
           </Form.Group>
         </Form.Row>
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Localisation</Form.Label>
-            <Range
+            <SliderWithTooltip
               min={0}
-              max={1000}
+              max={100}
+              value={[values.location[0], values.location[1]]}
               onChange={handleChange("location")}
-              marks={{ 0: 0, 1000: 1000 }}
+              marks={{ 0: "0", 100: "100" }}
+              tipFormatter={v => `${v}km`}
             />
           </Form.Group>
         </Form.Row>
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label> Popularite</Form.Label>
-            <Range
+            <SliderWithTooltip
               min={0}
               max={1000}
+              value={[values.score[0], values.score[1]]}
               onChange={handleChange("score")}
-              marks={{ 0: 0, 1000: 1000 }}
+              marks={{ 0: "0", 1000: "1000" }}
             />
           </Form.Group>
         </Form.Row>
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Taille</Form.Label>
-            <Range
-              min={130}
+            <SliderWithTooltip
+              min={129}
               max={230}
+              value={[values.userSize[0], values.userSize[1]]}
               onChange={handleChange("userSize")}
-              marks={{ 130: 130, 230: 230 }}
+              marks={{ 130: "130", 230: "230" }}
+              tipFormatter={v => (v.toString() === "129" ? "Aucun" : `${v}cm`)}
             />
           </Form.Group>
         </Form.Row>

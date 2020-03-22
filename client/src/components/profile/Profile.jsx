@@ -146,16 +146,16 @@ const Profile = ({ location, history }) => {
   const convGender = () => {
     if (infosUser.gender === 1) return "un Homme";
     if (infosUser.gender === 2) return "une Femme";
-    if (infosUser.gender === 3) return "une Transféminine";
-    if (infosUser.gender === 4) return "une Transmasculin";
+    if (infosUser.gender === 3) return "un Transmasculin";
+    if (infosUser.gender === 4) return "une Transféminine";
     if (infosUser.gender === 5) return "Bigenre";
     else return "";
   };
   const convSexualPtoString = () => {
     if (infosUser.sexualPreference === 1) return "un Homme";
     else if (infosUser.sexualPreference === 2) return "une Femme";
-    else if (infosUser.sexualPreference === 3) return "une Transféminine";
-    else if (infosUser.sexualPreference === 4) return "une Transmasculin";
+    else if (infosUser.sexualPreference === 3) return "un Transmasculin";
+    else if (infosUser.sexualPreference === 4) return "une Transféminine";
     else if (infosUser.sexualPreference === 5) return "Bigenre";
     else return "";
   };

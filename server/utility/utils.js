@@ -1,5 +1,6 @@
 const error = require("../controllers/error");
 const pool = require("../db");
+const _ = require("lodash");
 
 exports.getUserTags = userId => {
   return new Promise((resolve, reject) => {
@@ -22,4 +23,35 @@ exports.getUserTags = userId => {
       }
     });
   });
+};
+
+exports.validatorFilter = selectedTags => {
+  return new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        error.handleError(res, err, "Internal error", 500, connection);
+      } else {
+        connection.query(
+          "SELECT TagId FROM tag WHERE Label IN (?)",
+          [selectedTags],
+          (err, result) => {
+            if (err) {
+              reject("Internal Error");
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      }
+    });
+  });
+};
+
+exports.sortProfile = profiles => {
+  profiles = profiles.map(r => ({ ...r })).filter(e => e.firstName !== undefined);
+  return _.orderBy(
+    profiles,
+    ["distance", "tagsNumber", "score"],
+    ["asc", "desc", "desc"]
+  );
 };
