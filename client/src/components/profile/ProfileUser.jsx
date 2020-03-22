@@ -11,7 +11,7 @@ import {
 } from "../../api/user";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt, faKey } from "@fortawesome/free-solid-svg-icons";
 import { verifValidated, validatedTag } from "../functions/utils";
 import "./ProfileUser.css";
 import { forgotPassword } from "../../api/auth";
@@ -381,7 +381,7 @@ const ProfileUser = ({ props, location }) => {
     <Fragment>
       <NavbarHeader />
       <Container>
-        <Row style={{ flexWrap: "wrap" }}>
+        <Row className="main-row-container">
           <Col md={5} className="mt-5 ">
             <Row>
               <Col>
@@ -399,6 +399,7 @@ const ProfileUser = ({ props, location }) => {
                   style={{ flexDirection: "column", alignItems: "center" }}
                 >
                   <Form.Check
+                    className="form-location-label"
                     type="switch"
                     id="switch"
                     label="Activer la localisation"
@@ -411,13 +412,15 @@ const ProfileUser = ({ props, location }) => {
                 </Row>
               </Col>
             </Row>
-            <button
-              className="btn btn-link btn-block mt-4 text-dark"
-              onClick={handleChangePassword}
-              style={{ fontWeight: "bold" }}
-            >
-              Modifier votre mot de passe
-            </button>
+            <Row className="mt-4">
+              <button
+                className="form-resetpwd-label btn btn-link btn-block"
+                onClick={handleChangePassword}
+              >
+                <FontAwesomeIcon icon={faKey} className=" mx-2 mytags-delete" />
+                Modifier votre mot de passe
+              </button>
+            </Row>
           </Col>
           <Col md={7} className="pl-5">
             <Row className="mt-5 mb-1 row-picture">
@@ -548,30 +551,28 @@ const ProfileUser = ({ props, location }) => {
                         md="12"
                       >
                         <Form.Label>
-                          Veuillez sélectionner vos intérêts :
+                          Les intérêts les plus populaires
                         </Form.Label>
 
                         <div className="commontags">
-                          <Row>
-                            {values.commonTags.map((e, i) => {
-                              return (
-                                <Col key={i}>
-                                  <Form.Check
-                                    key={i}
-                                    type="checkbox"
-                                    id={e.label}
-                                    label={e.label}
-                                    checked={e.checked}
-                                    onChange={handleClickCommonTag(e.label, i)}
-                                  />
-                                </Col>
-                              );
-                            })}
-                          </Row>
+                          {values.commonTags.map((e, i) => {
+                            return (
+                              <div key={i} className="px-2">
+                                <Form.Check
+                                  key={i}
+                                  type="checkbox"
+                                  id={e.label}
+                                  label={e.label}
+                                  checked={e.checked}
+                                  onChange={handleClickCommonTag(e.label, i)}
+                                />
+                              </div>
+                            );
+                          })}
                         </div>
                       </Form.Group>
                       <Form.Group>
-                        <Form.Label>Centres d'intérêt</Form.Label>
+                        <Form.Label>Rajouter de nouveaux intérêts</Form.Label>
                         <Form.Control
                           onKeyPress={handlePress}
                           type="text"

@@ -91,7 +91,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   return (
     <Fragment>
       <NavbarHeader />
-      <Container fluid className="mt-3">
+      <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>
           <Col md={3}>
             <SortProfile />

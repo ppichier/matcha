@@ -1,3 +1,8 @@
+.main-row-container {
+  /* flex-wrap: wrap; */
+  color: #545454;
+}
+
 .row-picture {
   font-family: Roboto, sans-serif;
   background-color: white !important;
@@ -13,17 +18,16 @@
 }
 .row-pictureProfile {
   background-color: white !important;
-  /* height: 400px !important; */
-  /* max-height: 800px !important; */
   border-radius: 6px;
   display: flex !important;
-  /* line-height: 1.7px; */
   flex-wrap: wrap !important;
 }
 
 .commontags {
   overflow-y: auto;
   max-height: 150px !important;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .mytags-main {
@@ -33,7 +37,8 @@
   max-height: 150px !important;
 }
 .mytags {
-  background-color: #fad5c0 !important;
+  /* background-color: #fad5c0 !important; */
+  background: linear-gradient(-45deg, #ee7752, #fad5c0, #23a6d5, #23d5ab);
   border-radius: 6px !important;
   color: #fff !important;
   display: flex;
@@ -52,7 +57,7 @@
   font-family: Helvetica, sans empattement;
 }
 .profile-btn {
-  background-color: #fad5c0 !important;
+  background: linear-gradient(-45deg, #ee7752, #fad5c0, #23a6d5, #23d5ab);
   border-color: #fad5c0 !important;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -77,4 +82,16 @@
     width: 350px;
     height: 350px;
   }
+}
+
+.form-label {
+  color: #545454;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.8em;
+}
+
+.form-resetpwd-label {
+  font-weight: 700 !important;
+  color: #545454 !important;
 }
