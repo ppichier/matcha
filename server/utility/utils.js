@@ -48,6 +48,7 @@ exports.validatorFilter = selectedTags => {
 };
 
 exports.sortProfile = profiles => {
+  profiles = profiles.map(r => ({ ...r })).filter(e => e.firstName !== undefined);
   return _.orderBy(
     profiles,
     ["distance", "tagsNumber", "score"],

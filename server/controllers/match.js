@@ -29,6 +29,15 @@ exports.readCommonTag = async (req, res) => {
     }
   });
 };
+
+function filterValid(obj , locationFilter) {
+  if(obj.distance >= locationFilter[0] && obj.distance <= locationFilter[1])
+    return true;
+  else
+    return false;
+}
+
+
 exports.filterProfile = async (req, res) => {
   const { age, location, score, userSize, selectedTags } = req.body;
   const userUuid = req.userUuid;
@@ -61,7 +70,7 @@ exports.filterProfile = async (req, res) => {
             }
             const ageFilter = age[0] === 0 && age[1] === 0 ? [17, 66] : age;
             const locationFilter =
-              location[0] === 0 && location[1] === 0 ? [0, 100000] : location;
+              location[0] === 0 && location[1] === 0 ? [0, 100000000000] : location;
             const scoreFilter =
               score[0] === 0 && score[1] === 0 ? [0, 1000] : score;
             const userSizeFilter =
@@ -71,8 +80,10 @@ exports.filterProfile = async (req, res) => {
             const userIdUser = result[0].UserId;
             const genreId = result[0].GenreId;
             const sexualOrientationId = result[0].SexualOrientationId;
+            const moreProfile = [0, 20];
             connection.query(
-              "SELECT *, ( 6371 * ACOS( COS(RADIANS(80.41570744)) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(54.8437554)) + SIN(RADIANS(80.41570744)) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId = ? AND SexualOrientationId = ? AND age > ? AND age < ? AND score > ? And score < ? AND userSize > ? And userSize < ? ORDER BY DISTANCE ASC  LIMIT ?; SELECT count(*) AS nombre , T.UserId FROM user_tag T, user U WHERE tagId IN (?) AND U.UserId = T.UserId AND U.GenreId = ? AND U.SexualOrientationId = ? GROUP BY T.UserId ORDER BY count(*) DESC",
+              `SELECT *, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId = ? AND SexualOrientationId = ? AND age > ? AND age < ? AND score > ? And score < ? AND userSize > ? And userSize < ? ORDER BY DISTANCE ASC  LIMIT ?;
+               SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId = ? AND U.SexualOrientationId = ? GROUP BY T.UserId ORDER BY count(*) DESC`,
               [
                 sexualOrientationId,
                 genreId,
@@ -82,65 +93,35 @@ exports.filterProfile = async (req, res) => {
                 scoreFilter[1],
                 userSizeFilter[0],
                 userSizeFilter[1],
-                (0, 20),
-                tagsParams,
+                moreProfile,
                 sexualOrientationId,
                 genreId
               ],
-              async (err, result) => {
+               (err, result) => {
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);
-                } else {
-                  let profiles = [];
-                  let profilestmp = result[0].map(p => {
-                    tmp = 0;
-                    if (result[1].length > 0) {
-                      let resTag = result[1].map(t => {
-                        if (
-                          p.UserId === t.UserId &&
-                          p.UserId !== userIdUser &&
-                          p.distance >= locationFilter[0] &&
-                          p.distance <= locationFilter[1]
-                        ) {
-                          let distanceRound =
-                            Math.round(p.DISTANCE * 100) / 100;
-                          tmp = t.UserId;
-                          profiles.unshift({
-                            pseudo: p.UserName,
-                            firstName: p.FirstName,
-                            score: p.Score,
-                            age: p.Age,
-                            distance: distanceRound,
-                            userUuid: p.Uuid,
-                            UserId: p.UserId,
-                            isLiked: 0,
-                            tagsNumber: t.nombre
-                          });
-                        }
-                      });
-                    }
-                    if (
-                      p.UserId !== tmp &&
-                      p.UserId !== userIdUser &&
-                      p.distance >= locationFilter[0] &&
-                      p.distance <= locationFilter[1]
-                    ) {
-                      let distanceRound = Math.round(p.DISTANCE * 100) / 100;
-                      profiles.push({
-                        pseudo: p.UserName,
-                        firstName: p.FirstName,
-                        score: p.Score,
-                        age: p.Age,
-                        distance: distanceRound,
-                        userUuid: p.Uuid,
-                        UserId: p.UserId,
-                        isLiked: 0,
-                        tagsNumber: 0
-                      });
-                    }
-                  });
-                  profiles = utils.sortProfile(profiles);
+                }  else {
                   connection.release();
+                  let a = [];
+                  for (let i = 0; i < result.length; i++) {
+                    a[i] = _.chain(result[i])
+                      .map(r => ({ ...r }))
+                      .filter(e => e.UserId !== userIdUser)
+                      .value();
+                  }
+                  let merged = _.chain(_.merge(_.keyBy(a[0], "UserId"), _.keyBy(a[1], "UserId"))).map(e => ({
+                      pseudo: e.UserName,
+                      firstName: e.FirstName,
+                      score: e.Score,
+                      age: e.Age,
+                      distance: Math.round(e.DISTANCE * 100) / 100,
+                      userUuid: e.Uuid,
+                      UserId: e.UserId,
+                      isLiked: 0, // Modify when implement like
+                      tagsNumber: e.TagsNumber ? e.TagsNumber : 0
+                    })).value();
+                  let profiles = utils.sortProfile(merged);
+                  profiles = profiles.map(r => ({ ...r })).filter(e => filterValid(e, locationFilter))
                   return res.json({
                     profiles
                   });
@@ -233,7 +214,6 @@ exports.firstFilter = (req, res) => {
                     }))
                     .value();
                   let profiles = utils.sortProfile(merged);
-                  console.log(profiles);
                   return res.json({
                     profiles
                   });
