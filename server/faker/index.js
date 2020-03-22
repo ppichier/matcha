@@ -21,7 +21,7 @@ exports.generateFakeProfiles = () => {
         } else {
           let commonTags = [];
           if (result.length > 0) {
-            commonTags = result.map(tag => tag.Label);
+            commonTags = result.map(tag => tag.TagId);
             let rand = Math.floor(Math.random() * commonTags.length + 1);
             for (let i = 0; i < rand; i++) {
               userTags.push(
@@ -57,6 +57,7 @@ exports.generateFakeProfiles = () => {
           // PARIS 48.881303,2.329421
 
           connection.query(
+            //  INSERT INTO User_tag VALUES (?)
             "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio, Lat, Lng, LocalisationActive, Score, ImageProfile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
               people.uuid,
@@ -78,16 +79,42 @@ exports.generateFakeProfiles = () => {
               people.imageProfile
             ],
             (err, result) => {
-              if (err)
-                console.log(
-                  `ERROR - Fake user ${inc} was not created : ${err}`
+              if (err) {
+                console.log(`ERROR-Fake user ${inc} was not created: ${err}`);
+                connection.release();
+                return;
+              } else {
+                console.log(result.insertId);
+                const tags = _.uniq(userTags);
+                let tagsParamQuery = "";
+                for (const tag of tags) {
+                  tagsParamQuery += `(${result.insertId},${tag}),`;
+                }
+                tagsParamQuery = tagsParamQuery.substring(
+                  0,
+                  tagsParamQuery.length - 1
                 );
-              else console.log(`OK - Fake user ${inc} was created`);
+                console.log(tagsParamQuery);
+                connection.query(
+                  `INSERT INTO User_tag VALUES ${tagsParamQuery}`,
+                  [],
+                  (err, result) => {
+                    if (err) {
+                      connection.release();
+                      console.log(
+                        `ERROR-Tags ofFake user ${inc} was not created: ${err}`
+                      );
+                      return;
+                    } else {
+                      console.log(`OK - Fake user ${inc} was created`);
+                    }
+                  }
+                );
+              }
               inc++;
             }
           );
           console.log(people);
-          connection.release();
           return;
         }
       });
