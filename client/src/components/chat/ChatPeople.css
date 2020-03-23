@@ -1,0 +1,36 @@
+.chat-people-col-title > span {
+  border-bottom: 3px solid #fd5068;
+  font-weight: bold;
+}
+
+.chat-people-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-people-item:hover {
+  cursor: pointer;
+  border-right: 5px solid #fd5068;
+  background: #fff;
+  box-shadow: 0 0 15px 0 hsla(0, 0%, 50.6%, 0.22);
+}
+
+.chat-people-item-image {
+  width: 74px;
+  height: 74px;
+}
+
+.chat-people-item-infos {
+  align-self: center;
+}
+
+.chat-people-item-pseudo {
+  text-transform: capitalize;
+  color: #2c2c2c;
+  font-weight: 600;
+}
+
+.chat-people-item-last-msg {
+  text-transform: capitalize;
+  color: #7c7c7c;
+}
