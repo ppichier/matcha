@@ -8,11 +8,30 @@
   flex-direction: column;
 }
 
+.chat-people-item {
+  display: flex;
+}
+
+.chat-people-item-container-image {
+  position: relative;
+}
+
 .chat-people-item:hover {
   cursor: pointer;
   border-right: 5px solid #fd5068;
   background: #fff;
   box-shadow: 0 0 15px 0 hsla(0, 0%, 50.6%, 0.22);
+}
+
+.chat-people-item-online {
+  position: absolute;
+  right: 0px;
+  top: 4px;
+  width: 17px;
+  height: 17px;
+  background-color: #00ff00;
+  border: 3px solid #f5f7fa;
+  border-radius: 50%;
 }
 
 .chat-people-item-image {

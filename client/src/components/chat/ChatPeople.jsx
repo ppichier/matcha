@@ -14,12 +14,15 @@ const ChatPeople = ({ peoples }) => {
         </span>
       </div>
       <div className="mt-4 chat-people-list">
-        <div className="pl-4 py-2 chat-people-item" style={{ display: "flex" }}>
-          <Image
-            className="chat-people-item-image"
-            src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
-            roundedCircle
-          />
+        <div className="pl-4 py-2 chat-people-item">
+          <div className="chat-people-item-container-image">
+            <div className="chat-people-item-online"></div>
+            <Image
+              className="chat-people-item-image"
+              src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
+              roundedCircle
+            />
+          </div>
           {/* Logo online + notif message */}
           <div className="ml-3 chat-people-item-infos">
             <div className="chat-people-item-pseudo">ppichier</div>
@@ -30,7 +33,7 @@ const ChatPeople = ({ peoples }) => {
           </div>
         </div>
 
-        <div className="pl-4 py-2 chat-people-item" style={{ display: "flex" }}>
+        <div className="pl-4 py-2 chat-people-item">
           <Image
             className="chat-people-item-image"
             src="https://image.flaticon.com/icons/png/512/1177/1177577.png"

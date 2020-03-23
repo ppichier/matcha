@@ -11,7 +11,7 @@ import {
 } from "../../api/user";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt, faKey } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt, faKey }  from "@fortawesome/free-solid-svg-icons";
 import { verifValidated, validatedTag } from "../functions/utils";
 import "./ProfileUser.css";
 import { forgotPassword } from "../../api/auth";

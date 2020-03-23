@@ -1,0 +1,31 @@
+.chat-messages-input-form {
+  /* height: auto; */
+  display: flex;
+  /* flex-wrap: wrap; */
+  justify-content: center;
+  /* padding: 0 10%; */
+}
+
+.chat-messages-input-text {
+  width: 80%;
+  border: none;
+  color: #7c7c7c;
+}
+
+.chat-messages-input-container-send {
+  display: flex;
+  justify-content: center;
+}
+
+.chat-messages-input-send {
+  color: #fff;
+  text-transform: uppercase;
+  border-radius: 100px;
+  letter-spacing: 1px;
+  background: linear-gradient(-45deg, #ee7752, #fad5c0, #23a6d5, #23d5ab);
+}
+
+button:focus,
+input:focus {
+  outline: none !important;
+}

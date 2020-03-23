@@ -51,9 +51,20 @@ io.on("connection", socket => {
     // and emit event offline user
   });
 
-  // socket.on("join chat", () => {
-  //   console.log("joiiiiiinnnnn", socket.id);
-  // });
+  socket.on("join", (userUuid, guestUuid, cb) => {
+    console.log("joiiiiiinnnnn", userUuid);
+    // based on socket id of user
+    cb([
+      { from: userUuid, to: guestUuid, msg: "message1" },
+      { from: userUuid, to: guestUuid, msg: "message2" }
+    ]);
+  });
+
+  socket.on("sendMessage", (userUuid, guestUuid, message, cb) => {
+    socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
+    console.log("MESSAGE: ", message);
+    cb();
+  });
 
   socket.on("disconnect", () => {
     const userIdDelete = users_connected[socket.id];

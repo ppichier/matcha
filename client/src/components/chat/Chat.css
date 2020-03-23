@@ -1,3 +1,16 @@
 .chat-container {
   height: calc(100% - 69px);
 }
+
+.chat-row {
+  height: 100%;
+}
+
+.chat-col1 {
+  border-right: 1px solid #e0e4e9;
+}
+
+.chat-col2 {
+  background-color: #fff;
+  height: 100%;
+}

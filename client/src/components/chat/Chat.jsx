@@ -3,15 +3,29 @@ import { useEffect } from "react";
 import "./Chat.css";
 import NavbarHeader from "../navbar/Navbar";
 import ChatPeople from "./ChatPeople";
+import ChatMessages from "./ChatMessages";
 import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
+import { useState } from "react";
 
 const Chat = ({ socket }) => {
   console.log(socket);
 
-  const [matchPeople, setMatchPeople] = [
-    { pseudo: "ppichier" },
-    { pseudo: "maxou" }
-  ];
+  const [matchPeople, setMatchPeople] = useState([
+    {
+      userUuid: "123",
+      pseudo: "ppichier",
+      profileImage: "base64 ou link",
+      lastMsg: "lastMessage"
+    },
+    {
+      userUuid: "456",
+      pseudo: "ppichier",
+      profileImage: "base64 ou link",
+      lastMsg: "lastMessage"
+    }
+  ]);
+
+  // const [messages, setMessages] = useState({ from: "blab", allMessages: [{}] });
 
   useEffect(() => {
     //fetch for get all match in db
@@ -27,20 +41,12 @@ const Chat = ({ socket }) => {
     <Fragment>
       <NavbarHeader />
       <Container fluid className="px-0 chat-container">
-        <Row style={{ height: "100%" }} noGutters>
-          <Col
-            md={3}
-            style={{
-              backgroundColor: "#fff",
-              borderRight: "2px solid ##e0e4e9",
-              height: "100%"
-            }}
-          >
+        <Row className="chat-row" noGutters>
+          <Col md={3} className="chat-col1">
             <ChatPeople matchPeople={matchPeople} />
           </Col>
-          <Col md={9}>
-            {/* <MatchMessages></MatchMessages> */}
-            Col2
+          <Col md={9} className="chat-col2">
+            <ChatMessages socket={socket} />
           </Col>
         </Row>
       </Container>

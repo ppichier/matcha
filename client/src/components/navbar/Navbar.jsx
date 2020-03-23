@@ -43,7 +43,7 @@ const NavbarHeader = () => {
           <Nav.Link href="#link1">
             <span className="navbar-tab">Recherche</span>
           </Nav.Link>
-          <Nav.Link href="#link2">
+          <Nav.Link href="/chat">
             <span className="navbar-tab">Chat</span>
             <sup className="sup-notification-text">
               <Badge
