@@ -4,8 +4,17 @@
 }
 
 .chat-people-list {
-  display: flex;
-  flex-direction: column;
+  height: calc(100% - 56px);
+  /* display: flex; */
+  /* flex-direction: column; */
+  user-select: none;
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.chat-people-list::-webkit-scrollbar {
+  display: none;
 }
 
 .chat-people-item {
@@ -14,6 +23,13 @@
 
 .chat-people-item-container-image {
   position: relative;
+}
+
+.chat-people-item-selected {
+  cursor: pointer;
+  border-right: 5px solid #fd5068;
+  background: #fff;
+  box-shadow: 0 0 15px 0 hsla(0, 0%, 50.6%, 0.22);
 }
 
 .chat-people-item:hover {

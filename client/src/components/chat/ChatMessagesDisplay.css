@@ -1,0 +1,63 @@
+.chat-messages-display-container {
+  height: 100%;
+  padding: 5% 3% 1% 3%;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.chat-messages-display-container::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-messages-display-message-intro {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 5%;
+}
+
+.chat-messages-display-message-intro-img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.chat-messages-display-container-me {
+  margin: 2% 0px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.chat-messages-display-container-guest {
+  margin: 2% 0px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.chat-messages-display-message-item-color-me {
+  color: #fff;
+  background-color: #3ba4ff;
+}
+
+.chat-messages-display-message-item-color-guest {
+  color: #2c2c2c;
+  background-color: #f1f1f1;
+}
+
+.chat-messages-display-message-item {
+  max-width: 70%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  word-wrap: break-word;
+  padding: 10px 12px;
+  border-radius: 15px;
+  border-bottom-right-radius: 3px;
+}
+
+.chat-messages-display-message-item-guest-img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}

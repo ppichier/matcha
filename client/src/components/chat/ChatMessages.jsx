@@ -4,13 +4,13 @@ import "./ChatMessages.css";
 import ChatMessagesInput from "./ChatMessagesInput";
 import ChatMessagesDisplay from "./ChatMessagesDisplay";
 
-const ChatMessages = ({ socket, uuid }) => {
+const ChatMessages = ({ socket, uuid, guestInfosToDisplay }) => {
   const [allMessages, setAllMessages] = useState([]);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     socket.emit("join", "userUuid", "guestUuid", messages => {
-      console.log(messages);
+      //   console.log(messages);
       //get all messages between user and guest
       setAllMessages([...messages]);
     });
@@ -31,12 +31,12 @@ const ChatMessages = ({ socket, uuid }) => {
     }
   };
 
-  console.log(message);
-  console.log(allMessages);
+  //   console.log(message);
+  //   console.log(allMessages);
   return (
     <Fragment>
       <div style={{ height: "92%" }}>
-        <ChatMessagesDisplay />
+        <ChatMessagesDisplay guestInfosToDisplay={guestInfosToDisplay} />
       </div>
       <div className="chat-messages-container-input">
         <ChatMessagesInput

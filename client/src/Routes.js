@@ -24,7 +24,7 @@ const Routes = () => {
   }
 
   let jwt = JSON.parse(localStorage.getItem("jwt"));
-  console.log(jwt);
+  // console.log(jwt);
   if (jwt && jwt.token) {
     socket.emit("register", jwt.token, data => {
       console.log(data);

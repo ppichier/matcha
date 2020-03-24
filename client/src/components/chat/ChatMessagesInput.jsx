@@ -9,6 +9,7 @@ const ChatMessagesInput = ({ message, setMessage, sendMessage }) => {
       <input
         className="pl-3 chat-messages-input-text"
         placeholder="Rédigez un message ..."
+        maxLength="1000"
         value={message}
         onChange={e => setMessage(e.target.value)}
         onKeyPress={e => (e.key === "Enter" ? sendMessage(e) : null)}
