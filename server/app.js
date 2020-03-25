@@ -16,6 +16,7 @@ const io = require("socket.io")(http);
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const matchRoutes = require("./routes/match");
+const chatRoutes = require("./routes/chat");
 
 //faker
 // faker.generateFakeProfiles();
@@ -29,6 +30,7 @@ app.use(bodyParser.json());
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", matchRoutes);
+app.use("/api", chatRoutes);
 
 const port = process.env.PORT || 8000;
 

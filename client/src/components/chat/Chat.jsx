@@ -6,6 +6,7 @@ import ChatPeople from "./ChatPeople";
 import ChatMessages from "./ChatMessages";
 import { Row, Col, Container } from "react-bootstrap";
 import { useState } from "react";
+import { getMatchUsers } from "../../api/chat";
 
 const Chat = ({ socket }) => {
   // console.log(socket);
@@ -32,6 +33,9 @@ const Chat = ({ socket }) => {
   useEffect(() => {
     //fetch for get all match in db (name, userUuid, online?, picture, last message)
     // server will send list of match user [{socketId: "9876", userUuid: "1235", "pseudo": }]
+    getMatchUsers()
+      .then(data => console.log(data))
+      .catch(err => console.log(err));
   });
   // socket.emit("join chat", () => {});
   // socket.emit("send message")/ user send message with socket id or userUuid in params.
