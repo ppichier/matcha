@@ -10,17 +10,29 @@ import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
 import { firstFilter, heartClick } from "../../api";
+import { filterProfile } from "../../api";
+// import RouterContext from "./RouterContext";
+
 
 // one fetch for list of profiles
 // x fetch for x imagess
 
-const MatchMe = ({ pseudo, lastName, city, birthday }) => {
+const MatchMe = (props) => {
+ 
   const [values, setValues] = useState({
     image: [],
     uploading: false,
     profiles: [],
-    moreProfile: []
+    moreProfile: [],
+    age: "20",
+    userSize: "",
+    location: "",
+    score: "",
+    selectedTags: "",
+    err: "",
+    msg: ""
   });
+ 
   useEffect(() => {
     firstFilter()
       .then(data => {
@@ -29,14 +41,32 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       .catch(err => console.log(err));
   }, []);
 
-  // const handleChange = event => {
-  //   event.preventDefault();
+   const handleSubmit = () => {
+    console.log("je rentre _____________")
+  //   filterProfile({
+  //     age: filter.age,
+  //     userSize: filter.userSize,
+  //     location: filter.location,
+  //     score: filter.score,
+  //     selectedTags: filter.selectedTags
+  //   })
+  //     .then(data => {
+  //       if (data.err) {
+  //         setValues({
+  //           ...values,
+  //           err: data.err
+  //         });
+  //       } else {
+  //         setValues({
+  //           ...values,
+  //           err: "",
+  //           msg: data.msg
+  //         });
+  //       }
+  //     })
+  //     .catch(err => console.log(err));
+   };
 
-  //   const files = Array.from(event.target.files);
-  //   const tmp = { ...values, image: [...values.image, files] };
-  //   // const formData = new FormData();
-  //   setValues(tmp);
-  // };
   const handleChange = () => {};
 
   const onHeartClick = i => {
@@ -95,7 +125,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
         <Row>
           <Col md={3}>
             <SortProfile />
-            <FilterProfile />
+            <FilterProfile onClick={() => handleSubmit()}/>
           </Col>
           <Col>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>

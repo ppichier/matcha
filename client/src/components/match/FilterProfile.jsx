@@ -6,14 +6,17 @@ import Slider, { Range, createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import { filterProfile } from "../../api";
 import makeAnimated from "react-select/animated";
+import MatchMe from "./MatchMe";
 
 import queryString from "query-string";
 import { readCommonTag } from "../../api";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
-const FilterProfile = location => {
-  const [values, setValues] = useState({
+const FilterProfile = ({onClick}, location, props) => {
+  console.log("+++++++++++++++++++++")
+
+  const [filter, setfilter] = useState({
     selectedTags: [],
     commonTags: [],
     age: [17, 17],
@@ -23,10 +26,10 @@ const FilterProfile = location => {
     err: "",
     msg: ""
   });
-
+  
   const animatedComponents = makeAnimated();
-
   useEffect(() => {
+
     const v = queryString.parse(location.search);
     readCommonTag(v.uuid)
       .then(data => {
@@ -36,9 +39,9 @@ const FilterProfile = location => {
         if (data && data.err) {
         } else {
         }
-        setValues({
+        setfilter({
           ...data,
-          ...values,
+          ...filter,
           commonTags: data.commonTags
         });
       })
@@ -47,10 +50,10 @@ const FilterProfile = location => {
 
   const handleChangeTags = tags => {
     if (tags === null) {
-      setValues({ ...values, selectedTags: [] });
+      setfilter({ ...filter, selectedTags: [] });
     } else {
       let tmp = tags.map(tag => tag.value);
-      setValues({ ...values, selectedTags: tmp });
+      setfilter({ ...filter, selectedTags: tmp });
     }
   };
 
@@ -61,46 +64,23 @@ const FilterProfile = location => {
       onChange={handleChangeTags}
       components={animatedComponents}
       isMulti
-      options={values.commonTags}
+      options={filter.commonTags}
     />
   );
-
+  props = filter
   const handleChange = (name, i) => event => {
     let b = [event[0], event[1]];
-    setValues({
-      ...values,
+    setfilter({
+      ...filter,
       [name]: b
     });
+    return(<MatchMe props={filter}/>)
   };
-
-  const handleSubmit = event => {
-    filterProfile({
-      age: values.age,
-      userSize: values.userSize,
-      location: values.location,
-      score: values.score,
-      selectedTags: values.selectedTags
-    })
-      .then(data => {
-        if (data.err) {
-          setValues({
-            ...values,
-            err: data.err
-          });
-        } else {
-          setValues({
-            ...values,
-            err: "",
-            msg: data.msg
-          });
-        }
-      })
-      .catch(err => console.log(err));
-  };
-
+  
+ 
+ 
   return (
     <Fragment>
-      {/* <Form.Label className="style-menu">Tags</Form.Label> */}
       <Form
         style={{
           backgroundColor: "#fff",
@@ -111,25 +91,13 @@ const FilterProfile = location => {
         <Form.Row className="px-4 pt-4">
           <Form.Group as={Col}>{MyComponent()}</Form.Group>
         </Form.Row>
-        {/* <Form.Row className="px-4 py-4">
-          <Form.Group as={Col}>
-            <Form.Label>Age</Form.Label>
-            <SliderWithTooltip
-              min={17}
-              max={65}
-              value={[values.age[0], values.age[1]]}
-              onChange={handleChange("age")}
-              marks={{ 18: 18, 65: 65 }}
-            />
-          </Form.Group>
-        </Form.Row> */}
         <Form.Row className="px-4 py-4">
           <Form.Group as={Col}>
             <Form.Label>Age</Form.Label>
             <SliderWithTooltip
               min={17}
               max={65}
-              value={[values.age[0], values.age[1]]}
+              value={[filter.age[0], filter.age[1]]}
               onChange={handleChange("age")}
               marks={{ 18: 18, 65: 65 }}
               tipFormatter={v => (v.toString() === "17" ? "Aucun" : `${v}ans`)}
@@ -142,7 +110,7 @@ const FilterProfile = location => {
             <SliderWithTooltip
               min={0}
               max={100}
-              value={[values.location[0], values.location[1]]}
+              value={[filter.location[0], filter.location[1]]}
               onChange={handleChange("location")}
               marks={{ 0: "0", 100: "100" }}
               tipFormatter={v => `${v}km`}
@@ -155,7 +123,7 @@ const FilterProfile = location => {
             <SliderWithTooltip
               min={0}
               max={1000}
-              value={[values.score[0], values.score[1]]}
+              value={[filter.score[0], filter.score[1]]}
               onChange={handleChange("score")}
               marks={{ 0: "0", 1000: "1000" }}
             />
@@ -167,7 +135,7 @@ const FilterProfile = location => {
             <SliderWithTooltip
               min={129}
               max={230}
-              value={[values.userSize[0], values.userSize[1]]}
+              value={[filter.userSize[0], filter.userSize[1]]}
               onChange={handleChange("userSize")}
               marks={{ 130: "130", 230: "230" }}
               tipFormatter={v => (v.toString() === "129" ? "Aucun" : `${v}cm`)}
@@ -176,7 +144,7 @@ const FilterProfile = location => {
         </Form.Row>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
-            onClick={() => handleSubmit(values)}
+            onClick={() => onClick()}
             className="text-uppercase mx-4 mb-4"
             variant="outline-info"
             style={{ letterSpacing: "1px", fontWeight: "bold" }}
