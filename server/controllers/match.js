@@ -30,7 +30,7 @@ exports.readCommonTag = async (req, res) => {
 };
 
 exports.filterProfile = async (req, res) => {
-  const { age, location, score, userSize, selectedTags } = req.body;
+  const { age, location, score, userSize, selectedTags, moreProfiles } = req.body;
   const userUuid = req.userUuid;
   let tagsParams = [];
   pool.getConnection((err, connection) => {
@@ -78,7 +78,6 @@ exports.filterProfile = async (req, res) => {
             const userIdUser = result[0].UserId;
             const genreId = result[0].GenreId;
             const sexualOrientationId = result[0].SexualOrientationId;
-            const moreProfile = [0, 20];
             connection.query(
               `SELECT *, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId = ? AND SexualOrientationId = ? AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And userSize <= ? ORDER BY DISTANCE ASC  LIMIT ?;
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId = ? AND U.SexualOrientationId = ? GROUP BY T.UserId ORDER BY count(*) DESC`,
@@ -91,7 +90,7 @@ exports.filterProfile = async (req, res) => {
                 scoreFilter[1],
                 userSizeFilter[0],
                 userSizeFilter[1],
-                moreProfile,
+                moreProfiles,
                 sexualOrientationId,
                 genreId
               ],
@@ -129,6 +128,7 @@ exports.filterProfile = async (req, res) => {
                     )
                     .value();
                   let profiles = utils.sortProfile(merged);
+                  console.log(profiles)
                   return res.json({
                     profiles
                   });
@@ -147,6 +147,7 @@ exports.sortProfile = (req, res) => {
 };
 
 exports.firstFilter = (req, res) => {
+  console.log("---------------------------------------")
   const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -221,6 +222,7 @@ exports.firstFilter = (req, res) => {
                     }))
                     .value();
                   let profiles = utils.sortProfile(merged);
+                  console.log(profiles)
                   return res.json({
                     profiles
                   });

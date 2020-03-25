@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
-import "./CardPicture.css";
 import { Row, Col, Container, Button } from "react-bootstrap";
 import CardPicture from "./CardPicture";
+import "./CardPicture.css";
 import NavbarHeader from "../navbar/Navbar";
 import FilterProfile from "./FilterProfile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,64 +9,52 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
-import { firstFilter, heartClick } from "../../api";
-import { filterProfile } from "../../api";
-// import RouterContext from "./RouterContext";
+import { firstFilter, heartClick, filterProfile } from "../../api";
+import _ from 'lodash';
 
 // one fetch for list of profiles
 // x fetch for x imagess
 
-const MatchMe = props => {
+const MatchMe = () => {
   const [values, setValues] = useState({
     image: [],
     uploading: false,
     profiles: [],
-    moreProfile: [],
-    age: "20",
-    userSize: "",
-    location: "",
-    score: "",
-    selectedTags: "",
-    err: "",
-    msg: ""
+    moreProfiles: [0, 20],
   });
 
   useEffect(() => {
     firstFilter()
       .then(data => {
+        console.log(data)
         setValues({ ...values, profiles: data.profiles });
       })
       .catch(err => console.log(err));
   }, []);
 
-  const setFilterParams = filterParams => {
-    console.log("je rentre _____________");
-    console.log(filterParams);
-    //   filterProfile({
-    //     age: filter.age,
-    //     userSize: filter.userSize,
-    //     location: filter.location,
-    //     score: filter.score,
-    //     selectedTags: filter.selectedTags
-    //   })
-    //     .then(data => {
-    //       if (data.err) {
-    //         setValues({
-    //           ...values,
-    //           err: data.err
-    //         });
-    //       } else {
-    //         setValues({
-    //           ...values,
-    //           err: "",
-    //           msg: data.msg
-    //         });
-    //       }
-    //     })
-    //     .catch(err => console.log(err));
+  const setFilterParams = filterParams => (event) =>{
+   event.preventDefault();
+      filterProfile({
+        age: filterParams.age,
+        userSize: filterParams.userSize,
+        location: filterParams.location,
+        score: filterParams.score,
+        selectedTags: filterParams.selectedTags,
+        moreProfiles: values.moreProfiles
+      })
+       .then(data => {
+        setValues({ ...values, profiles: data.profiles });
+      })
+      .catch(err => console.log(err));
   };
-
-  const handleChange = () => {};
+  const setSortParams = sortParams => () =>{
+    const profiles = _.orderBy(values.profiles, [sortParams.name], [sortParams.order]);
+    setValues({ ...values, profiles});
+  }
+  const onMoreProfiles = () => {
+    const moreProfiles = values.moreProfiles.map(x => x + 20)
+    setValues({ ...values, moreProfiles});
+  };
 
   const onHeartClick = i => {
     let userLiked = {
@@ -123,7 +111,9 @@ const MatchMe = props => {
       <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>
           <Col md={3}>
-            <SortProfile />
+            <SortProfile
+              setSortParams={sortParams => setSortParams(sortParams)}
+             />
             <FilterProfile
               setFilterParams={filterParams => setFilterParams(filterParams)}
             />
@@ -132,7 +122,7 @@ const MatchMe = props => {
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
             <div style={{ display: "flex", width: "50%" }}>
               <Button
-                onClick={handleChange()}
+                onClick={() => onMoreProfiles("1")}
                 className="text-uppercase mb-4 center-block"
                 variant="outline-info"
                 style={{ letterSpacing: "1px", fontWeight: "bold" }}

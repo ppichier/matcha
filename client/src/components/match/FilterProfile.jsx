@@ -4,7 +4,6 @@ import "../navbar/Navbar.css";
 import { Col, Form, Button } from "react-bootstrap";
 import Slider, { Range, createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
-import { filterProfile } from "../../api";
 import makeAnimated from "react-select/animated";
 import MatchMe from "./MatchMe";
 
@@ -13,8 +12,7 @@ import { readCommonTag } from "../../api";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
-const FilterProfile = ({ setFilterParams }, location, props) => {
-  console.log("+++++++++++++++++++++");
+const FilterProfile = ({ setFilterParams }, location) => {
 
   const [filter, setfilter] = useState({
     selectedTags: [],
@@ -22,12 +20,11 @@ const FilterProfile = ({ setFilterParams }, location, props) => {
     age: [17, 17],
     location: [0, 0],
     score: [0, 0],
-    userSize: [129, 129],
-    err: "",
-    msg: ""
+    userSize: [129, 129]
   });
 
   const animatedComponents = makeAnimated();
+  
   useEffect(() => {
     const v = queryString.parse(location.search);
     readCommonTag(v.uuid)
@@ -66,14 +63,12 @@ const FilterProfile = ({ setFilterParams }, location, props) => {
       options={filter.commonTags}
     />
   );
-  props = filter;
   const handleChange = (name, i) => event => {
     let b = [event[0], event[1]];
     setfilter({
       ...filter,
       [name]: b
     });
-    return <MatchMe props={filter} />;
   };
 
   return (
