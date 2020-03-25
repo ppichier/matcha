@@ -13,8 +13,8 @@ import { readCommonTag } from "../../api";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
-const FilterProfile = ({onClick}, location, props) => {
-  console.log("+++++++++++++++++++++")
+const FilterProfile = ({ setFilterParams }, location, props) => {
+  console.log("+++++++++++++++++++++");
 
   const [filter, setfilter] = useState({
     selectedTags: [],
@@ -26,10 +26,9 @@ const FilterProfile = ({onClick}, location, props) => {
     err: "",
     msg: ""
   });
-  
+
   const animatedComponents = makeAnimated();
   useEffect(() => {
-
     const v = queryString.parse(location.search);
     readCommonTag(v.uuid)
       .then(data => {
@@ -67,18 +66,16 @@ const FilterProfile = ({onClick}, location, props) => {
       options={filter.commonTags}
     />
   );
-  props = filter
+  props = filter;
   const handleChange = (name, i) => event => {
     let b = [event[0], event[1]];
     setfilter({
       ...filter,
       [name]: b
     });
-    return(<MatchMe props={filter}/>)
+    return <MatchMe props={filter} />;
   };
-  
- 
- 
+
   return (
     <Fragment>
       <Form
@@ -144,7 +141,7 @@ const FilterProfile = ({onClick}, location, props) => {
         </Form.Row>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
-            onClick={() => onClick()}
+            onClick={setFilterParams({ ...filter })}
             className="text-uppercase mx-4 mb-4"
             variant="outline-info"
             style={{ letterSpacing: "1px", fontWeight: "bold" }}

@@ -13,12 +13,10 @@ import { firstFilter, heartClick } from "../../api";
 import { filterProfile } from "../../api";
 // import RouterContext from "./RouterContext";
 
-
 // one fetch for list of profiles
 // x fetch for x imagess
 
-const MatchMe = (props) => {
- 
+const MatchMe = props => {
   const [values, setValues] = useState({
     image: [],
     uploading: false,
@@ -32,7 +30,7 @@ const MatchMe = (props) => {
     err: "",
     msg: ""
   });
- 
+
   useEffect(() => {
     firstFilter()
       .then(data => {
@@ -41,31 +39,32 @@ const MatchMe = (props) => {
       .catch(err => console.log(err));
   }, []);
 
-   const handleSubmit = () => {
-    console.log("je rentre _____________")
-  //   filterProfile({
-  //     age: filter.age,
-  //     userSize: filter.userSize,
-  //     location: filter.location,
-  //     score: filter.score,
-  //     selectedTags: filter.selectedTags
-  //   })
-  //     .then(data => {
-  //       if (data.err) {
-  //         setValues({
-  //           ...values,
-  //           err: data.err
-  //         });
-  //       } else {
-  //         setValues({
-  //           ...values,
-  //           err: "",
-  //           msg: data.msg
-  //         });
-  //       }
-  //     })
-  //     .catch(err => console.log(err));
-   };
+  const setFilterParams = filterParams => {
+    console.log("je rentre _____________");
+    console.log(filterParams);
+    //   filterProfile({
+    //     age: filter.age,
+    //     userSize: filter.userSize,
+    //     location: filter.location,
+    //     score: filter.score,
+    //     selectedTags: filter.selectedTags
+    //   })
+    //     .then(data => {
+    //       if (data.err) {
+    //         setValues({
+    //           ...values,
+    //           err: data.err
+    //         });
+    //       } else {
+    //         setValues({
+    //           ...values,
+    //           err: "",
+    //           msg: data.msg
+    //         });
+    //       }
+    //     })
+    //     .catch(err => console.log(err));
+  };
 
   const handleChange = () => {};
 
@@ -125,7 +124,9 @@ const MatchMe = (props) => {
         <Row>
           <Col md={3}>
             <SortProfile />
-            <FilterProfile onClick={() => handleSubmit()}/>
+            <FilterProfile
+              setFilterParams={filterParams => setFilterParams(filterParams)}
+            />
           </Col>
           <Col>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
