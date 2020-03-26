@@ -4,6 +4,19 @@ const pool = require("../db");
 const error = require("../controllers/error");
 const _ = require("lodash");
 
+exports.checkDatabaseStatus = (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({
+        err: "Internal Error"
+      });
+    } else {
+      connection.release();
+      next();
+    }
+  });
+};
+
 exports.createUploadDirectory = (req, res, next) => {
   let form = new formidable.IncomingForm();
   let newName = "";

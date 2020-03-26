@@ -23,6 +23,9 @@ const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
   useEffect(() => {
     readImage()
       .then(data => {
+        if (!data || data.err) {
+          return;
+        }
         setBase64Image(data.image);
       })
       .catch(err => console.log(err));

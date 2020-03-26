@@ -11,7 +11,7 @@ import {
 } from "../../api/user";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt, faKey }  from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt, faKey } from "@fortawesome/free-solid-svg-icons";
 import { verifValidated, validatedTag } from "../functions/utils";
 import "./ProfileUser.css";
 import { forgotPassword } from "../../api/auth";
@@ -110,8 +110,17 @@ const ProfileUser = ({ props, location }) => {
       .then(data => {
         w = data.image === null ? w : (w += inc);
         readSecondaryImages().then(data => {
-          w = data.images.filter(e => e !== "").length > 0 ? (w += inc) : w;
-          setWidthProgressBar(w);
+          if (data.err) {
+            setSecondaryValues({
+              err: data.err,
+              msg: "",
+              showErrorToast: true,
+              showSuccessToast: false
+            });
+          } else {
+            w = data.images.filter(e => e !== "").length > 0 ? (w += inc) : w;
+            setWidthProgressBar(w);
+          }
         });
       })
       .catch(err => console.log(err));

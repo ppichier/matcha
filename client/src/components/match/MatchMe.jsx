@@ -24,7 +24,11 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   useEffect(() => {
     firstFilter()
       .then(data => {
-        setValues({ ...values, profiles: data.profiles });
+        if (data.err) {
+          return;
+        } else {
+          setValues({ ...values, profiles: data.profiles });
+        }
       })
       .catch(err => console.log(err));
   }, []);

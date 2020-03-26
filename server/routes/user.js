@@ -19,7 +19,8 @@ const {
 const {
   createUploadDirectory,
   deletePreviousImage,
-  updateTags
+  updateTags,
+  checkDatabaseStatus
 } = require("../middlewares/users");
 
 const { updateProfileValidator } = require("../validator");
@@ -36,6 +37,7 @@ router.post(
 router.post(
   "/profile/uploadProfileImage",
   verifyToken,
+  checkDatabaseStatus,
   createUploadDirectory,
   deletePreviousImage,
   uploadProfileImage
@@ -43,6 +45,7 @@ router.post(
 router.post(
   "/profile/uploadSecondaryImages",
   verifyToken,
+  checkDatabaseStatus,
   createUploadDirectory,
   uploadSecondaryImages
 );

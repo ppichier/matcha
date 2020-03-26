@@ -26,6 +26,7 @@ const Picture = ({ imageSecondarySet }) => {
   useEffect(() => {
     readSecondaryImages()
       .then(data => {
+        if (!data || data.err) return;
         setBase64Images(data.images);
       })
       .catch(err => console.log(err));
