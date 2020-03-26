@@ -50,11 +50,11 @@ const ChatPeople = ({ sendGuestUuid }) => {
   const profileImage = i => {
     let sourceImage =
       "https://image.flaticon.com/icons/png/512/1177/1177577.png";
-    if (matchImages.length === 0 || !matchImages[i])
-      sourceImage = "https://image.flaticon.com/icons/png/512/1177/1177577.png";
+    if (matchImages.length === 0 || !matchImages[i]);
     else if (matchImages[i].image !== null)
       sourceImage = "data:image/png;base64, " + matchImages[i].image;
-
+    else if (matchImages[i].imageFakeProfile !== null)
+      sourceImage = matchImages[i].imageFakeProfile;
     return (
       <Image
         className="chat-people-item-image"
