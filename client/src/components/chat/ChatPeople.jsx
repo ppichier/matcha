@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { getMatchUsers } from "../../api/chat";
 import { readImage } from "../../api/user";
 
-const ChatPeople = ({ peoples, sendGuestUuid }) => {
+const ChatPeople = ({ sendGuestUuid }) => {
   const [guestIndex, setGuestIndex] = useState(null);
   const [matchPeople, setMatchPeople] = useState([]);
   const [matchImages, setMatchImages] = useState([]);

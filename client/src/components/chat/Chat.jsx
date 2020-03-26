@@ -10,21 +10,6 @@ import { useState } from "react";
 const Chat = ({ socket }) => {
   // console.log(socket);
 
-  const [matchPeople, setMatchPeople] = useState([
-    {
-      userUuid: "123",
-      pseudo: "ppichier",
-      profileImage: "base64 ou link",
-      lastMsg: "lastMessage"
-    },
-    {
-      userUuid: "456",
-      pseudo: "ppichier",
-      profileImage: "base64 ou link",
-      lastMsg: "lastMessage"
-    }
-  ]);
-
   const [guestUuid, setGuestUuid] = useState(null);
 
   // const [messages, setMessages] = useState({ from: "blab", allMessages: [{}] });
@@ -51,10 +36,7 @@ const Chat = ({ socket }) => {
       <Container fluid className="px-0 chat-container">
         <Row className="chat-row" noGutters>
           <Col md={3} className="chat-col1">
-            <ChatPeople
-              matchPeople={matchPeople}
-              sendGuestUuid={value => setGuestUuid(value)}
-            />
+            <ChatPeople sendGuestUuid={value => setGuestUuid(value)} />
           </Col>
           <Col md={9} className="chat-col2">
             <ChatMessages socket={socket} guestInfosToDisplay={[]} />
