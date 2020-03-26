@@ -3,27 +3,24 @@ const pool = require("../db");
 
 exports.getMatchUsers = (req, res) => {
   let userId = req.userId;
-  let userUuid = req.userUuid;
 
-  //   SELECT user_like.LikeReceiver FROM user_like WHERE user_like.LikeSender = 121
-  //   UNION
-  //   SELECT user_like.LikeSender FROM user_like WHERE user_like.LikeReceiver = 121;
-
-  //   console.log(userId);
-  //     pool.getConnection((err, connection) => {
-  //       if (err) {
-  //         error.handleError(res, err, "Internal error", 500, connection);
-  //       } else {
-  //         connection.query("SELECT UserId, u", [userUuid], (err, result) => {
-  //           if (err) {
-  //             error.handleError(res, err, "Internal error", 500, connection);
-  //           } else {
-  //             console.log(result);
-  //             connection.release();
-  //           }
-  //         });
-  //       }
-  //     });
-
-  return res.json({ msg: "ok" });
+  pool.getConnection((err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      connection.query(
+        "SELECT Uuid AS uuid, UserName AS userName FROM user WHERE user.UserId IN (SELECT C.LikeSender FROM user_like C WHERE EXISTS (SELECT T.LikeReceiver FROM user_like T WHERE T.LikeSender = ?) AND C.LikeReceiver = ?)",
+        [userId, userId],
+        (err, result) => {
+          if (err) {
+            error.handleError(res, err, "Internal error", 500, connection);
+          } else {
+            console.log(result);
+            connection.release();
+            return res.json({ matchPeople: result });
+          }
+        }
+      );
+    }
+  });
 };

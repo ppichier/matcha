@@ -1,20 +1,68 @@
 import React, { Fragment } from "react";
 import "./ChatPeople.css";
-import { Image } from "react-bootstrap";
+import { Image, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faComments } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { useEffect } from "react";
+import { getMatchUsers } from "../../api/chat";
+import { readImage } from "../../api/user";
 
-const ChatPeople = ({ peoples, sendGuestIndex }) => {
+const ChatPeople = ({ peoples, sendGuestUuid }) => {
   const [guestIndex, setGuestIndex] = useState(null);
+  const [matchPeople, setMatchPeople] = useState([]);
+  const [matchImages, setMatchImages] = useState([]);
+
+  useEffect(() => {
+    getMatchUsers()
+      .then(data => {
+        if (data.err) return;
+        else {
+          setMatchPeople([...data.matchPeople]);
+        }
+      })
+      .catch(err => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    if (matchPeople.length !== 0) {
+      let promises = matchPeople.map(people => readImage(people.uuid));
+      Promise.all(promises)
+        .then(data => {
+          if (data.err) return;
+          else {
+            setMatchImages([...data]);
+          }
+        })
+        .catch(err => console.log(err));
+    }
+  }, [matchPeople]);
 
   const updateIndex = index => {
     let guestDiv = document.getElementsByClassName("chat-people-item");
     if (guestIndex !== null)
       guestDiv[guestIndex].classList.remove("chat-people-item-selected");
     setGuestIndex(index);
-    sendGuestIndex(index);
+    sendGuestUuid(matchPeople[index].uuid);
     guestDiv[index].classList.add("chat-people-item-selected");
+  };
+
+  const profileImage = i => {
+    let sourceImage =
+      "https://image.flaticon.com/icons/png/512/1177/1177577.png";
+    if (matchImages.length === 0 || !matchImages[i])
+      sourceImage = "https://image.flaticon.com/icons/png/512/1177/1177577.png";
+    else if (matchImages[i].image !== null)
+      sourceImage = "data:image/png;base64, " + matchImages[i].image;
+
+    return (
+      <Image
+        className="chat-people-item-image"
+        src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
+        roundedCircle
+        src={sourceImage}
+      />
+    );
   };
 
   return (
@@ -25,47 +73,30 @@ const ChatPeople = ({ peoples, sendGuestIndex }) => {
           Messages
         </span>
       </div>
-      <div className=" chat-people-list">
-        <div
-          className="pl-4 py-2 chat-people-item"
-          onClick={() => updateIndex(0)}
-        >
-          <div className="chat-people-item-container-image">
-            <div className="chat-people-item-online"></div>
-            <Image
-              className="chat-people-item-image"
-              src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
-              roundedCircle
-            />
-          </div>
-          {/* Logo online + notif message */}
-          <div className="ml-3 chat-people-item-infos">
-            <div className="chat-people-item-pseudo">ppichier</div>
-            <div className="chat-people-item-last-msg">
-              <FontAwesomeIcon icon={faReply} className="pr-1" />
-              last message ....
-            </div>
-          </div>
-        </div>
 
-        <div
-          className="pl-4 py-2 chat-people-item"
-          onClick={() => updateIndex(1)}
-        >
-          <Image
-            className="chat-people-item-image"
-            src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
-            roundedCircle
-          />
-          {/* Logo online + notif message */}
-          <div className="ml-3 chat-people-item-infos">
-            <div className="chat-people-item-pseudo">ppichier</div>
-            <div className="chat-people-item-last-msg">
-              <FontAwesomeIcon icon={faReply} className="pr-1" />
-              last message ....
+      <div className=" chat-people-list">
+        {matchPeople.map((people, i) => {
+          return (
+            <div
+              className="pl-4 py-2 chat-people-item"
+              onClick={() => updateIndex(i)}
+              key={i}
+            >
+              <div className="chat-people-item-container-image">
+                <div className="chat-people-item-online"></div>
+                {profileImage(i)}
+              </div>
+              {/* Logo online + notif message */}
+              <div className="ml-3 chat-people-item-infos">
+                <div className="chat-people-item-pseudo">{people.userName}</div>
+                <div className="chat-people-item-last-msg">
+                  <FontAwesomeIcon icon={faReply} className="pr-1" />
+                  last message ....
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </Fragment>
   );

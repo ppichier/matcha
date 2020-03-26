@@ -6,7 +6,6 @@ import ChatPeople from "./ChatPeople";
 import ChatMessages from "./ChatMessages";
 import { Row, Col, Container } from "react-bootstrap";
 import { useState } from "react";
-import { getMatchUsers } from "../../api/chat";
 
 const Chat = ({ socket }) => {
   // console.log(socket);
@@ -26,16 +25,13 @@ const Chat = ({ socket }) => {
     }
   ]);
 
-  const [guestInfosToDisplay, setGuestInfosToDisplay] = useState(null);
+  const [guestUuid, setGuestUuid] = useState(null);
 
   // const [messages, setMessages] = useState({ from: "blab", allMessages: [{}] });
 
   useEffect(() => {
     //fetch for get all match in db (name, userUuid, online?, picture, last message)
     // server will send list of match user [{socketId: "9876", userUuid: "1235", "pseudo": }]
-    getMatchUsers()
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
   });
   // socket.emit("join chat", () => {});
   // socket.emit("send message")/ user send message with socket id or userUuid in params.
@@ -43,10 +39,11 @@ const Chat = ({ socket }) => {
   // Before
   // socket.on("receive message")/ user receive message from a user
 
-  const extractGuestInfos = guestIndex => {
-    // fetch all messages from guest index and setGuestInfosToDisplay them
-    setGuestInfosToDisplay({ guestUuid: "345", name: "toto", messages: [] });
-  };
+  useEffect(() => {
+    if (guestUuid !== null) {
+      //fetch messages relative to guestUuid and store in state
+    }
+  }, [guestUuid]);
 
   return (
     <Fragment>
@@ -56,14 +53,11 @@ const Chat = ({ socket }) => {
           <Col md={3} className="chat-col1">
             <ChatPeople
               matchPeople={matchPeople}
-              sendGuestIndex={i => extractGuestInfos(i)}
+              sendGuestUuid={value => setGuestUuid(value)}
             />
           </Col>
           <Col md={9} className="chat-col2">
-            <ChatMessages
-              socket={socket}
-              guestInfosToDisplay={guestInfosToDisplay}
-            />
+            <ChatMessages socket={socket} guestInfosToDisplay={[]} />
           </Col>
         </Row>
       </Container>
