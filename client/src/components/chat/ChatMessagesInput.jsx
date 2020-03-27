@@ -3,6 +3,12 @@ import "./ChatMessagesInput.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
+
+
+// https://dev.to/rexeze/how-to-build-a-real-time-chat-app-with-nodejs-socketio-and-mongodb-2kho
+//  Notify user when typing 
+
+
 const ChatMessagesInput = ({ message, setMessage, sendMessage }) => {
   return (
     <form className="chat-messages-input-form">

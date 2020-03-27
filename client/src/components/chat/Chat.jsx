@@ -10,9 +10,14 @@ import { useState } from "react";
 const Chat = ({ socket }) => {
   // console.log(socket);
 
-  const [guestUuid, setGuestUuid] = useState(null);
-
+  const [uuid, setUuid] = useState(null);
+  const [guestInfos, setGuestInfos] = useState(null);
   // const [messages, setMessages] = useState({ from: "blab", allMessages: [{}] });
+
+  useEffect(() => {
+    setUuid(JSON.parse(localStorage.getItem("jwt")).user._id);
+    console.log(JSON.parse(localStorage.getItem("jwt")).user._id);
+  }, []);
 
   useEffect(() => {
     //fetch for get all match in db (name, userUuid, online?, picture, last message)
@@ -25,10 +30,11 @@ const Chat = ({ socket }) => {
   // socket.on("receive message")/ user receive message from a user
 
   useEffect(() => {
-    if (guestUuid !== null) {
+    console.log(guestInfos);
+    if (guestInfos && guestInfos.guestUuid !== null) {
       //fetch messages relative to guestUuid and store in state
     }
-  }, [guestUuid]);
+  }, [guestInfos]);
 
   return (
     <Fragment>
@@ -36,10 +42,10 @@ const Chat = ({ socket }) => {
       <Container fluid className="px-0 chat-container">
         <Row className="chat-row" noGutters>
           <Col md={3} className="chat-col1">
-            <ChatPeople sendGuestUuid={value => setGuestUuid(value)} />
+            <ChatPeople sendGuestInfos={value => setGuestInfos({ ...value })} />
           </Col>
           <Col md={9} className="chat-col2">
-            <ChatMessages socket={socket} guestInfosToDisplay={[]} />
+            <ChatMessages socket={socket} guestInfos={guestInfos} uuid={uuid} />
           </Col>
         </Row>
       </Container>

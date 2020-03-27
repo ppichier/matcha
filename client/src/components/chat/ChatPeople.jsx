@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import "./ChatPeople.css";
-import { Image, Spinner } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faComments } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { getMatchUsers } from "../../api/chat";
 import { readImage } from "../../api/user";
 
-const ChatPeople = ({ sendGuestUuid }) => {
+const ChatPeople = ({ sendGuestInfos }) => {
   const [guestIndex, setGuestIndex] = useState(null);
   const [matchPeople, setMatchPeople] = useState([]);
   const [matchImages, setMatchImages] = useState([]);
@@ -42,8 +42,11 @@ const ChatPeople = ({ sendGuestUuid }) => {
     let guestDiv = document.getElementsByClassName("chat-people-item");
     if (guestIndex !== null)
       guestDiv[guestIndex].classList.remove("chat-people-item-selected");
-    setGuestIndex(index);
-    sendGuestUuid(matchPeople[index].uuid);
+
+    if (guestIndex !== index) {
+      sendGuestInfos({ ...matchPeople[index], ...matchImages[index] });
+      setGuestIndex(index);
+    }
     guestDiv[index].classList.add("chat-people-item-selected");
   };
 
@@ -58,7 +61,6 @@ const ChatPeople = ({ sendGuestUuid }) => {
     return (
       <Image
         className="chat-people-item-image"
-        src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
         roundedCircle
         src={sourceImage}
       />

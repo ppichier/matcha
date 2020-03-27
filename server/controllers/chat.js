@@ -15,7 +15,6 @@ exports.getMatchUsers = (req, res) => {
           if (err) {
             error.handleError(res, err, "Internal error", 500, connection);
           } else {
-            console.log(result);
             connection.release();
             return res.json({ matchPeople: result });
           }

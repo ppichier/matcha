@@ -3,43 +3,70 @@ import "./ChatMessagesDisplay.css";
 import { Image } from "react-bootstrap";
 import { useEffect } from "react";
 
-const ChatMessagesDisplay = ({ messages, guestInfosToDisplay }) => {
+const ChatMessagesDisplay = ({ allMessages, guestInfos, uuid }) => {
   useEffect(() => {
+    // console.log(allMessages);
     let a = document.getElementById("container-scroll");
     if (!a) return;
     a.scrollTo({
       top: a.scrollHeight,
       left: 0
-      // behavior: "smooth"
     });
-  }, [guestInfosToDisplay]);
+  }, [guestInfos, allMessages]);
+
+  const messageFromMe = (i, msg) => {
+    return (
+      <div key={i} className="chat-messages-display-container-me">
+        <div className="chat-messages-display-message-item chat-messages-display-message-item-color-me">
+          {msg}
+        </div>
+      </div>
+    );
+  };
+
+  const messageFromGuest = (i, msg) => {
+    return (
+      <div key={i} className="chat-messages-display-container-guest">
+        <Image
+          className="chat-messages-display-message-item-guest-img"
+          src={
+            guestInfos.image !== null
+              ? "data:image/png;base64, " + guestInfos.image
+              : guestInfos.imageFakeProfile
+          }
+          roundedCircle
+        />
+        <div className="chat-messages-display-message-item chat-messages-display-message-item-color-guest">
+          {msg}
+        </div>
+      </div>
+    );
+  };
 
   const messagesDisplay = () => {
-    if (guestInfosToDisplay)
+    if (guestInfos)
       return (
         <div id="container-scroll" className="chat-messages-display-container">
           <div className="chat-messages-display-message-intro">
             <Image
               className="chat-messages-display-message-intro-img"
-              src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
+              src={
+                guestInfos.image !== null
+                  ? "data:image/png;base64, " + guestInfos.image
+                  : guestInfos.imageFakeProfile
+              }
               roundedCircle
             />
-            <div>Vous avez matché avec nom !</div>
-          </div>
-          <div className="chat-messages-display-container-me">
-            <div className="chat-messages-display-message-item chat-messages-display-message-item-color-me">
-              Salut! Comment ça va?
+            <div className="chat-messages-display-message-intro-txt">
+              Vous avez matché avec {guestInfos.userName} !
             </div>
           </div>
-          <div className="chat-messages-display-container-guest">
-            <Image
-              className="chat-messages-display-message-item-guest-img"
-              src="https://image.flaticon.com/icons/png/512/1177/1177577.png"
-              roundedCircle
-            />
-            <div className="chat-messages-display-message-item chat-messages-display-message-item-color-guest">
-              Hello, plutot bien et toi ?
-            </div>
+          <div>
+            {allMessages.map((e, i) =>
+              e.from === uuid
+                ? messageFromMe(i, e.msg)
+                : messageFromGuest(i, e.msg)
+            )}
           </div>
         </div>
       );

@@ -34,15 +34,33 @@ app.use("/api", chatRoutes);
 
 const port = process.env.PORT || 8000;
 
+/* TEST SOCKET */
+
 const users_connected = {};
+
+Object.filter = (obj, predicate) =>
+  Object.keys(obj)
+    .filter(key => predicate(obj[key]))
+    .reduce((res, key) => ((res[key] = obj[key]), res), {});
+
+const findSocketsGivenUuid = uuid => {
+  let sockets = Object.filter(users_connected, u => u === uuid);
+  console.log("++++++++++++++++++++");
+  console.log(Object.keys(sockets));
+  console.log("++++++++++++++++++++");
+  return Object.keys(sockets);
+};
 
 io.on("connection", socket => {
   console.log(chalk.magenta("connection ws"));
+  let userUuid = null;
+
   socket.on("register", (token, cb) => {
     if (!users_connected.hasOwnProperty(socket.id)) {
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) return { err: "Socket connection error" };
         users_connected[socket.id] = decoded._id;
+        userUuid = decoded._id;
       });
     }
     cb(users_connected);
@@ -54,16 +72,33 @@ io.on("connection", socket => {
   });
 
   socket.on("join", (userUuid, guestUuid, cb) => {
-    console.log("joiiiiiinnnnn", userUuid);
+    console.log("joining room", userUuid);
     // based on socket id of user
     cb([
-      { from: userUuid, to: guestUuid, msg: "message1" },
-      { from: userUuid, to: guestUuid, msg: "message2" }
+      {
+        from: "cd2b1f92-aa86-40f6-af4f-9285613dbda4",
+        to: "33d79c12-97aa-40a8-8b91-fe8720e08a28",
+        msg: "Salut ça va ?"
+      },
+      {
+        from: "33d79c12-97aa-40a8-8b91-fe8720e08a28",
+        to: "cd2b1f92-aa86-40f6-af4f-9285613dbda4",
+        msg: "Bien et toi :) ?"
+      }
     ]);
   });
 
-  socket.on("sendMessage", (userUuid, guestUuid, message, cb) => {
+  socket.on("sendMessage", (guestUuid, message, cb) => {
     socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
+    let guestSockets = findSocketsGivenUuid(guestUuid);
+    guestSockets.forEach(e => {
+      io.to(e).emit("message", {
+        from: userUuid,
+        to: guestUuid,
+        msg: message
+      });
+    });
+
     console.log("MESSAGE: ", message);
     cb();
   });
@@ -84,6 +119,8 @@ io.on("connection", socket => {
     }, 2000);
   });
 });
+
+/* END TEST SOCKET */
 
 http.listen(port, () => {
   console.log(chalk.blue(`App listen on port ${port}`));

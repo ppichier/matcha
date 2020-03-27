@@ -4,9 +4,11 @@ import "./ChatMessages.css";
 import ChatMessagesInput from "./ChatMessagesInput";
 import ChatMessagesDisplay from "./ChatMessagesDisplay";
 
-const ChatMessages = ({ socket, uuid, guestInfosToDisplay }) => {
+const ChatMessages = ({ socket, guestInfos, uuid }) => {
   const [allMessages, setAllMessages] = useState([]);
   const [message, setMessage] = useState("");
+
+  // console.log(guestInfos);
 
   useEffect(() => {
     socket.emit("join", "userUuid", "guestUuid", messages => {
@@ -14,18 +16,35 @@ const ChatMessages = ({ socket, uuid, guestInfosToDisplay }) => {
       //get all messages between user and guest
       setAllMessages([...messages]);
     });
+    // return () => {
+    //   socket.off();
+    // };
   }, [socket]);
 
   useEffect(() => {
     socket.on("message", message => {
-      setAllMessages([...allMessages, message]);
+      //get single message in live
+      // console.log(guestInfos);
+      console.log("Reception du message: ", message);
+      if (
+        (message.from === guestInfos.uuid && message.to === uuid) ||
+        (message.from === uuid && message.to === guestInfos.uuid)
+      ) {
+        console.log("HERE");
+        setAllMessages([...allMessages, message]);
+      }
+      //store in db the message regarding uuid and guest id
     });
-  }, [socket, allMessages]);
+    return () => {
+      socket.off();
+    };
+  }, [socket, guestInfos, allMessages]);
 
   const sendMessage = e => {
     e.preventDefault();
-    if (message) {
-      socket.emit("sendMessage", "userUuid", "guestUuid", message, () =>
+    if (guestInfos && message) {
+      // console.log(guestInfos);
+      socket.emit("sendMessage", guestInfos.uuid, message, () =>
         setMessage("")
       );
     }
@@ -36,7 +55,11 @@ const ChatMessages = ({ socket, uuid, guestInfosToDisplay }) => {
   return (
     <Fragment>
       <div style={{ height: "92%" }}>
-        <ChatMessagesDisplay guestInfosToDisplay={guestInfosToDisplay} />
+        <ChatMessagesDisplay
+          guestInfos={guestInfos}
+          allMessages={allMessages}
+          uuid={uuid}
+        />
       </div>
       <div className="chat-messages-container-input">
         <ChatMessagesInput

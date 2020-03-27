@@ -56,7 +56,7 @@ const ProfileUser = ({ props, location }) => {
 
   useEffect(() => {
     const v = queryString.parse(location.search);
-    console.log(v);
+    // console.log(v);
 
     //Send uuid profile
 

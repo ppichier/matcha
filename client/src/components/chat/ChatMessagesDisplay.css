@@ -18,6 +18,11 @@
   margin-bottom: 5%;
 }
 
+.chat-messages-display-message-intro-txt {
+  color: #2c2c2c;
+  font-style: italic;
+}
+
 .chat-messages-display-message-intro-img {
   width: 100px;
   height: 100px;
@@ -39,11 +44,15 @@
 .chat-messages-display-message-item-color-me {
   color: #fff;
   background-color: #3ba4ff;
+  border-radius: 15px;
+  border-bottom-right-radius: 3px;
 }
 
 .chat-messages-display-message-item-color-guest {
   color: #2c2c2c;
   background-color: #f1f1f1;
+  border-radius: 15px;
+  border-bottom-left-radius: 3px;
 }
 
 .chat-messages-display-message-item {
@@ -52,8 +61,6 @@
   word-break: break-word;
   word-wrap: break-word;
   padding: 10px 12px;
-  border-radius: 15px;
-  border-bottom-right-radius: 3px;
 }
 
 .chat-messages-display-message-item-guest-img {
