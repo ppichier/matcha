@@ -35,8 +35,9 @@ const MatchMe = () => {
 
   let moreParams = [];
 
-  const setFilterParams = filterParams => (event) =>{
-   event.preventDefault();
+  const setFilterParams = (event, filterParams) => {
+  if (event) 
+    event.preventDefault();
    console.log("je suis sage ")
     moreParams = filterParams;
       filterProfile({
@@ -71,8 +72,10 @@ const MatchMe = () => {
     setValues({ ...values, moreProfiles});
     console.log(values.activateFilter)
     // if ( values.activateFilter === true)
-    
-      // setFilterParams(moreProfiles);
+    // {
+    //   console.log("je suis un peu fache")
+    //     setFilterParams(event, moreProfiles);
+    // }
     
   };
 
@@ -104,7 +107,10 @@ const MatchMe = () => {
       return(
         <div style={{ display: "flex", width: "50%" }}>
               <Button
-                onClick={() => {onMoreProfiles(); setFilterParams(moreParams);}}
+                onClick={e => {
+                  onMoreProfiles();
+                  setFilterParams(e, moreParams);
+                }}
                 className="text-uppercase mb-4 center-block"
                 variant="outline-info"
                 style={{ letterSpacing: "1px", fontWeight: "bold" }}
@@ -157,7 +163,7 @@ const MatchMe = () => {
               setSortParams={sortParams => setSortParams(sortParams)}
              />
             <FilterProfile
-              setFilterParams={filterParams => setFilterParams(filterParams)}
+              setFilterParams={(filterParams) => setFilterParams(null, filterParams)}
             />
           </Col>
           <Col>
