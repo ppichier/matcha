@@ -13,7 +13,6 @@ import { readCommonTag } from "../../api";
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
 const FilterProfile = ({ setFilterParams }, location) => {
-
   const [filter, setfilter] = useState({
     selectedTags: [],
     commonTags: [],
@@ -24,7 +23,7 @@ const FilterProfile = ({ setFilterParams }, location) => {
   });
 
   const animatedComponents = makeAnimated();
-  
+
   useEffect(() => {
     const v = queryString.parse(location.search);
     readCommonTag(v.uuid)
@@ -136,7 +135,7 @@ const FilterProfile = ({ setFilterParams }, location) => {
         </Form.Row>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
-            onClick={setFilterParams({ ...filter })}
+            onClick={() => setFilterParams({ ...filter })}
             className="text-uppercase mx-4 mb-4"
             variant="outline-info"
             style={{ letterSpacing: "1px", fontWeight: "bold" }}
