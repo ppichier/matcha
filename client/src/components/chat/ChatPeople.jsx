@@ -51,9 +51,12 @@ const ChatPeople = ({ sendGuestInfos }) => {
   };
 
   const profileImage = i => {
+    console.log(matchImages);
+    // if (matchImages && matchImages[1].image) console.log(matchImages[0].image);
     let sourceImage =
       "https://image.flaticon.com/icons/png/512/1177/1177577.png";
-    if (matchImages.length === 0 || !matchImages[i]);
+    if (matchImages.length === 0 || !matchImages[i])
+      sourceImage = "https://image.flaticon.com/icons/png/512/1177/1177577.png";
     else if (matchImages[i].image !== null)
       sourceImage = "data:image/png;base64, " + matchImages[i].image;
     else if (matchImages[i].imageFakeProfile !== null)

@@ -44,7 +44,7 @@ const ChatMessagesDisplay = ({ allMessages, guestInfos, uuid }) => {
   };
 
   const messagesDisplay = () => {
-    if (guestInfos)
+    if (guestInfos.uuid)
       return (
         <div id="container-scroll" className="chat-messages-display-container">
           <div className="chat-messages-display-message-intro">

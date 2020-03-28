@@ -7,6 +7,8 @@ const chalk = require("chalk");
 const faker = require("./faker");
 const jwt = require("jsonwebtoken");
 
+const { getAllMessages, saveMessage } = require("./socket/chat");
+
 //app
 const app = express();
 const http = require("http").createServer(app);
@@ -71,36 +73,35 @@ io.on("connection", socket => {
     // and emit event offline user
   });
 
-  socket.on("join", (userUuid, guestUuid, cb) => {
+  socket.on("join", async (userUuid, guestUuid, cb) => {
     console.log("joining room", userUuid);
-    // based on socket id of user
-    cb([
-      {
-        from: "cd2b1f92-aa86-40f6-af4f-9285613dbda4",
-        to: "33d79c12-97aa-40a8-8b91-fe8720e08a28",
-        msg: "Salut ça va ?"
-      },
-      {
-        from: "33d79c12-97aa-40a8-8b91-fe8720e08a28",
-        to: "cd2b1f92-aa86-40f6-af4f-9285613dbda4",
-        msg: "Bien et toi :) ?"
-      }
-    ]);
+    try {
+      const messages = await getAllMessages(userUuid, guestUuid);
+      cb(messages);
+    } catch (err) {
+      console.log(chalk.red("Error socket fetch getAllMessages: ", err));
+      cb([]);
+    }
   });
 
-  socket.on("sendMessage", (guestUuid, message, cb) => {
-    socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
-    let guestSockets = findSocketsGivenUuid(guestUuid);
-    guestSockets.forEach(e => {
-      io.to(e).emit("message", {
-        from: userUuid,
-        to: guestUuid,
-        msg: message
+  socket.on("sendMessage", async (userUuid, guestUuid, message, cb) => {
+    // socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
+    try {
+      let res = await saveMessage(userUuid, guestUuid, message);
+      let guestSockets = findSocketsGivenUuid(guestUuid);
+      let meSockets = findSocketsGivenUuid(userUuid);
+      [...guestSockets, ...meSockets].forEach(e => {
+        io.to(e).emit("message", {
+          from: userUuid,
+          to: guestUuid,
+          msg: message
+        });
       });
-    });
-
-    console.log("MESSAGE: ", message);
-    cb();
+      console.log("MESSAGE: ", message);
+      cb();
+    } catch (err) {
+      console.log(chalk.red("Error socket fetch saveMessage: ", err));
+    }
   });
 
   socket.on("disconnect", () => {

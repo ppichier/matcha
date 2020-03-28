@@ -11,7 +11,7 @@ const Chat = ({ socket }) => {
   // console.log(socket);
 
   const [uuid, setUuid] = useState(null);
-  const [guestInfos, setGuestInfos] = useState(null);
+  const [guestInfos, setGuestInfos] = useState({ uuid: null });
   // const [messages, setMessages] = useState({ from: "blab", allMessages: [{}] });
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Chat = ({ socket }) => {
 
   useEffect(() => {
     console.log(guestInfos);
-    if (guestInfos && guestInfos.guestUuid !== null) {
+    if (guestInfos.uuid !== null) {
       //fetch messages relative to guestUuid and store in state
     }
   }, [guestInfos]);

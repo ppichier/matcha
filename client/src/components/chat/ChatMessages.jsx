@@ -11,15 +11,18 @@ const ChatMessages = ({ socket, guestInfos, uuid }) => {
   // console.log(guestInfos);
 
   useEffect(() => {
-    socket.emit("join", "userUuid", "guestUuid", messages => {
-      //   console.log(messages);
-      //get all messages between user and guest
-      setAllMessages([...messages]);
-    });
-    // return () => {
-    //   socket.off();
-    // };
-  }, [socket]);
+    if (uuid && guestInfos.uuid) {
+      socket.emit("join", uuid, guestInfos.uuid, messages => {
+        //   console.log(messages);
+        //get all messages between user and guest
+        console.log(messages);
+        setAllMessages([...messages]);
+      });
+      // return () => {
+      //   socket.off();
+      // };
+    }
+  }, [socket, uuid, guestInfos.uuid]);
 
   useEffect(() => {
     socket.on("message", message => {
@@ -44,7 +47,7 @@ const ChatMessages = ({ socket, guestInfos, uuid }) => {
     e.preventDefault();
     if (guestInfos && message) {
       // console.log(guestInfos);
-      socket.emit("sendMessage", guestInfos.uuid, message, () =>
+      socket.emit("sendMessage", uuid, guestInfos.uuid, message, () =>
         setMessage("")
       );
     }
@@ -52,24 +55,42 @@ const ChatMessages = ({ socket, guestInfos, uuid }) => {
 
   //   console.log(message);
   //   console.log(allMessages);
-  return (
-    <Fragment>
-      <div style={{ height: "92%" }}>
-        <ChatMessagesDisplay
-          guestInfos={guestInfos}
-          allMessages={allMessages}
-          uuid={uuid}
-        />
-      </div>
-      <div className="chat-messages-container-input">
-        <ChatMessagesInput
-          message={message}
-          setMessage={setMessage}
-          sendMessage={sendMessage}
-        />
-      </div>
-    </Fragment>
-  );
+
+  const messageDisplay = () => {
+    if (guestInfos.uuid) {
+      return (
+        <Fragment>
+          <div style={{ height: "92%" }}>
+            <ChatMessagesDisplay
+              guestInfos={guestInfos}
+              allMessages={allMessages}
+              uuid={uuid}
+            />
+          </div>
+          <div className="chat-messages-container-input">
+            <ChatMessagesInput
+              message={message}
+              setMessage={setMessage}
+              sendMessage={sendMessage}
+            />
+          </div>
+        </Fragment>
+      );
+    } else {
+      return (
+        <div
+          style={{ display: "flex", justifyContent: "center", height: "100%" }}
+        >
+          <img
+            src={
+              "https://m.coruscatesolution.com/wp-content/themes/Coruscate/img/Services/chatting-application/customizations.svg"
+            }
+          />
+        </div>
+      );
+    }
+  };
+  return <Fragment>{messageDisplay()}</Fragment>;
 };
 
 export default ChatMessages;
