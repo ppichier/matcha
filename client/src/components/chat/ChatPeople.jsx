@@ -8,10 +8,11 @@ import { useEffect } from "react";
 import { getMatchUsers } from "../../api/chat";
 import { readImage } from "../../api/user";
 
-const ChatPeople = ({ sendGuestInfos }) => {
+const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
   const [guestIndex, setGuestIndex] = useState(null);
   const [matchPeople, setMatchPeople] = useState([]);
   const [matchImages, setMatchImages] = useState([]);
+  const [userNotify, setUsertNotify] = useState([]);
 
   useEffect(() => {
     getMatchUsers()
@@ -23,6 +24,13 @@ const ChatPeople = ({ sendGuestInfos }) => {
       })
       .catch(err => console.log(err));
   }, []);
+
+  useEffect(() => {
+    if (messageNotification !== null) {
+      if (userNotify.indexOf(messageNotification) === -1)
+        setUsertNotify([...userNotify, messageNotification]);
+    }
+  }, [messageNotification, userNotify]);
 
   useEffect(() => {
     if (matchPeople.length !== 0) {
@@ -51,8 +59,6 @@ const ChatPeople = ({ sendGuestInfos }) => {
   };
 
   const profileImage = i => {
-    console.log(matchImages);
-    // if (matchImages && matchImages[1].image) console.log(matchImages[0].image);
     let sourceImage =
       "https://image.flaticon.com/icons/png/512/1177/1177577.png";
     if (matchImages.length === 0 || !matchImages[i])
@@ -68,6 +74,21 @@ const ChatPeople = ({ sendGuestInfos }) => {
         src={sourceImage}
       />
     );
+  };
+
+  const badgeMessageNotification = (i, peopleUuid) => {
+    if (i === guestIndex) {
+      let idxToRemove = userNotify.indexOf(peopleUuid);
+      let usertToNotifyTmp = [...userNotify];
+      if (idxToRemove > -1) {
+        usertToNotifyTmp.splice(idxToRemove, 1);
+        setUsertNotify(usertToNotifyTmp);
+      }
+      return <Fragment />;
+    }
+    if (userNotify.includes(peopleUuid))
+      return <div className="chat-people-item-online"></div>;
+    else return <Fragment />;
   };
 
   return (
@@ -88,12 +109,14 @@ const ChatPeople = ({ sendGuestInfos }) => {
               key={i}
             >
               <div className="chat-people-item-container-image">
-                <div className="chat-people-item-online"></div>
+                {badgeMessageNotification(i, people.uuid)}
                 {profileImage(i)}
               </div>
               {/* Logo online + notif message */}
               <div className="ml-3 chat-people-item-infos">
-                <div className="chat-people-item-pseudo">{people.userName}</div>
+                <div className="chat-people-item-pseudo">
+                  {people.userName}{" "}
+                </div>
                 <div className="chat-people-item-last-msg">
                   <FontAwesomeIcon icon={faReply} className="pr-1" />
                   last message ....

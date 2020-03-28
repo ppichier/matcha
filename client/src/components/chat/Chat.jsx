@@ -12,29 +12,15 @@ const Chat = ({ socket }) => {
 
   const [uuid, setUuid] = useState(null);
   const [guestInfos, setGuestInfos] = useState({ uuid: null });
-  // const [messages, setMessages] = useState({ from: "blab", allMessages: [{}] });
+  const [messageNotification, setMessageNotification] = useState(null);
 
   useEffect(() => {
     setUuid(JSON.parse(localStorage.getItem("jwt")).user._id);
-    console.log(JSON.parse(localStorage.getItem("jwt")).user._id);
   }, []);
 
-  useEffect(() => {
-    //fetch for get all match in db (name, userUuid, online?, picture, last message)
-    // server will send list of match user [{socketId: "9876", userUuid: "1235", "pseudo": }]
-  });
-  // socket.emit("join chat", () => {});
-  // socket.emit("send message")/ user send message with socket id or userUuid in params.
-  // Server listen to this event and send this message to all socket who are associate with this userUuid.
-  // Before
-  // socket.on("receive message")/ user receive message from a user
-
-  useEffect(() => {
-    console.log(guestInfos);
-    if (guestInfos.uuid !== null) {
-      //fetch messages relative to guestUuid and store in state
-    }
-  }, [guestInfos]);
+  const sendMessageNotification = uuidToNotify => {
+    setMessageNotification(uuidToNotify);
+  };
 
   return (
     <Fragment>
@@ -42,10 +28,21 @@ const Chat = ({ socket }) => {
       <Container fluid className="px-0 chat-container">
         <Row className="chat-row" noGutters>
           <Col md={3} className="chat-col1">
-            <ChatPeople sendGuestInfos={value => setGuestInfos({ ...value })} />
+            <ChatPeople
+              sendGuestInfos={value => {
+                setGuestInfos({ ...value });
+                setMessageNotification(null);
+              }}
+              messageNotification={messageNotification}
+            />
           </Col>
           <Col md={9} className="chat-col2">
-            <ChatMessages socket={socket} guestInfos={guestInfos} uuid={uuid} />
+            <ChatMessages
+              socket={socket}
+              guestInfos={guestInfos}
+              uuid={uuid}
+              sendMessageNotification={value => sendMessageNotification(value)}
+            />
           </Col>
         </Row>
       </Container>

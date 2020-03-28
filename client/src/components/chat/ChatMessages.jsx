@@ -4,18 +4,19 @@ import "./ChatMessages.css";
 import ChatMessagesInput from "./ChatMessagesInput";
 import ChatMessagesDisplay from "./ChatMessagesDisplay";
 
-const ChatMessages = ({ socket, guestInfos, uuid }) => {
+const ChatMessages = ({
+  socket,
+  guestInfos,
+  uuid,
+  sendMessageNotification
+}) => {
   const [allMessages, setAllMessages] = useState([]);
   const [message, setMessage] = useState("");
-
-  // console.log(guestInfos);
 
   useEffect(() => {
     if (uuid && guestInfos.uuid) {
       socket.emit("join", uuid, guestInfos.uuid, messages => {
-        //   console.log(messages);
-        //get all messages between user and guest
-        console.log(messages);
+        // console.log(messages);
         setAllMessages([...messages]);
       });
       // return () => {
@@ -26,35 +27,51 @@ const ChatMessages = ({ socket, guestInfos, uuid }) => {
 
   useEffect(() => {
     socket.on("message", message => {
-      //get single message in live
-      // console.log(guestInfos);
-      console.log("Reception du message: ", message);
+      // console.log("Reception du message: ", message);
       if (
         (message.from === guestInfos.uuid && message.to === uuid) ||
         (message.from === uuid && message.to === guestInfos.uuid)
       ) {
-        console.log("HERE");
         setAllMessages([...allMessages, message]);
+      } else {
+        sendMessageNotification(message.from);
       }
-      //store in db the message regarding uuid and guest id
     });
+
+    // socket.on("isTyping", () => {
+    //   // add class is typing if not already bind
+    //   console.log("il ecrit");
+    // });
+
+    // socket.on("stopTyping", () => {
+    //   // delete class is typing if not already delete
+    //   console.log("il n'ecrit plus");
+    // });
+
     return () => {
       socket.off();
     };
-  }, [socket, guestInfos, allMessages]);
+  }, [socket, guestInfos.uuid, uuid, allMessages, sendMessageNotification]);
 
   const sendMessage = e => {
     e.preventDefault();
     if (guestInfos && message) {
-      // console.log(guestInfos);
       socket.emit("sendMessage", uuid, guestInfos.uuid, message, () =>
         setMessage("")
       );
     }
   };
 
-  //   console.log(message);
-  //   console.log(allMessages);
+  // const sendTypingEvent = e => {
+  //   console.log(e);
+  //   socket.emit(
+  //     "typingMessage",
+  //     uuid,
+  //     guestInfos.uuid,
+  //     e.target.value,
+  //     () => {}
+  //   );
+  // };
 
   const messageDisplay = () => {
     if (guestInfos.uuid) {
@@ -72,6 +89,7 @@ const ChatMessages = ({ socket, guestInfos, uuid }) => {
               message={message}
               setMessage={setMessage}
               sendMessage={sendMessage}
+              // sendTypingEvent={sendTypingEvent}
             />
           </div>
         </Fragment>
@@ -82,6 +100,7 @@ const ChatMessages = ({ socket, guestInfos, uuid }) => {
           style={{ display: "flex", justifyContent: "center", height: "100%" }}
         >
           <img
+            alt={"chat-phone"}
             src={
               "https://m.coruscatesolution.com/wp-content/themes/Coruscate/img/Services/chatting-application/customizations.svg"
             }

@@ -104,6 +104,20 @@ io.on("connection", socket => {
     }
   });
 
+  // socket.on("typingMessage", (userUuid, guestUuid, message, cb) => {
+  //   let guestSockets = findSocketsGivenUuid(guestUuid);
+  //   let typingEvent = message.length === 0 ? "stopTyping" : "isTyping";
+
+  //   console.log(userUuid);
+  //   console.log(guestUuid);
+  //   guestSockets.forEach(e => {
+  //     io.to(e).emit("isTyping", {
+  //       from: userUuid,
+  //       to: guestUuid
+  //     });
+  //   });
+  // });
+
   socket.on("disconnect", () => {
     const userIdDelete = users_connected[socket.id];
     delete users_connected[socket.id];

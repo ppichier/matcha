@@ -27,7 +27,7 @@ const Routes = () => {
   // console.log(jwt);
   if (jwt && jwt.token) {
     socket.emit("register", jwt.token, data => {
-      console.log(data);
+      // console.log(data);
     });
   }
 

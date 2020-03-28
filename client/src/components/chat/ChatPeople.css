@@ -41,13 +41,24 @@
 
 .chat-people-item-online {
   position: absolute;
-  right: 0px;
-  top: 4px;
+  right: -7px;
+  top: 31px;
   width: 17px;
   height: 17px;
-  background-color: #00ff00;
+  background-color: #fd5068;
+  /* background-color: #00ff00; */
   border: 3px solid #f5f7fa;
   border-radius: 50%;
+  animation: fadeIn;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .chat-people-item-image {

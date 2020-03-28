@@ -14,7 +14,6 @@ import {
   faUserSlash,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
-import { Redirect } from "react-router-dom";
 
 const Profile = ({ location, history }) => {
   const [values, setValues] = useState({
