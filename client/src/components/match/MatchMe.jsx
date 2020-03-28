@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment} from "react";
 import { Row, Col, Container, Button } from "react-bootstrap";
 import CardPicture from "./CardPicture";
 import "./CardPicture.css";
@@ -22,7 +22,16 @@ const MatchMe = () => {
     profiles: [],
     resultsNumber: 0,
     moreProfiles: [0, 20],
+    tmp: -1,
     activateFilter : false
+    
+  });
+  const [moreParams, setMoreParams] = useState ({
+    age: [],
+    userSize: [],
+    location: [],
+    score: [],
+    selectedTags: [],
   });
 
   useEffect(() => {
@@ -31,52 +40,63 @@ const MatchMe = () => {
         setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
       })
       .catch(err => console.log(err));
+   
   }, []);
 
-  let moreParams = [];
-
-  const setFilterParams = (event, filterParams) => {
+  const setFilterParams = (event, filterParams, moreProfiles) => {
+    console.log(filterParams)
   if (event) 
     event.preventDefault();
-   console.log("je suis sage ")
-    moreParams = filterParams;
       filterProfile({
         age: filterParams.age,
         userSize: filterParams.userSize,
         location: filterParams.location,
         score: filterParams.score,
         selectedTags: filterParams.selectedTags,
-        moreProfiles: values.moreProfiles
+        moreProfiles: moreProfiles
       })
-       .then(data => {
-        if (values.moreProfiles[0] === 0 && values.moreProfiles[1] === 20)
+       .then(data => {  
+       console.log(values.activateFilter)  
+        if (values.activateFilter === false)
           {
-            setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber, activateFilter: true});
+            setValues({ ...values, 
+              profiles: data.profiles, 
+              resultsNumber: data.resultsNumber, 
+              tmp: 0,
+              activateFilter: true
+            });
+
+            setMoreParams({...moreParams,
+              age: filterParams.age,
+              userSize: filterParams.userSize,
+              location: filterParams.location,
+              score: filterParams.score,
+              selectedTags: filterParams.selectedTags,
+            });
           }
         else
         {
+          console.log("je suis pas la ")
           let profiles = values.profiles;
           profiles = profiles.concat(data.profiles);
           setValues({ ...values, profiles: profiles,  resultsNumber: data.resultsNumber});
-          }
-        })
+        }
+      })
       .catch(err => console.log(err));
   };
 
-  const setSortParams = sortParams => () =>{
+  const setSortParams = sortParams => (event) =>{
     const profiles = _.orderBy(values.profiles, [sortParams.name], [sortParams.order]);
     setValues({ ...values, profiles});
   }
-  const onMoreProfiles = () => {
-    const moreProfiles = values.moreProfiles.map(x => x + 20)
+
+  const onMoreProfiles = (event) => {
+    let moreProfiles = values.moreProfiles.map(x => x + 20)
     setValues({ ...values, moreProfiles});
-    console.log(values.activateFilter)
-    // if ( values.activateFilter === true)
-    // {
-    //   console.log("je suis un peu fache")
-    //     setFilterParams(event, moreProfiles);
-    // }
-    
+    if (values.activateFilter === true )
+    {
+        setFilterParams(event, moreParams, moreProfiles);
+    }
   };
 
   const onHeartClick = i => {
@@ -96,34 +116,52 @@ const MatchMe = () => {
       setValues({ ...values, profiles: newProfiles });
     });
   };
+  
 
   const chargeButton = () => {
-    console.log(values.moreProfiles)
-    console.log(values.resultsNumber);
-      console.log(values.profiles.length)
-    if (values.resultsNumber > 0 && (values.resultsNumber > values.moreProfiles[1]))
-    {
-      
-      return(
-        <div style={{ display: "flex", width: "50%" }}>
-              <Button
-                onClick={e => {
-                  onMoreProfiles();
-                  setFilterParams(e, moreParams);
-                }}
-                className="text-uppercase mb-4 center-block"
-                variant="outline-info"
-                style={{ letterSpacing: "1px", fontWeight: "bold" }}
-              >
-              {values.resultsNumber}
-                Charger plus
-              </Button>
-        </div>
-      )
-    }
+    let tmp = 0;
+    let a = null;
+    if (values.resultsNumber > 0)
+    {   
+      if( (values.moreProfiles[1] !== values.tmp) &&  (values.resultsNumber > values.moreProfiles[1]))
+      {
+        if (values.tmp !== -1) tmp = values.moreProfiles[1]
+         a = <div style={{ display: "flex", width: "50%" }}>
+                    <Button
+                      onClick={e => onMoreProfiles(e)}
+                      className="text-uppercase mb-4 center-block"
+                      variant="outline-info"
+                      style={{ letterSpacing: "1px", fontWeight: "bold" }}
+                    >
+                  {values.tmp}
+                  Charger plus
+                  </Button>
+              </div>
+        }
+        else if( (values.moreProfiles[1] === values.tmp) && (values.resultsNumber > (values.tmp + 20)))
+        {
+          tmp = (values.tmp + 20);
+          a =  <div style={{ display: "flex", width: "50%" }}>
+                <Button
+                      onClick={e => onMoreProfiles(e)}
+                      className="text-uppercase mb-4 center-block"
+                      variant="outline-info"
+                      style={{ letterSpacing: "1px", fontWeight: "bold" }}
+                    >
+                    {values.resultsNumber}
+                    Charger plus
+                </Button>
+                </div>
+      }
+      setValues({...values, tmp : tmp})
+    }    
+    return (a);
   }
+
   const card = () => {
     return values.profiles.map((profile, i) => {
+          {console.log(values.profiles)}
+        {console.log(values.profiles.length)}
       return (
         <div className="styleCard py-3 px-3 mx-3 my-3" key={i}>
           <CardPicture
@@ -163,7 +201,7 @@ const MatchMe = () => {
               setSortParams={sortParams => setSortParams(sortParams)}
              />
             <FilterProfile
-              setFilterParams={(filterParams) => setFilterParams(null, filterParams)}
+              setFilterParams={(filterParams) => setFilterParams(null, filterParams, values.moreProfiles)}
             />
           </Col>
           <Col>
