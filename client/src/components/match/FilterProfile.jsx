@@ -13,7 +13,6 @@ import { readCommonTag } from "../../api";
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
 const FilterProfile = ({ setFilterParams }, location) => {
-
   const [filter, setfilter] = useState({
     selectedTags: [],
     commonTags: [],
@@ -24,7 +23,7 @@ const FilterProfile = ({ setFilterParams }, location) => {
   });
 
   const animatedComponents = makeAnimated();
-  
+
   useEffect(() => {
     const v = queryString.parse(location.search);
     readCommonTag(v.uuid)

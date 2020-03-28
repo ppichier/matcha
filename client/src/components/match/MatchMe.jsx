@@ -10,7 +10,7 @@ import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
 import { firstFilter, heartClick, filterProfile } from "../../api";
-import _ from 'lodash';
+import _ from "lodash";
 
 // one fetch for list of profiles
 // x fetch for x imagess
@@ -22,6 +22,7 @@ const MatchMe = () => {
     profiles: [],
     resultsNumber: 0,
     moreProfiles: [0, 20],
+<<<<<<< HEAD
     tmp: -1,
     activateFilter : false
     
@@ -32,17 +33,25 @@ const MatchMe = () => {
     location: [],
     score: [],
     selectedTags: [],
+=======
+    activateFilter: false
+>>>>>>> a1fef642b9f328fe6fdece64c10f8c7149cd788a
   });
 
   useEffect(() => {
     firstFilter()
       .then(data => {
-        setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
+        setValues({
+          ...values,
+          profiles: data.profiles,
+          resultsNumber: data.resultsNumber
+        });
       })
       .catch(err => console.log(err));
    
   }, []);
 
+<<<<<<< HEAD
   const setFilterParams = (event, filterParams, moreProfiles) => {
     console.log(filterParams)
   if (event) 
@@ -80,11 +89,44 @@ const MatchMe = () => {
           let profiles = values.profiles;
           profiles = profiles.concat(data.profiles);
           setValues({ ...values, profiles: profiles,  resultsNumber: data.resultsNumber});
+=======
+  let moreParams = [];
+
+  const setFilterParams = (event, filterParams) => {
+    if (event) event.preventDefault();
+    console.log("je suis sage ");
+    moreParams = filterParams;
+    filterProfile({
+      age: filterParams.age,
+      userSize: filterParams.userSize,
+      location: filterParams.location,
+      score: filterParams.score,
+      selectedTags: filterParams.selectedTags,
+      moreProfiles: values.moreProfiles
+    })
+      .then(data => {
+        if (values.moreProfiles[0] === 0 && values.moreProfiles[1] === 20) {
+          setValues({
+            ...values,
+            profiles: data.profiles,
+            resultsNumber: data.resultsNumber,
+            activateFilter: true
+          });
+        } else {
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
+          setValues({
+            ...values,
+            profiles: profiles,
+            resultsNumber: data.resultsNumber
+          });
+>>>>>>> a1fef642b9f328fe6fdece64c10f8c7149cd788a
         }
       })
       .catch(err => console.log(err));
   };
 
+<<<<<<< HEAD
   const setSortParams = sortParams => (event) =>{
     const profiles = _.orderBy(values.profiles, [sortParams.name], [sortParams.order]);
     setValues({ ...values, profiles});
@@ -97,6 +139,25 @@ const MatchMe = () => {
     {
         setFilterParams(event, moreParams, moreProfiles);
     }
+=======
+  const setSortParams = sortParams => () => {
+    const profiles = _.orderBy(
+      values.profiles,
+      [sortParams.name],
+      [sortParams.order]
+    );
+    setValues({ ...values, profiles });
+  };
+  const onMoreProfiles = () => {
+    const moreProfiles = values.moreProfiles.map(x => x + 20);
+    setValues({ ...values, moreProfiles });
+    console.log(values.activateFilter);
+    // if ( values.activateFilter === true)
+    // {
+    //   console.log("je suis un peu fache")
+    //     setFilterParams(event, moreProfiles);
+    // }
+>>>>>>> a1fef642b9f328fe6fdece64c10f8c7149cd788a
   };
 
   const onHeartClick = i => {
@@ -119,6 +180,7 @@ const MatchMe = () => {
   
 
   const chargeButton = () => {
+<<<<<<< HEAD
     let tmp = 0;
     let a = null;
     if (values.resultsNumber > 0)
@@ -158,6 +220,33 @@ const MatchMe = () => {
     return (a);
   }
 
+=======
+    console.log(values.moreProfiles);
+    console.log(values.resultsNumber);
+    console.log(values.profiles.length);
+    if (
+      values.resultsNumber > 0 &&
+      values.resultsNumber > values.moreProfiles[1]
+    ) {
+      return (
+        <div style={{ display: "flex", width: "50%" }}>
+          <Button
+            onClick={e => {
+              onMoreProfiles();
+              setFilterParams(e, moreParams);
+            }}
+            className="text-uppercase mb-4 center-block"
+            variant="outline-info"
+            style={{ letterSpacing: "1px", fontWeight: "bold" }}
+          >
+            {values.resultsNumber}
+            Charger plus
+          </Button>
+        </div>
+      );
+    }
+  };
+>>>>>>> a1fef642b9f328fe6fdece64c10f8c7149cd788a
   const card = () => {
     return values.profiles.map((profile, i) => {
           {console.log(values.profiles)}
@@ -199,9 +288,15 @@ const MatchMe = () => {
           <Col md={3}>
             <SortProfile
               setSortParams={sortParams => setSortParams(sortParams)}
-             />
+            />
             <FilterProfile
+<<<<<<< HEAD
               setFilterParams={(filterParams) => setFilterParams(null, filterParams, values.moreProfiles)}
+=======
+              setFilterParams={filterParams =>
+                setFilterParams(null, filterParams)
+              }
+>>>>>>> a1fef642b9f328fe6fdece64c10f8c7149cd788a
             />
           </Col>
           <Col>
@@ -214,4 +309,3 @@ const MatchMe = () => {
   );
 };
 export default MatchMe;
-
