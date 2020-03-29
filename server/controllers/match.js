@@ -29,8 +29,7 @@ exports.readCommonTag = async (req, res) => {
   });
 };
 
-exports.filterProfile = async (req, res) => {
-  console.log("+++++++++++++++++++")
+exports.filterProfile = (req, res) => {
   const { age, location, score, userSize, selectedTags, moreProfiles } = req.body;
   const userUuid = req.userUuid;
   let tagsParams = [];
@@ -79,19 +78,20 @@ exports.filterProfile = async (req, res) => {
             const userIdUser = result[0].UserId;
             const genreId = result[0].GenreId;
             const sexualOrientationId = result[0].SexualOrientationId;
-            console.log(ageFilter);
-            console.log(locationFilter);
-            console.log(scoreFilter);
-            console.log(userSizeFilter)
-            console.log(sexualOrientationId);
-            console.log(genreId),
-            console.log(moreProfiles)
+            const reqSql = "GenreId = ? AND SexualOrientationId = ? AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And userSize <= ?"
             connection.query(
-              `SELECT *, (SELECT count(*) FROM user WHERE GenreId = ? AND SexualOrientationId = ? ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId = ? AND SexualOrientationId = ? AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And userSize <= ? ORDER BY DISTANCE ASC  LIMIT ?;
-               SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId = ? AND U.SexualOrientationId = ? GROUP BY T.UserId ORDER BY count(*) DESC`,
+              `SELECT *, (SELECT count(*) FROM user WHERE ${reqSql} ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE ${reqSql} ORDER BY DISTANCE ASC  LIMIT ?;
+               SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId = ? AND U.SexualOrientationId = ? GROUP BY T.UserId ORDER BY count(*) DESC;
+                SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
               [
                 sexualOrientationId,
                 genreId,
+                ageFilter[0],
+                ageFilter[1],
+                scoreFilter[0],
+                scoreFilter[1],
+                userSizeFilter[0],
+                userSizeFilter[1],
                 sexualOrientationId,
                 genreId,
                 ageFilter[0],
@@ -102,7 +102,8 @@ exports.filterProfile = async (req, res) => {
                 userSizeFilter[1],
                 moreProfiles,
                 sexualOrientationId,
-                genreId
+                genreId,
+                userIdUser
               ],
               (err, result) => {
                 if (err) {
@@ -110,8 +111,8 @@ exports.filterProfile = async (req, res) => {
                 } else {
                   connection.release();
                   let resultsNumber = 0;
-                  resultsNumber = (result[0][1].resultsNumber);
-                  console.log(resultsNumber)
+                  if(result[0].length > 0 && result[0][0].resultsNumber !== undefined) 
+                    resultsNumber = result[0][0].resultsNumber;
                   let a = [];
                   for (let i = 0; i < result.length; i++) {
                     a[i] = _.chain(result[i])
@@ -120,7 +121,7 @@ exports.filterProfile = async (req, res) => {
                       .value();
                   }
                   let merged = _.chain(
-                    _.merge(_.keyBy(a[0], "UserId"), _.keyBy(a[1], "UserId"))
+                    _.merge(_.keyBy(a[0], "UserId"), _.keyBy(a[1], "UserId"), _.keyBy(a[2], "UserId"))
                   )
                     .map(e => ({
                       pseudo: e.UserName,
@@ -129,7 +130,7 @@ exports.filterProfile = async (req, res) => {
                       age: e.Age,
                       distance: Math.round(e.DISTANCE * 100) / 100,
                       userUuid: e.Uuid,
-                      isLiked: 0, // Modify when implement like
+                      isLiked: e.likes ? e.likes : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize
                     }))
@@ -141,7 +142,6 @@ exports.filterProfile = async (req, res) => {
                     )
                     .value();
                   let profiles = utils.sortProfile(merged);
-                   console.log(profiles)
                   return res.json({
                     profiles,
                     resultsNumber
@@ -161,6 +161,7 @@ exports.sortProfile = (req, res) => {
 };
 
 exports.firstFilter = (req, res) => {
+ let moreProfiles = req.body.moreProfiles;
   const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -196,27 +197,31 @@ exports.firstFilter = (req, res) => {
               result[0].SexualOrientationId === 5
                 ? [1, 2, 5, 6]
                 : result[0].SexualOrientationId;
-            const moreProfile = [0, 20]; ///pour revenyer plus de profile
             connection.query(
               `SELECT *,( SELECT count(*) FROM user WHERE GenreId = ? AND SexualOrientationId = ? ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ORDER BY DISTANCE ASC LIMIT ?;
-               SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC`,
+               SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
+               SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
+
               [
                 sexualOrientationId,
                 genreId,
                 sexualOrientationId,
                 genreId,
-                moreProfile,
+                moreProfiles,
                 sexualOrientationId,
-                genreId
+                genreId,
+                userIdUser
               ],
               async (err, result) => {
+               console.log(result[2])
+
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);
                 } else {
                   connection.release();
                   let resultsNumber = 0;
-                  resultsNumber = (result[0][0].resultsNumber);
-                   console.log(resultsNumber)
+                  if(result[0].length > 0 && result[0][0].resultsNumber !== undefined) 
+                    resultsNumber = result[0][0].resultsNumber;
                   let a = [];
                   for (let i = 0; i < result.length; i++) {
                     a[i] = _.chain(result[i])
@@ -225,7 +230,7 @@ exports.firstFilter = (req, res) => {
                       .value();
                   }
                   let merged = _.chain(
-                    _.merge(_.keyBy(a[0], "UserId"), _.keyBy(a[1], "UserId"))
+                    _.merge(_.keyBy(a[0], "UserId"), _.keyBy(a[1], "UserId"), _.keyBy(a[2], "UserId"))
                   )
                     .map(e => ({
                       pseudo: e.UserName,
@@ -234,7 +239,7 @@ exports.firstFilter = (req, res) => {
                       age: e.Age,
                       distance: Math.round(e.DISTANCE * 100) / 100,
                       userUuid: e.Uuid,
-                      isLiked: 0, // Modify when implement like
+                      isLiked: e.likes ? e.likes : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,  
                     }))

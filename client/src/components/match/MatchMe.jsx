@@ -16,16 +16,18 @@ import _ from 'lodash';
 // x fetch for x imagess
 
 const MatchMe = () => {
+
   const [values, setValues] = useState({
     image: [],
     uploading: false,
     profiles: [],
     resultsNumber: 0,
-    moreProfiles: [0, 20],
-    tmp: -1,
     activateFilter : false
     
   });
+
+  const [moreProfiles, setMoreProfiles] = useState([0, 20]);
+
   const [moreParams, setMoreParams] = useState ({
     age: [],
     userSize: [],
@@ -35,16 +37,26 @@ const MatchMe = () => {
   });
 
   useEffect(() => {
-    firstFilter()
+    firstFilter(moreProfiles)
       .then(data => {
         setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
       })
-      .catch(err => console.log(err));
-   
+      .catch(err => console.log(err));  
   }, []);
 
+  const setFirstFilter = (event, moreProfiles) => {
+     if (event) 
+      event.preventDefault();
+    firstFilter(moreProfiles)
+      .then(data => {
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
+          setValues({ ...values, profiles: _.uniqBy(profiles, 'pseudo'),  resultsNumber: data.resultsNumber});
+      })
+      .catch(err => console.log(err));
+  }
+
   const setFilterParams = (event, filterParams, moreProfiles) => {
-    console.log(filterParams)
   if (event) 
     event.preventDefault();
       filterProfile({
@@ -56,16 +68,14 @@ const MatchMe = () => {
         moreProfiles: moreProfiles
       })
        .then(data => {  
-       console.log(values.activateFilter)  
-        if (values.activateFilter === false)
+        if (moreProfiles[0] === 0)
           {
             setValues({ ...values, 
               profiles: data.profiles, 
               resultsNumber: data.resultsNumber, 
-              tmp: 0,
               activateFilter: true
             });
-
+            setMoreProfiles(moreProfiles);
             setMoreParams({...moreParams,
               age: filterParams.age,
               userSize: filterParams.userSize,
@@ -76,10 +86,9 @@ const MatchMe = () => {
           }
         else
         {
-          console.log("je suis pas la ")
           let profiles = values.profiles;
           profiles = profiles.concat(data.profiles);
-          setValues({ ...values, profiles: profiles,  resultsNumber: data.resultsNumber});
+          setValues({ ...values, profiles: _.uniqBy(profiles, 'pseudo'),  resultsNumber: data.resultsNumber});
         }
       })
       .catch(err => console.log(err));
@@ -91,12 +100,12 @@ const MatchMe = () => {
   }
 
   const onMoreProfiles = (event) => {
-    let moreProfiles = values.moreProfiles.map(x => x + 20)
-    setValues({ ...values, moreProfiles});
+    let moreProfilesTmp = moreProfiles.map(x => x + 20)
+    setMoreProfiles(moreProfilesTmp);
     if (values.activateFilter === true )
-    {
-        setFilterParams(event, moreParams, moreProfiles);
-    }
+        setFilterParams(event, moreParams, moreProfilesTmp);
+    else
+        setFirstFilter(event, moreProfilesTmp);
   };
 
   const onHeartClick = i => {
@@ -117,51 +126,27 @@ const MatchMe = () => {
     });
   };
   
-
-  const chargeButton = () => {
-    let tmp = 0;
-    let a = null;
-    if (values.resultsNumber > 0)
-    {   
-      if( (values.moreProfiles[1] !== values.tmp) &&  (values.resultsNumber > values.moreProfiles[1]))
-      {
-        if (values.tmp !== -1) tmp = values.moreProfiles[1]
-         a = <div style={{ display: "flex", width: "50%" }}>
-                    <Button
-                      onClick={e => onMoreProfiles(e)}
-                      className="text-uppercase mb-4 center-block"
-                      variant="outline-info"
-                      style={{ letterSpacing: "1px", fontWeight: "bold" }}
-                    >
-                  {values.tmp}
-                  Charger plus
-                  </Button>
-              </div>
-        }
-        else if( (values.moreProfiles[1] === values.tmp) && (values.resultsNumber > (values.tmp + 20)))
-        {
-          tmp = (values.tmp + 20);
-          a =  <div style={{ display: "flex", width: "50%" }}>
-                <Button
-                      onClick={e => onMoreProfiles(e)}
-                      className="text-uppercase mb-4 center-block"
-                      variant="outline-info"
-                      style={{ letterSpacing: "1px", fontWeight: "bold" }}
-                    >
-                    {values.resultsNumber}
-                    Charger plus
-                </Button>
-                </div>
-      }
-      setValues({...values, tmp : tmp})
-    }    
-    return (a);
+  const loadProfiles = () => {
+   if (values.resultsNumber > 0 && (values.resultsNumber > moreProfiles[1]))  
+      return(
+        <div style={{ display: "flex", width: "50%" }}>
+              <Button
+                onClick={e => onMoreProfiles(e)}
+                className="text-uppercase mb-4 center-block"
+                variant="outline-info"
+                style={{ letterSpacing: "1px", fontWeight: "bold" }}
+              >
+              {values.resultsNumber}
+                Charger plus
+              </Button>
+        </div>
+      )
+    else
+      return(<Fragment></Fragment>)
   }
 
   const card = () => {
     return values.profiles.map((profile, i) => {
-          {console.log(values.profiles)}
-        {console.log(values.profiles.length)}
       return (
         <div className="styleCard py-3 px-3 mx-3 my-3" key={i}>
           <CardPicture
@@ -201,12 +186,12 @@ const MatchMe = () => {
               setSortParams={sortParams => setSortParams(sortParams)}
              />
             <FilterProfile
-              setFilterParams={(filterParams) => setFilterParams(null, filterParams, values.moreProfiles)}
+              setFilterParams={(filterParams) => setFilterParams(null, filterParams, [0, 20])}
             />
           </Col>
           <Col>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
-            <div> {chargeButton()} </div>
+            <div> {loadProfiles()} </div>
           </Col>
         </Row>
       </Container>

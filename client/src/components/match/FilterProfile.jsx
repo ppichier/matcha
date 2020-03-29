@@ -2,10 +2,9 @@ import React, { Fragment, useState, useEffect } from "react";
 import Select from "react-select";
 import "../navbar/Navbar.css";
 import { Col, Form, Button } from "react-bootstrap";
-import Slider, { Range, createSliderWithTooltip } from "rc-slider";
+import Slider, {createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import makeAnimated from "react-select/animated";
-import MatchMe from "./MatchMe";
 
 import queryString from "query-string";
 import { readCommonTag } from "../../api";
