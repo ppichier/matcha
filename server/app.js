@@ -68,7 +68,7 @@ io.on("connection", socket => {
     cb(users_connected);
   });
 
-  socket.on("logout", () => {
+  socket.on("logout", (userUuid, cb) => {
     // if user click on deconnect delete all row with user_id concerned
     // and emit event offline user
   });
@@ -97,26 +97,22 @@ io.on("connection", socket => {
           msg: message
         });
       });
-      console.log("MESSAGE: ", message);
       cb();
     } catch (err) {
       console.log(chalk.red("Error socket fetch saveMessage: ", err));
     }
   });
 
-  // socket.on("typingMessage", (userUuid, guestUuid, message, cb) => {
-  //   let guestSockets = findSocketsGivenUuid(guestUuid);
-  //   let typingEvent = message.length === 0 ? "stopTyping" : "isTyping";
+  socket.on("typingMessage", (userUuid, guestUuid, message, cb) => {
+    let guestSockets = findSocketsGivenUuid(guestUuid);
+    let typingEvent = message.length === 0 ? "stopTyping" : "isTyping";
 
-  //   console.log(userUuid);
-  //   console.log(guestUuid);
-  //   guestSockets.forEach(e => {
-  //     io.to(e).emit("isTyping", {
-  //       from: userUuid,
-  //       to: guestUuid
-  //     });
-  //   });
-  // });
+    console.log(userUuid);
+    console.log(guestUuid);
+    guestSockets.forEach(e => {
+      io.to(e).emit(typingEvent, userUuid);
+    });
+  });
 
   socket.on("disconnect", () => {
     const userIdDelete = users_connected[socket.id];

@@ -12,9 +12,11 @@ const ChatMessages = ({
 }) => {
   const [allMessages, setAllMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [guestTyping, setGuestTyping] = useState([]);
 
   useEffect(() => {
     if (uuid && guestInfos.uuid) {
+      setMessage("");
       socket.emit("join", uuid, guestInfos.uuid, messages => {
         // console.log(messages);
         setAllMessages([...messages]);
@@ -25,9 +27,19 @@ const ChatMessages = ({
     }
   }, [socket, uuid, guestInfos.uuid]);
 
+  const removeGuestTyping = guestUuid => {
+    const idx = guestTyping.indexOf(guestUuid);
+    if (idx !== -1) {
+      const guestTypingTmp = [...guestTyping];
+      guestTypingTmp.splice(idx, 1);
+      setGuestTyping(guestTypingTmp);
+    }
+  };
+
   useEffect(() => {
     socket.on("message", message => {
       // console.log("Reception du message: ", message);
+      removeGuestTyping(message.from);
       if (
         (message.from === guestInfos.uuid && message.to === uuid) ||
         (message.from === uuid && message.to === guestInfos.uuid)
@@ -38,20 +50,27 @@ const ChatMessages = ({
       }
     });
 
-    // socket.on("isTyping", () => {
-    //   // add class is typing if not already bind
-    //   console.log("il ecrit");
-    // });
+    socket.on("isTyping", t => {
+      if (guestTyping.indexOf(t) === -1) setGuestTyping([...guestTyping, t]);
+      // add class is typing if not already bind
+    });
 
-    // socket.on("stopTyping", () => {
-    //   // delete class is typing if not already delete
-    //   console.log("il n'ecrit plus");
-    // });
+    socket.on("stopTyping", t => {
+      // delete class is typing if not already delete
+      removeGuestTyping(t);
+    });
 
     return () => {
       socket.off();
     };
-  }, [socket, guestInfos.uuid, uuid, allMessages, sendMessageNotification]);
+  }, [
+    socket,
+    guestInfos.uuid,
+    uuid,
+    allMessages,
+    sendMessageNotification,
+    guestTyping
+  ]);
 
   const sendMessage = e => {
     e.preventDefault();
@@ -62,16 +81,16 @@ const ChatMessages = ({
     }
   };
 
-  // const sendTypingEvent = e => {
-  //   console.log(e);
-  //   socket.emit(
-  //     "typingMessage",
-  //     uuid,
-  //     guestInfos.uuid,
-  //     e.target.value,
-  //     () => {}
-  //   );
-  // };
+  const sendTypingEvent = e => {
+    // console.log(e);
+    socket.emit(
+      "typingMessage",
+      uuid,
+      guestInfos.uuid,
+      e.target.value,
+      () => {}
+    );
+  };
 
   const messageDisplay = () => {
     if (guestInfos.uuid) {
@@ -82,6 +101,7 @@ const ChatMessages = ({
               guestInfos={guestInfos}
               allMessages={allMessages}
               uuid={uuid}
+              guestTyping={guestTyping}
             />
           </div>
           <div className="chat-messages-container-input">
@@ -89,7 +109,7 @@ const ChatMessages = ({
               message={message}
               setMessage={setMessage}
               sendMessage={sendMessage}
-              // sendTypingEvent={sendTypingEvent}
+              sendTypingEvent={sendTypingEvent}
             />
           </div>
         </Fragment>

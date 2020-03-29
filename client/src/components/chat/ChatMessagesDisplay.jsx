@@ -3,7 +3,12 @@ import "./ChatMessagesDisplay.css";
 import { Image } from "react-bootstrap";
 import { useEffect } from "react";
 
-const ChatMessagesDisplay = ({ allMessages, guestInfos, uuid }) => {
+const ChatMessagesDisplay = ({
+  allMessages,
+  guestInfos,
+  uuid,
+  guestTyping
+}) => {
   useEffect(() => {
     // console.log(allMessages);
     let a = document.getElementById("container-scroll");
@@ -43,6 +48,18 @@ const ChatMessagesDisplay = ({ allMessages, guestInfos, uuid }) => {
     );
   };
 
+  const typingBubbles = () => {
+    if (guestTyping.indexOf(guestInfos.uuid) > -1)
+      return (
+        <div className="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      );
+    else return <Fragment />;
+  };
+
   const messagesDisplay = () => {
     if (guestInfos.uuid)
       return (
@@ -68,6 +85,7 @@ const ChatMessagesDisplay = ({ allMessages, guestInfos, uuid }) => {
                 : messageFromGuest(i, e.msg)
             )}
           </div>
+          {typingBubbles()}
         </div>
       );
     else return <Fragment />;
