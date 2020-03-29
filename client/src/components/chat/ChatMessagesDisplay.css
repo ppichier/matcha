@@ -4,6 +4,7 @@
   overflow-y: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  position: relative;
 }
 
 .chat-messages-display-container::-webkit-scrollbar {

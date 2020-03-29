@@ -64,28 +64,32 @@ const ChatMessagesDisplay = ({
     if (guestInfos.uuid)
       return (
         <div id="container-scroll" className="chat-messages-display-container">
-          <div className="chat-messages-display-message-intro">
-            <Image
-              className="chat-messages-display-message-intro-img"
-              src={
-                guestInfos.image !== null
-                  ? "data:image/png;base64, " + guestInfos.image
-                  : guestInfos.imageFakeProfile
-              }
-              roundedCircle
-            />
-            <div className="chat-messages-display-message-intro-txt">
-              Vous avez matché avec {guestInfos.userName} !
+          <div style={{ position: "relative", height: "auto" }}>
+            <div className="chat-messages-display-message-intro">
+              <Image
+                className="chat-messages-display-message-intro-img"
+                src={
+                  guestInfos.image !== null
+                    ? "data:image/png;base64, " + guestInfos.image
+                    : guestInfos.imageFakeProfile
+                }
+                roundedCircle
+              />
+              <div className="chat-messages-display-message-intro-txt">
+                Vous avez matché avec {guestInfos.userName} !
+              </div>
             </div>
+            <div>
+              {allMessages.map((e, i) =>
+                e.from === uuid
+                  ? messageFromMe(i, e.msg)
+                  : messageFromGuest(i, e.msg)
+              )}
+            </div>
+            {/* <span style={{ position: "absolute", bottom: "10" }}> */}
+            {typingBubbles()}
+            {/* </span> */}
           </div>
-          <div>
-            {allMessages.map((e, i) =>
-              e.from === uuid
-                ? messageFromMe(i, e.msg)
-                : messageFromGuest(i, e.msg)
-            )}
-          </div>
-          {typingBubbles()}
         </div>
       );
     else return <Fragment />;

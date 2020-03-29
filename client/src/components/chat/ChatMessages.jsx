@@ -27,19 +27,15 @@ const ChatMessages = ({
     }
   }, [socket, uuid, guestInfos.uuid]);
 
-  const removeGuestTyping = guestUuid => {
-    const idx = guestTyping.indexOf(guestUuid);
-    if (idx !== -1) {
-      const guestTypingTmp = [...guestTyping];
-      guestTypingTmp.splice(idx, 1);
-      setGuestTyping(guestTypingTmp);
-    }
-  };
-
   useEffect(() => {
     socket.on("message", message => {
       // console.log("Reception du message: ", message);
-      removeGuestTyping(message.from);
+      const idx = guestTyping.indexOf(message.from);
+      if (idx !== -1) {
+        const guestTypingTmp = [...guestTyping];
+        guestTypingTmp.splice(idx, 1);
+        setGuestTyping(guestTypingTmp);
+      }
       if (
         (message.from === guestInfos.uuid && message.to === uuid) ||
         (message.from === uuid && message.to === guestInfos.uuid)
@@ -57,7 +53,13 @@ const ChatMessages = ({
 
     socket.on("stopTyping", t => {
       // delete class is typing if not already delete
-      removeGuestTyping(t);
+      // removeGuestTyping(t);
+      const idx = guestTyping.indexOf(t);
+      if (idx !== -1) {
+        const guestTypingTmp = [...guestTyping];
+        guestTypingTmp.splice(idx, 1);
+        setGuestTyping(guestTypingTmp);
+      }
     });
 
     return () => {

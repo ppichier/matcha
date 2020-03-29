@@ -3,9 +3,6 @@ import "./ChatMessagesInput.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-// https://dev.to/rexeze/how-to-build-a-real-time-chat-app-with-nodejs-socketio-and-mongodb-2kho
-//  Notify user when typing
-
 const ChatMessagesInput = ({
   message,
   setMessage,
@@ -20,9 +17,7 @@ const ChatMessagesInput = ({
         maxLength="1000"
         value={message}
         onChange={e => setMessage(e.target.value)}
-        onKeyUp={e =>
-          e.key === "Enter" ? sendMessage(e) : sendTypingEvent(e)
-        }
+        onKeyUp={e => (e.key === "Enter" ? sendMessage(e) : sendTypingEvent(e))}
       />
       <div className="ml-2 chat-messages-input-container-send">
         <button
