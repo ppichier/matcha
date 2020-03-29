@@ -13,6 +13,7 @@ const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
   const [matchPeople, setMatchPeople] = useState([]);
   const [matchImages, setMatchImages] = useState([]);
   const [userNotify, setUsertNotify] = useState([]);
+  const [lastMessages, setLastMessages] = useState([{ from: "", msg: "" }] );
 
   useEffect(() => {
     getMatchUsers()
@@ -50,7 +51,6 @@ const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
     let guestDiv = document.getElementsByClassName("chat-people-item");
     if (guestIndex !== null)
       guestDiv[guestIndex].classList.remove("chat-people-item-selected");
-
     if (guestIndex !== index) {
       sendGuestInfos({ ...matchPeople[index], ...matchImages[index] });
       setGuestIndex(index);
