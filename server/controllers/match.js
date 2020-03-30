@@ -30,7 +30,7 @@ exports.readCommonTag = async (req, res) => {
 };
 
 exports.filterProfile = (req, res) => {
-  const { age, location, score, userSize, selectedTags, moreProfiles} = req.body;
+  const { age, location, score, userSize, selectedTags, moreProfiles, searchActif} = req.body;
   const userUuid = req.userUuid;
   let tagsParams = [];
   pool.getConnection((err, connection) => {
@@ -77,12 +77,12 @@ exports.filterProfile = (req, res) => {
             const lng = result[0].Lng;
             const userIdUser = result[0].UserId;
            const genreId =
-              result[0].GenreId === 6 || result[0].GenreId === 5
+              result[0].GenreId === 6 || result[0].GenreId === 5 || searchActif === "search"
                 ? [1, 2, 5, 6]
                 : result[0].GenreId;
             const sexualOrientationId =
               result[0].SexualOrientationId === 6 ||
-              result[0].SexualOrientationId === 5
+              result[0].SexualOrientationId === 5 || searchActif === "search"
                 ? [1, 2, 5, 6]
                 : result[0].SexualOrientationId;
             const reqSql = "GenreId IN (?) AND SexualOrientationId IN (?) AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And userSize <= ?"
@@ -192,6 +192,7 @@ exports.firstFilter = (req, res) => {
               let tags = tagsTmp.map(tag => tag.TagId);
               tagsParams = tags.join();
             }
+            const stateProfile = (result[0].StateProfile >= 60) ? "match" : "search";
             const lat = result[0].Lat;
             const lng = result[0].Lng;
             const userIdUser = result[0].UserId;
@@ -254,7 +255,8 @@ exports.firstFilter = (req, res) => {
                   let profiles = utils.sortProfile(merged);
                   return res.json({
                     profiles,
-                    resultsNumber
+                    resultsNumber,
+                    stateProfile
                   });
                 }
               }

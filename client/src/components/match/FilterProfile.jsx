@@ -10,7 +10,7 @@ import { readCommonTag } from "../../api";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
-const FilterProfile = ({ setFilterParams }, location) => {
+const FilterProfile = ({ setFilterParams, refresh}, location) => {
   const [filter, setfilter] = useState({
     selectedTags: [],
     commonTags: [],
@@ -19,12 +19,13 @@ const FilterProfile = ({ setFilterParams }, location) => {
     score: [0, 0],
     userSize: [129, 129]
   });
-
+   const [isShow, setIsShow] = useState(refresh);
   const animatedComponents = makeAnimated();
 
+
+  useEffect(()=> {}, [refresh]);
   useEffect(() => {
-    const v = queryString.parse(location.search);
-    readCommonTag(v.uuid)
+    readCommonTag()
       .then(data => {
         if (!data) {
           return;
@@ -39,7 +40,7 @@ const FilterProfile = ({ setFilterParams }, location) => {
         });
       })
       .catch(err => console.log(err));
-  }, [location]);
+  }, []);
 
   const handleChangeTags = tags => {
     if (tags === null) {

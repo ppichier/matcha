@@ -6,6 +6,26 @@
   animation: Gradient 15s ease infinite;
   font-weight: 800;
 }
+/*.btn-switsh:hover {
+background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;
+  cursor: pointer;
+  animation: colorcard;
+  animation-duration: 2s ;
+  animation-name: colorcard;
+  transition: .5s all;
+ animation-name: circle;
+  animation-duration: 1s;
+}
+
+@keyframes circle {
+  0% {
+     transform: rotate(0deg);
+  }
+  100% {
+     transform: rotate(360deg);
+  }
+}
+*/
 
 .navbar-container > * {
   margin-bottom: 0;
@@ -67,4 +87,7 @@
 }
 sup {
   font-size: 90% !important;
+}
+.icon:hover{
+    -webkit-box-shadow: 10px 10px 30px 15px white;
 }

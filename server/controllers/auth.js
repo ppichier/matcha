@@ -204,7 +204,7 @@ exports.signin = async (req, res) => {
       });
     } else {
       connection.query(
-        "SELECT UserId, UserName, Password, EmailValidate, Uuid, StateProfile FROM User WHERE UserName = ?",
+        "SELECT UserId, UserName, Password, EmailValidate, Uuid FROM User WHERE UserName = ?",
         [pseudo],
         async (err, result) => {
           if (err) {
@@ -220,7 +220,6 @@ exports.signin = async (req, res) => {
             );
           } else if (result.length === 1) {
             const userUuid = result[0].Uuid;
-            const stateProfile = result[0].StateProfile >= 50 ? "match" : "search";
             try {
               const match = await bcrypt.compare(
                 password,
@@ -256,7 +255,6 @@ exports.signin = async (req, res) => {
                           user: {
                             _id: userUuid
                           },
-                          stateProfile: stateProfile,
                           msg: "Authentification réussie"
                         });
                       }

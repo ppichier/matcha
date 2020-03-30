@@ -37,26 +37,30 @@ const MatchMe = () => {
   });
 
   useEffect(() => {
-  let jwt = JSON.parse(localStorage.getItem("jwt"));
-  console.log(jwt.stateProfile)
     firstFilter(moreProfiles)
       .then(data => {
-        if(isShow === "match" && jwt.stateProfile === "match")
+        if(isShow === "match" && data.stateProfile === "match")
         { setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
           setIsShow("match");
         }
         else
         {
           setValues({ ...values, profiles: [], resultsNumber: 0}); 
-          setIsShow("search")       
+          setIsShow("search");
+          document.getElementById("match").classList.remove("btn-active");
+          document.getElementById("search").classList.add("btn-active");     
         }
       })
       .catch(err => console.log(err));  
   }, [isShow]);
 
 
-  const handleShow = (sowParams) => {
-    setIsShow(sowParams);
+  const handleShow = (showParams) => {
+    setIsShow(showParams);
+    let btn = (showParams === "match") ? "search" : "match";
+     document.getElementById(btn).classList.remove("btn-active");
+    document.getElementById(showParams).classList.add("btn-active");
+   
   }
 
 
@@ -81,7 +85,8 @@ const MatchMe = () => {
         location: filterParams.location,
         score: filterParams.score,
         selectedTags: filterParams.selectedTags,
-        moreProfiles: moreProfiles
+        moreProfiles: moreProfiles,
+        searchActif: isShow
       })
        .then(data => {  
         if (moreProfiles[0] === 0)
@@ -204,12 +209,13 @@ const MatchMe = () => {
              />
             <FilterProfile
               setFilterParams={(filterParams) => setFilterParams(null, filterParams, [0, 20])}
+              refresh={isShow}
             />
           </Col>
           <Col>
             <ButtonGroup  variant="outline-info" className="style-menu px-4 py-4 my-3 " style={{ width: "100%"}}>
-            <Button variant="outline-info" className="btn-switsh"  onClick={() => handleShow("match")}>Match</Button>
-            <Button variant="outline-info" className="btn-switsh"  onClick={() => handleShow("search")}>Recherche</Button>
+            <Button variant="outline-info" className="btn-switsh  btn-active" id="match" onClick={() => handleShow("match")}>Match</Button>
+            <Button variant="outline-info" className="btn-switsh " id="search"  onClick={() => handleShow("search")}>Recherche</Button>
             </ButtonGroup>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
             <div> {loadProfiles()} </div>

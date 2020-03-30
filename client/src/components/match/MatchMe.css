@@ -6,6 +6,9 @@
 .btn-outline-info {
   width: 100%;
 }
+.btn-active {
+    -webkit-box-shadow: 0px 0px 10px 0px  rgba(23,162,184,.5);
+}
 
 .styleCard {
   position: relative;
@@ -14,43 +17,21 @@
   box-shadow: 2px 4px 1px 2px rgba(160, 160, 160, 0.1);
 }
 
- /*background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #c9ffbf, #12fff7 )!important;*/
-/*background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;*/
-
-
 .styleCard:hover {
-
-  /* border: 2px solid; */
-  background: linear-gradient(
-    -45deg,
-    #ee7752,
-    #fad5c0,
-    #23a6d5,
-    #23d5ab
-  ) !important;
+background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;
   cursor: pointer;
-  /* opacity: 0.9; */
   animation: colorcard;
   animation-duration: 2s;
   animation-name: colorcard;
 }
 
 .btn-switsh:hover {
-/*background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;*/
-
-  background: linear-gradient(
-     -45deg,
-    #ee7752,
-    #fad5c0,
-    #23a6d5,
-    #23d5ab
-  ) !important;
+background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;
   cursor: pointer;
   animation: colorcard;
   animation-duration: 2s;
   animation-name: colorcard;
 }
-
 
 @keyframes colorcard {
   0% {
@@ -76,3 +57,21 @@
   bottom: 0px;
   right: 0px;
 }
+/*.btn-switsh:after{
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: #ff003b;
+  transition: all .35s;
+}
+
+.btn-switsh:hover{
+  color: #fff;
+}
+
+.btn-switsh:hover:after{
+  width: 100%;
+}*/
