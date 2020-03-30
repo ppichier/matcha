@@ -5,7 +5,6 @@ import { Col, Form, Button } from "react-bootstrap";
 import Slider, {createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import makeAnimated from "react-select/animated";
-
 import queryString from "query-string";
 import { readCommonTag } from "../../api";
 

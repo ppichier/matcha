@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment} from "react";
-import { Row, Col, Container, Button } from "react-bootstrap";
+import { Row, Col, Container, Button, ButtonGroup } from "react-bootstrap";
 import CardPicture from "./CardPicture";
 import "./CardPicture.css";
 import NavbarHeader from "../navbar/Navbar";
@@ -27,22 +27,38 @@ const MatchMe = () => {
   });
 
   const [moreProfiles, setMoreProfiles] = useState([0, 20]);
-
+  const [isShow, setIsShow] = useState("match");
   const [moreParams, setMoreParams] = useState ({
     age: [],
     userSize: [],
     location: [],
     score: [],
-    selectedTags: [],
+    selectedTags: []
   });
 
   useEffect(() => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  console.log(jwt.stateProfile)
     firstFilter(moreProfiles)
       .then(data => {
-        setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
+        if(isShow === "match" && jwt.stateProfile === "match")
+        { setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
+          setIsShow("match");
+        }
+        else
+        {
+          setValues({ ...values, profiles: [], resultsNumber: 0}); 
+          setIsShow("search")       
+        }
       })
       .catch(err => console.log(err));  
-  }, []);
+  }, [isShow]);
+
+
+  const handleShow = (sowParams) => {
+    setIsShow(sowParams);
+  }
+
 
   const setFirstFilter = (event, moreProfiles) => {
      if (event) 
@@ -182,6 +198,7 @@ const MatchMe = () => {
       <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>
           <Col md={3}>
+            
             <SortProfile
               setSortParams={sortParams => setSortParams(sortParams)}
              />
@@ -190,6 +207,10 @@ const MatchMe = () => {
             />
           </Col>
           <Col>
+            <ButtonGroup  variant="outline-info" className="style-menu px-4 py-4 my-3 " style={{ width: "100%"}}>
+            <Button variant="outline-info" className="btn-switsh"  onClick={() => handleShow("match")}>Match</Button>
+            <Button variant="outline-info" className="btn-switsh"  onClick={() => handleShow("search")}>Recherche</Button>
+            </ButtonGroup>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
             <div> {loadProfiles()} </div>
           </Col>

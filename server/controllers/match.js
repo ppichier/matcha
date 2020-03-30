@@ -30,7 +30,7 @@ exports.readCommonTag = async (req, res) => {
 };
 
 exports.filterProfile = (req, res) => {
-  const { age, location, score, userSize, selectedTags, moreProfiles } = req.body;
+  const { age, location, score, userSize, selectedTags, moreProfiles} = req.body;
   const userUuid = req.userUuid;
   let tagsParams = [];
   pool.getConnection((err, connection) => {
@@ -76,12 +76,19 @@ exports.filterProfile = (req, res) => {
             const lat = result[0].Lat;
             const lng = result[0].Lng;
             const userIdUser = result[0].UserId;
-            const genreId = result[0].GenreId;
-            const sexualOrientationId = result[0].SexualOrientationId;
-            const reqSql = "GenreId = ? AND SexualOrientationId = ? AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And userSize <= ?"
+           const genreId =
+              result[0].GenreId === 6 || result[0].GenreId === 5
+                ? [1, 2, 5, 6]
+                : result[0].GenreId;
+            const sexualOrientationId =
+              result[0].SexualOrientationId === 6 ||
+              result[0].SexualOrientationId === 5
+                ? [1, 2, 5, 6]
+                : result[0].SexualOrientationId;
+            const reqSql = "GenreId IN (?) AND SexualOrientationId IN (?) AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And userSize <= ?"
             connection.query(
               `SELECT *, (SELECT count(*) FROM user WHERE ${reqSql} ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE ${reqSql} ORDER BY DISTANCE ASC  LIMIT ?;
-               SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId = ? AND U.SexualOrientationId = ? GROUP BY T.UserId ORDER BY count(*) DESC;
+               SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
                 SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
               [
                 sexualOrientationId,
@@ -198,7 +205,7 @@ exports.firstFilter = (req, res) => {
                 ? [1, 2, 5, 6]
                 : result[0].SexualOrientationId;
             connection.query(
-              `SELECT *,( SELECT count(*) FROM user WHERE GenreId = ? AND SexualOrientationId = ? ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ORDER BY DISTANCE ASC LIMIT ?;
+              `SELECT *,( SELECT count(*) FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ORDER BY DISTANCE ASC LIMIT ?;
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
                SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
 

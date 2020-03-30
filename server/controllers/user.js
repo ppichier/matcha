@@ -16,7 +16,8 @@ exports.updateProfile = (req, res) => {
     lat,
     lng,
     userUuid,
-    localisationActive
+    localisationActive,
+    widthProgressBar
   } = req.body;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -48,7 +49,7 @@ exports.updateProfile = (req, res) => {
             );
           } else {
             connection.query(
-              "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `UserSize` = ?,`Bio` = ?, `Lat` = ?, `Lng` = ?, `LocalisationActive` = ? WHERE `Uuid` = ?",
+              "UPDATE `user` SET `Email`= ?, `UserName`= ?,`FirstName` = ?,`LastName` = ?, `SexualOrientationId` = ? , `GenreId` = ?,`Age` = ?, `UserSize` = ?,`Bio` = ?, `StateProfile` = ? ,`Lat` = ?, `Lng` = ?, `LocalisationActive` = ? WHERE `Uuid` = ?",
               [
                 email,
                 pseudo,
@@ -59,6 +60,7 @@ exports.updateProfile = (req, res) => {
                 age,
                 userSize,
                 description,
+                widthProgressBar,
                 lat,
                 lng,
                 localisationActive,
@@ -167,7 +169,6 @@ exports.uploadSecondaryImages = (req, res) => {
 };
 
 exports.deleteProfileImage = (req, res) => {
-  console.log("++++++++++");
   const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
@@ -306,8 +307,6 @@ exports.readSecondaryImages = (req, res) => {
 };
 
 exports.readImage = (req, res) => {
-  // console.log("UserUuid: ", req.userUuid);
-  // console.log("GuestUuid: ", req.body.guestUuid);
   let uuid = req.body.guestUuid ? req.body.guestUuid : req.userUuid;
   let image64 = "";
   if (fs.existsSync(__dirname + `/../images/${uuid}/`)) {
