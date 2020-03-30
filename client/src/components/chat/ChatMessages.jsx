@@ -8,7 +8,8 @@ const ChatMessages = ({
   socket,
   guestInfos,
   uuid,
-  sendMessageNotification
+  sendMessageNotification,
+  sendLastMessage
 }) => {
   const [allMessages, setAllMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -44,16 +45,18 @@ const ChatMessages = ({
       } else {
         sendMessageNotification(message.from);
       }
+      sendLastMessage({
+        with: message.from === uuid ? message.to : message.from,
+        from: message.from,
+        msg: message.msg
+      });
     });
 
     socket.on("isTyping", t => {
       if (guestTyping.indexOf(t) === -1) setGuestTyping([...guestTyping, t]);
-      // add class is typing if not already bind
     });
 
     socket.on("stopTyping", t => {
-      // delete class is typing if not already delete
-      // removeGuestTyping(t);
       const idx = guestTyping.indexOf(t);
       if (idx !== -1) {
         const guestTypingTmp = [...guestTyping];
@@ -71,7 +74,8 @@ const ChatMessages = ({
     uuid,
     allMessages,
     sendMessageNotification,
-    guestTyping
+    guestTyping,
+    sendLastMessage
   ]);
 
   const sendMessage = e => {

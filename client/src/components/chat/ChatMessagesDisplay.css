@@ -78,6 +78,7 @@
   margin-left: 8px;
   position: relative;
   animation: 2s pulse infinite ease-out;
+  margin-top: -10px;
 }
 
 .typing-indicator::before,

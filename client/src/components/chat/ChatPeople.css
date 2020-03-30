@@ -79,4 +79,7 @@
 .chat-people-item-last-msg {
   text-transform: capitalize;
   color: #7c7c7c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

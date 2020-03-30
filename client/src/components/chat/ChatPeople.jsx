@@ -8,19 +8,27 @@ import { useEffect } from "react";
 import { getMatchUsers } from "../../api/chat";
 import { readImage } from "../../api/user";
 
-const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
+const ChatPeople = ({
+  socket,
+  uuid,
+  sendGuestInfos,
+  messageNotification,
+  lastMessage
+}) => {
   const [guestIndex, setGuestIndex] = useState(null);
   const [matchPeople, setMatchPeople] = useState([]);
   const [matchImages, setMatchImages] = useState([]);
   const [userNotify, setUsertNotify] = useState([]);
-  const [lastMessages, setLastMessages] = useState([{ from: "", msg: "" }] );
+  const [lastMessages, setLastMessages] = useState([]);
 
   useEffect(() => {
     getMatchUsers()
       .then(data => {
         if (data.err) return;
         else {
+          // console.log(data);
           setMatchPeople([...data.matchPeople]);
+          setLastMessages([...data.lastMessages]);
         }
       })
       .catch(err => console.log(err));
@@ -32,6 +40,20 @@ const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
         setUsertNotify([...userNotify, messageNotification]);
     }
   }, [messageNotification, userNotify]);
+
+  useEffect(() => {
+    if (lastMessage !== null) {
+      const idx = lastMessages.findIndex(e => e.with === lastMessage.with);
+      let lastMessagesTmp = [...lastMessages];
+      if (idx > -1) {
+        lastMessagesTmp[idx] = { ...lastMessage };
+        setLastMessages(lastMessagesTmp);
+      } else {
+        setLastMessages([...lastMessages, lastMessage]);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMessage]);
 
   useEffect(() => {
     if (matchPeople.length !== 0) {
@@ -49,11 +71,21 @@ const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
 
   const updateIndex = index => {
     let guestDiv = document.getElementsByClassName("chat-people-item");
-    if (guestIndex !== null)
+    if (guestIndex !== null) {
       guestDiv[guestIndex].classList.remove("chat-people-item-selected");
+      socket.emit(
+        "typingMessage",
+        uuid,
+        matchPeople[guestIndex].uuid,
+        "",
+        () => {}
+      );
+    }
+
     if (guestIndex !== index) {
       sendGuestInfos({ ...matchPeople[index], ...matchImages[index] });
       setGuestIndex(index);
+      //fetch fo remove see
     }
     guestDiv[index].classList.add("chat-people-item-selected");
   };
@@ -91,6 +123,24 @@ const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
     else return <Fragment />;
   };
 
+  const displayLastMessage = peopleUuid => {
+    const withGuestLastMessage = lastMessages.find(r => r.with === peopleUuid);
+    if (withGuestLastMessage) {
+      if (withGuestLastMessage.from === peopleUuid) {
+        return <div>{withGuestLastMessage.msg}</div>;
+      } else {
+        return (
+          <div>
+            <FontAwesomeIcon icon={faReply} className="pr-1" />
+            {withGuestLastMessage.msg}
+          </div>
+        );
+      }
+    } else {
+      return <Fragment />;
+    }
+  };
+
   return (
     <Fragment>
       <div className="py-3 ml-4 chat-people-col-title">
@@ -118,8 +168,7 @@ const ChatPeople = ({ sendGuestInfos, messageNotification }) => {
                   {people.userName}{" "}
                 </div>
                 <div className="chat-people-item-last-msg">
-                  <FontAwesomeIcon icon={faReply} className="pr-1" />
-                  last message ....
+                  {displayLastMessage(people.uuid)}
                 </div>
               </div>
             </div>

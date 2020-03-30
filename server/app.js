@@ -87,7 +87,11 @@ io.on("connection", socket => {
   socket.on("sendMessage", async (userUuid, guestUuid, message, cb) => {
     // socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
     try {
-      let res = await saveMessage(userUuid, guestUuid, message);
+      await saveMessage(userUuid, guestUuid, message);
+      // await saveLastMessage(userUuid, guestUuid, message);
+      console.log("SEND MESSAGE");
+      console.log(userUuid);
+      console.log(guestUuid);
       let guestSockets = findSocketsGivenUuid(guestUuid);
       let meSockets = findSocketsGivenUuid(userUuid);
       [...guestSockets, ...meSockets].forEach(e => {

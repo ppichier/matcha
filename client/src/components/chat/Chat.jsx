@@ -13,6 +13,7 @@ const Chat = ({ socket }) => {
   const [uuid, setUuid] = useState(null);
   const [guestInfos, setGuestInfos] = useState({ uuid: null });
   const [messageNotification, setMessageNotification] = useState(null);
+  const [lastMessage, setLastMessage] = useState(null);
 
   useEffect(() => {
     setUuid(JSON.parse(localStorage.getItem("jwt")).user._id);
@@ -22,6 +23,10 @@ const Chat = ({ socket }) => {
     setMessageNotification(uuidToNotify);
   };
 
+  const sendLastMessage = msg => {
+    setLastMessage(msg);
+  };
+
   return (
     <Fragment>
       <NavbarHeader />
@@ -29,11 +34,14 @@ const Chat = ({ socket }) => {
         <Row className="chat-row" noGutters>
           <Col md={3} className="chat-col1">
             <ChatPeople
+              socket={socket}
+              uuid={uuid}
               sendGuestInfos={value => {
                 setGuestInfos({ ...value });
                 setMessageNotification(null);
               }}
               messageNotification={messageNotification}
+              lastMessage={lastMessage}
             />
           </Col>
           <Col md={9} className="chat-col2">
@@ -42,6 +50,7 @@ const Chat = ({ socket }) => {
               guestInfos={guestInfos}
               uuid={uuid}
               sendMessageNotification={value => sendMessageNotification(value)}
+              sendLastMessage={value => sendLastMessage(value)}
             />
           </Col>
         </Row>
