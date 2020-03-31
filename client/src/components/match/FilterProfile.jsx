@@ -5,7 +5,6 @@ import { Col, Form, Button } from "react-bootstrap";
 import Slider, {createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import makeAnimated from "react-select/animated";
-import queryString from "query-string";
 import { readCommonTag } from "../../api";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
@@ -19,11 +18,7 @@ const FilterProfile = ({ setFilterParams, refresh}, location) => {
     score: [0, 0],
     userSize: [129, 129]
   });
-   const [isShow, setIsShow] = useState(refresh);
   const animatedComponents = makeAnimated();
-
-
-  useEffect(()=> {}, [refresh]);
   useEffect(() => {
     readCommonTag()
       .then(data => {
@@ -40,7 +35,7 @@ const FilterProfile = ({ setFilterParams, refresh}, location) => {
         });
       })
       .catch(err => console.log(err));
-  }, []);
+  }, [refresh]);
 
   const handleChangeTags = tags => {
     if (tags === null) {

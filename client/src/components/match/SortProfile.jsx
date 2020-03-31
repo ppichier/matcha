@@ -1,7 +1,6 @@
 import React, { Fragment} from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import {ToggleButtonGroup, ToggleButton } from "react-bootstrap";
 
 const SortProfile = ({ setSortParams }) => {
   return (

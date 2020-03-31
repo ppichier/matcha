@@ -18,7 +18,7 @@ const userRoutes = require("./routes/user");
 const matchRoutes = require("./routes/match");
 
 //faker
- faker.generateFakeProfiles();
+ //faker.generateFakeProfiles();
 
 //middlewares
 app.use(morgan("dev"));

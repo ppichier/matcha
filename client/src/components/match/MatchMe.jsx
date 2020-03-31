@@ -45,8 +45,8 @@ const MatchMe = () => {
         }
         else
         {
-          setValues({ ...values, profiles: [], resultsNumber: 0}); 
           setIsShow("search");
+          setValues({ ...values, profiles: [], resultsNumber: 0, activateFilter: false}); 
           document.getElementById("match").classList.remove("btn-active");
           document.getElementById("search").classList.add("btn-active");     
         }
