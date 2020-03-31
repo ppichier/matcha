@@ -10,7 +10,6 @@ exports.getAllMessages = (userUuid, guestUuid) => {
       } else {
         connection.query(
           "SELECT USER.UserId FROM USER WHERE USER.Uuid = ?; SELECT USER.UserId FROM USER WHERE USER.Uuid = ?",
-          // "SELECT  FROM message WHERE MessageSender = (SELECT USER.UserId FROM USER WHERE USER.Uuid = ?) AND MessageReceiver = (SELECT USER.UserId FROM USER WHERE USER.Uuid = ?) OR MessageSender = (SELECT USER.UserId FROM USER WHERE USER.Uuid = ?) AND MessageReceiver = (SELECT USER.UserId FROM USER WHERE USER.Uuid = ?)",
           [[userUuid], [guestUuid]],
           (err, result) => {
             if (err || result[0].length === 0 || result[1].length === 0) {
@@ -75,12 +74,10 @@ exports.saveMessage = (userUuid, guestUuid, message) => {
                 from: result[0][0].UserId,
                 to: result[1][0].UserId
               };
-              console.log(ids);
               connection.query(
                 "INSERT INTO message (MessageSender, MessageReceiver, MessageContent) VALUES (?, ?, ?); SELECT * FROM last_message WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?)",
                 [ids.from, ids.to, message, ids.from, ids.to, ids.to, ids.from],
                 (err, result) => {
-                  console.log(result);
                   if (err) {
                     connection.release();
                     reject(err);
@@ -101,8 +98,6 @@ exports.saveMessage = (userUuid, guestUuid, message) => {
                         "INSERT INTO last_message (LastMessageFrom, LastMessageTo, LastMessageContent) VALUES (?, ?, ?)";
                       queryParams = [ids.from, ids.to, message];
                     }
-                    console.log(queryParams);
-                    console.log(ids);
                     connection.query(query, queryParams, (err, result) => {
                       connection.release();
                       if (err) reject(err);
@@ -118,30 +113,3 @@ exports.saveMessage = (userUuid, guestUuid, message) => {
     });
   });
 };
-
-// exports.saveLastMessage = (userUuid, guestUuid, message) => {
-//   return new Promise((resolve, reject) => {
-//     if (message.length >= 1000) reject("Message length eq or gth 1000");
-//     pool.getConnection((err, connection) => {
-//       if (err) {
-//         connection.release();
-//         reject(err);
-//       } else {
-//         connection.query(
-//           "SELECT * from last_message WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?)",
-//           // "UPDATE last_message SET LastMessageContent = ? WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?)",
-//           [message, userUuid, guestUuid, guestUuid, userUuid],
-//           (err, result) => {
-//             if (err) {
-//               connection.release();
-//               reject(err);
-//             } else {
-//               console.log(result);
-//               resolve()
-//             }
-//           }
-//         );
-//       }
-//     });
-//   });
-// };

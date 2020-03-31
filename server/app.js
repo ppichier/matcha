@@ -89,9 +89,6 @@ io.on("connection", socket => {
     try {
       await saveMessage(userUuid, guestUuid, message);
       // await saveLastMessage(userUuid, guestUuid, message);
-      console.log("SEND MESSAGE");
-      console.log(userUuid);
-      console.log(guestUuid);
       let guestSockets = findSocketsGivenUuid(guestUuid);
       let meSockets = findSocketsGivenUuid(userUuid);
       [...guestSockets, ...meSockets].forEach(e => {
@@ -111,8 +108,6 @@ io.on("connection", socket => {
     let guestSockets = findSocketsGivenUuid(guestUuid);
     let typingEvent = message.length === 0 ? "stopTyping" : "isTyping";
 
-    console.log(userUuid);
-    console.log(guestUuid);
     guestSockets.forEach(e => {
       io.to(e).emit(typingEvent, userUuid);
     });
