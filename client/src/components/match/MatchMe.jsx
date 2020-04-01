@@ -1,7 +1,7 @@
-import React, { useState, useEffect, Fragment } from "react";
-import "./CardPicture.css";
-import { Row, Col, Container, Button } from "react-bootstrap";
+import React, { useState, useEffect, Fragment} from "react";
+import { Row, Col, Container, Button, ButtonGroup } from "react-bootstrap";
 import CardPicture from "./CardPicture";
+import "./CardPicture.css";
 import NavbarHeader from "../navbar/Navbar";
 import FilterProfile from "./FilterProfile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,39 +9,135 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import "rc-slider/assets/index.css";
 import "./MatchMe.css";
 import SortProfile from "./SortProfile";
-import { firstFilter, heartClick } from "../../api";
+import { firstFilter, heartClick, filterProfile } from "../../api";
+import _ from 'lodash';
+import { faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
+
 
 // one fetch for list of profiles
 // x fetch for x imagess
 
-const MatchMe = ({ pseudo, lastName, city, birthday }) => {
+const MatchMe = () => {
+
   const [values, setValues] = useState({
     image: [],
     uploading: false,
     profiles: [],
-    moreProfile: []
+    resultsNumber: 0,
+    activateFilter : false
+    
   });
+
+  const [moreProfiles, setMoreProfiles] = useState([0, 0]);
+  const [isShow, setIsShow] = useState("match");
+  const [moreParams, setMoreParams] = useState ({
+    age: [],
+    userSize: [],
+    location: [],
+    score: [],
+    selectedTags: []
+  });
+
   useEffect(() => {
-    firstFilter()
+    console.log("________________");
+    console.log(isShow)
+    firstFilter((moreProfiles))
       .then(data => {
         if (data.err) {
           return;
-        } else {
-          setValues({ ...values, profiles: data.profiles });
+        } 
+        if(isShow === "match" && data.stateProfile === "match")
+        { setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
+          setIsShow("match");
+        }
+        else
+        {
+          setIsShow("search");
+          setValues({ ...values, profiles: [], resultsNumber: 0, activateFilter: false}); 
+          document.getElementById("match").classList.remove("btn-active");
+          document.getElementById("search").classList.add("btn-active");     
+        }
+      })
+      .catch(err => console.log(err));  
+  }, [isShow]);
+
+
+  const handleShow = (showParams) => {
+    setIsShow(showParams);
+    let btn = (showParams === "match") ? "search" : "match";
+     document.getElementById(btn).classList.remove("btn-active");
+    document.getElementById(showParams).classList.add("btn-active");
+   
+  }
+
+
+  const setFirstFilter = (event, moreProfiles) => {
+     if (event) 
+      event.preventDefault();
+    firstFilter(moreProfiles)
+      .then(data => {
+        console.log("____________________")
+          console.log(data.profiles)
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
+          setValues({ ...values, profiles: _.uniqBy(profiles, 'pseudo'),  resultsNumber: data.resultsNumber});
+      })
+      .catch(err => console.log(err));
+  }
+  console.log(values.profiles);
+  // console.log(values.profiles);
+  const setFilterParams = (event, filterParams, moreProfiles) => {
+  if (event) 
+    event.preventDefault();
+      filterProfile({
+        age: filterParams.age,
+        userSize: filterParams.userSize,
+        location: filterParams.location,
+        score: filterParams.score,
+        selectedTags: filterParams.selectedTags,
+        moreProfiles: moreProfiles,
+        searchActif: isShow
+      })
+       .then(data => {  
+        if (moreProfiles[0] === 0)
+          {
+            setValues({ ...values, 
+              profiles: data.profiles, 
+              resultsNumber: data.resultsNumber, 
+              activateFilter: true
+            });
+            setMoreProfiles(moreProfiles);
+            setMoreParams({...moreParams,
+              age: filterParams.age,
+              userSize: filterParams.userSize,
+              location: filterParams.location,
+              score: filterParams.score,
+              selectedTags: filterParams.selectedTags,
+            });
+          }
+        else
+        {
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
+          setValues({ ...values, profiles: _.uniqBy(profiles, 'pseudo'),  resultsNumber: data.resultsNumber});
         }
       })
       .catch(err => console.log(err));
-  }, []);
+  };
 
-  // const handleChange = event => {
-  //   event.preventDefault();
+  const setSortParams = sortParams => (event) =>{
+    const profiles = _.orderBy(values.profiles, [sortParams.name], [sortParams.order]);
+    setValues({ ...values, profiles});
+  }
 
-  //   const files = Array.from(event.target.files);
-  //   const tmp = { ...values, image: [...values.image, files] };
-  //   // const formData = new FormData();
-  //   setValues(tmp);
-  // };
-  const handleChange = () => {};
+  const onMoreProfiles = (event) => {
+    let moreProfilesTmp = moreProfiles.map(x => x + 20)
+    setMoreProfiles(moreProfilesTmp);
+    if (values.activateFilter === true )
+        setFilterParams(event, moreParams, moreProfilesTmp);
+    else
+        setFirstFilter(event, moreProfilesTmp);
+  };
 
   const onHeartClick = i => {
     let userLiked = {
@@ -60,6 +156,26 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       setValues({ ...values, profiles: newProfiles });
     });
   };
+  
+  const loadProfiles = () => {
+   if (values.resultsNumber > 0 &&  (values.resultsNumber > (moreProfiles[1] + 20)))  
+      return(
+        <div style={{ display: "flex", width: "50%" }}>
+
+              <Button
+                onClick={e => onMoreProfiles(e)}
+                className="text-uppercase mb-4 center-block"
+                variant="outline-info"
+                style={{ letterSpacing: "1px", fontWeight: "bold" }}
+              >
+              <FontAwesomeIcon icon={faArrowAltCircleDown} className="fa-lg "/>  
+              Charger plus
+              </Button>
+        </div>
+      )
+    else
+      return(<Fragment></Fragment>)
+  }
 
   const card = () => {
     return values.profiles.map((profile, i) => {
@@ -84,7 +200,7 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
                 height: "50px"
               }}
             >
-              <FontAwesomeIcon icon={faHeart} />
+              <FontAwesomeIcon icon={faHeart} className="love" />
             </Button>
           </div>
         </div>
@@ -98,21 +214,21 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
       <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>
           <Col md={3}>
-            <SortProfile />
-            <FilterProfile />
+            
+            <SortProfile
+              setSortParams={sortParams => setSortParams(sortParams)}
+             />
+            <FilterProfile
+              setFilterParams={(filterParams) => setFilterParams(null, filterParams, [0, 0])}
+            />
           </Col>
           <Col>
+            <ButtonGroup  variant="outline-info" className="style-menu px-4 py-4 my-3 " style={{ width: "100%"}}>
+            <Button variant="outline-info" className="btn-switsh  btn-active" id="match" onClick={() => handleShow("match")}>Match</Button>
+            <Button variant="outline-info" className="btn-switsh " id="search"  onClick={() => handleShow("search")}>Recherche</Button>
+            </ButtonGroup>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
-            <div style={{ display: "flex", width: "50%" }}>
-              <Button
-                onClick={handleChange()}
-                className="text-uppercase mb-4 center-block"
-                variant="outline-info"
-                style={{ letterSpacing: "1px", fontWeight: "bold" }}
-              >
-                Charger plus
-              </Button>
-            </div>
+            <div> {loadProfiles()} </div>
           </Col>
         </Row>
       </Container>
@@ -120,3 +236,4 @@ const MatchMe = ({ pseudo, lastName, city, birthday }) => {
   );
 };
 export default MatchMe;
+

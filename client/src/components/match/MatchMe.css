@@ -1,7 +1,22 @@
 .style-menu {
   background-color: white;
   border-radius: 6px;
-  /* box-shadow: 6px 6px 1px 2px rgba(0, 0, 255, 0.2); */
+}
+
+.btn-outline-info {
+  width: 100%;
+}
+
+.btn-active {
+  box-shadow:         inset 0 0 12px #17a2b8;
+ /*box-shadow: 0px 0px 12px 2px rgb(23, 162, 184, 0.6)  inset;*/
+}
+.love:hover{
+
+    animation: beat .25s infinite alternate;
+}
+@keyframes beat{
+  to { transform: scale(1.4); }
 }
 .styleCard {
   position: relative;
@@ -11,24 +26,13 @@
 }
 
 .styleCard:hover {
-  /* border: 2px solid; */
-  background: linear-gradient(
-    -45deg,
-    #ee7752,
-    #fad5c0,
-    #23a6d5,
-    #23d5ab
-  ) !important;
+background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;
   cursor: pointer;
-  /* opacity: 0.9; */
   animation: colorcard;
   animation-duration: 2s;
   animation-name: colorcard;
 }
 
-.btn-outline-info {
-  width: 100%;
-}
 
 @keyframes colorcard {
   0% {
@@ -49,8 +53,27 @@
   }
 }
 
+
 .heart-container {
   position: absolute;
   bottom: 0px;
   right: 0px;
 }
+.btn-switsh:after{
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+   background: linear-gradient(-225deg, #92fe9d , #FFFEFF, transparent, #FFFEFF, #12fff7 )!important;
+  transition: all .35s;
+}
+
+.btn-switsh:hover{
+}
+
+.btn-switsh:hover:after{
+  width: 100%;
+}
+

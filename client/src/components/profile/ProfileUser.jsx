@@ -269,6 +269,7 @@ const ProfileUser = ({ props, location }) => {
         sexualPreference: values.sexualPreference,
         userSize: values.userSize,
         description: values.description,
+        widthProgressBar: widthProgressBar,
         lat,
         lng,
         localisationActive: values.localisationActive

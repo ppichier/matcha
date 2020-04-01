@@ -62,7 +62,7 @@ const NavbarHeader = () => {
             <div>
               <FontAwesomeIcon
                 icon={faBell}
-                className="fa-lg mr-2 navbar-tab"
+                className="fa-lg mr-2 navbar-tab icon"
               />
               <sup className="sup-notification-icon">
                 <Badge
@@ -77,7 +77,7 @@ const NavbarHeader = () => {
           <NavDropdown
             className="mt-1"
             title={
-              <FontAwesomeIcon icon={faCog} className="fa-lg navbar-tab" />
+              <FontAwesomeIcon icon={faCog} className="fa-lg navbar-tab icon" />
             }
             id="basic-nav-dropdown"
             alignRight

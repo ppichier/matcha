@@ -21,7 +21,7 @@ const matchRoutes = require("./routes/match");
 const chatRoutes = require("./routes/chat");
 
 //faker
-// faker.generateFakeProfiles();
+ //faker.generateFakeProfiles();
 
 //middlewares
 app.use(morgan("dev"));
