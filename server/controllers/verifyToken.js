@@ -12,7 +12,7 @@ exports.verifyToken = (req, res, next) => {
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       return res
-        .status(500)
+        .status(401)
         .json({ auth: false, message: "Failed to authenticate token." });
     }
 
