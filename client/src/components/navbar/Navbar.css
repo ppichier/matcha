@@ -6,26 +6,6 @@
   animation: Gradient 15s ease infinite;
   font-weight: 800;
 }
-/*.btn-switsh:hover {
-background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;
-  cursor: pointer;
-  animation: colorcard;
-  animation-duration: 2s ;
-  animation-name: colorcard;
-  transition: .5s all;
- animation-name: circle;
-  animation-duration: 1s;
-}
-
-@keyframes circle {
-  0% {
-     transform: rotate(0deg);
-  }
-  100% {
-     transform: rotate(360deg);
-  }
-}
-*/
 
 .navbar-container > * {
   margin-bottom: 0;
@@ -35,7 +15,6 @@ background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12ff
   color: #fff;
 }
 .navbar-tab:hover{
-    /*-webkit-box-shadow: 0px 0px 30px 20px white;*/
     /*-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff,  0 0 80px #fff,  0 0 100px #fff;*/
     text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff,  0 0 80px #fff,  0 0 100px #fff;
 }

@@ -118,8 +118,10 @@ exports.filterProfile = (req, res) => {
                 } else {
                   connection.release();
                   let resultsNumber = 0;
-                  if(result[0].length > 0 && result[0][0].resultsNumber !== undefined) 
+                  if (result[0].length > 0 && result[0][0].resultsNumber !== undefined && selectedTags.length === 0) 
                     resultsNumber = result[0][0].resultsNumber;
+                  else if (result[0].length > 0 && result[0][0].resultsNumber !== undefined && selectedTags.length !== 0) 
+                      resultsNumber = result[1].length;
                   let a = [];
                   for (let i = 0; i < result.length; i++) {
                     a[i] = _.chain(result[i])
@@ -221,7 +223,6 @@ exports.firstFilter = (req, res) => {
                 userIdUser
               ],
               async (err, result) => {
-               console.log(result[2])
 
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);

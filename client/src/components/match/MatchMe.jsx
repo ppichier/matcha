@@ -11,6 +11,8 @@ import "./MatchMe.css";
 import SortProfile from "./SortProfile";
 import { firstFilter, heartClick, filterProfile } from "../../api";
 import _ from 'lodash';
+import { faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
+
 
 // one fetch for list of profiles
 // x fetch for x imagess
@@ -26,7 +28,7 @@ const MatchMe = () => {
     
   });
 
-  const [moreProfiles, setMoreProfiles] = useState([0, 20]);
+  const [moreProfiles, setMoreProfiles] = useState([0, 21]);
   const [isShow, setIsShow] = useState("match");
   const [moreParams, setMoreParams] = useState ({
     age: [],
@@ -85,7 +87,7 @@ const MatchMe = () => {
         location: filterParams.location,
         score: filterParams.score,
         selectedTags: filterParams.selectedTags,
-        moreProfiles: moreProfiles,
+        moreProfiles: (filterParams.selectedTags.length > 0) ? [0, 1000] : moreProfiles,
         searchActif: isShow
       })
        .then(data => {  
@@ -96,7 +98,7 @@ const MatchMe = () => {
               resultsNumber: data.resultsNumber, 
               activateFilter: true
             });
-            setMoreProfiles(moreProfiles);
+            setMoreProfiles((filterParams.selectedTags.length > 0) ?  [0,  data.resultsNumber] : moreProfiles);
             setMoreParams({...moreParams,
               age: filterParams.age,
               userSize: filterParams.userSize,
@@ -121,7 +123,7 @@ const MatchMe = () => {
   }
 
   const onMoreProfiles = (event) => {
-    let moreProfilesTmp = moreProfiles.map(x => x + 20)
+    let moreProfilesTmp = moreProfiles.map(x => x + 21)
     setMoreProfiles(moreProfilesTmp);
     if (values.activateFilter === true )
         setFilterParams(event, moreParams, moreProfilesTmp);
@@ -148,17 +150,18 @@ const MatchMe = () => {
   };
   
   const loadProfiles = () => {
-   if (values.resultsNumber > 0 && (values.resultsNumber > moreProfiles[1]))  
+   if (values.resultsNumber > 0 &&  (values.resultsNumber > moreProfiles[1]))  
       return(
         <div style={{ display: "flex", width: "50%" }}>
+
               <Button
                 onClick={e => onMoreProfiles(e)}
                 className="text-uppercase mb-4 center-block"
                 variant="outline-info"
                 style={{ letterSpacing: "1px", fontWeight: "bold" }}
               >
-              {values.resultsNumber}
-                Charger plus
+              <FontAwesomeIcon icon={faArrowAltCircleDown} className="fa-lg "/>  
+              Charger plus
               </Button>
         </div>
       )
@@ -189,7 +192,7 @@ const MatchMe = () => {
                 height: "50px"
               }}
             >
-              <FontAwesomeIcon icon={faHeart} />
+              <FontAwesomeIcon icon={faHeart} className="love" />
             </Button>
           </div>
         </div>
@@ -208,7 +211,7 @@ const MatchMe = () => {
               setSortParams={sortParams => setSortParams(sortParams)}
              />
             <FilterProfile
-              setFilterParams={(filterParams) => setFilterParams(null, filterParams, [0, 20])}
+              setFilterParams={(filterParams) => setFilterParams(null, filterParams, [0, 21])}
               refresh={isShow}
             />
           </Col>
