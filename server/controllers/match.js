@@ -85,9 +85,10 @@ exports.filterProfile = (req, res) => {
               result[0].SexualOrientationId === 5 || searchActif === "search"
                 ? [1, 2, 5, 6]
                 : result[0].SexualOrientationId;
-            const reqSql = "GenreId IN (?) AND SexualOrientationId IN (?) AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And userSize <= ?"
+            const offset = (selectedTags.length === 0) ? `LIMIT 20 OFFSET ${moreProfiles[1]}` : "";
+            const reqSql = "GenreId IN (?) AND SexualOrientationId IN (?) AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And UserSize <= ? AND UserId <> ?"
             connection.query(
-              `SELECT *, (SELECT count(*) FROM user WHERE ${reqSql} ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE ${reqSql} ORDER BY DISTANCE ASC  LIMIT ?;
+              `SELECT *, (SELECT count(*) FROM user WHERE ${reqSql} ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE ${reqSql} ORDER BY DISTANCE ASC ${offset};
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
                 SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
               [
@@ -99,6 +100,7 @@ exports.filterProfile = (req, res) => {
                 scoreFilter[1],
                 userSizeFilter[0],
                 userSizeFilter[1],
+                userIdUser,
                 sexualOrientationId,
                 genreId,
                 ageFilter[0],
@@ -107,12 +109,13 @@ exports.filterProfile = (req, res) => {
                 scoreFilter[1],
                 userSizeFilter[0],
                 userSizeFilter[1],
-                moreProfiles,
+                userIdUser,
                 sexualOrientationId,
                 genreId,
                 userIdUser
               ],
               (err, result) => {
+                console.log(result[0])
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);
                 } else {
@@ -126,7 +129,6 @@ exports.filterProfile = (req, res) => {
                   for (let i = 0; i < result.length; i++) {
                     a[i] = _.chain(result[i])
                       .map(r => ({ ...r }))
-                      .filter(e => e.UserId !== userIdUser)
                       .value();
                   }
                   let merged = _.chain(
@@ -151,6 +153,12 @@ exports.filterProfile = (req, res) => {
                     )
                     .value();
                   let profiles = utils.sortProfile(merged);
+                  if(selectedTags.length > 0 && profiles.length > 0 )
+                  {
+                    
+                    const end = ((moreProfiles[1] + 20) > profiles.length) ? profiles.length : (moreProfiles[1] + 20)
+                      profiles = _.slice(profiles, moreProfiles[1], end)
+                  }
                   return res.json({
                     profiles,
                     resultsNumber
@@ -208,7 +216,7 @@ exports.firstFilter = (req, res) => {
                 ? [1, 2, 5, 6]
                 : result[0].SexualOrientationId;
             connection.query(
-              `SELECT *,( SELECT count(*) FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ORDER BY DISTANCE ASC LIMIT ?;
+              `SELECT *,( SELECT count(*) FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) AND UserId <> ? ORDER BY DISTANCE ASC LIMIT 20 OFFSET ?;
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
                SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
 
@@ -217,13 +225,14 @@ exports.firstFilter = (req, res) => {
                 genreId,
                 sexualOrientationId,
                 genreId,
-                moreProfiles,
+                userIdUser,
+                moreProfiles[1],
                 sexualOrientationId,
                 genreId,
                 userIdUser
               ],
               async (err, result) => {
-
+                                
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);
                 } else {
@@ -235,7 +244,6 @@ exports.firstFilter = (req, res) => {
                   for (let i = 0; i < result.length; i++) {
                     a[i] = _.chain(result[i])
                       .map(r => ({ ...r }))
-                      .filter(e => e.UserId !== userIdUser)
                       .value();
                   }
                   let merged = _.chain(
@@ -254,6 +262,7 @@ exports.firstFilter = (req, res) => {
                     }))
                     .value();
                   let profiles = utils.sortProfile(merged);
+                  console.log(profiles.length);
                   return res.json({
                     profiles,
                     resultsNumber,

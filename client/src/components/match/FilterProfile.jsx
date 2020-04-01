@@ -9,7 +9,7 @@ import { readCommonTag } from "../../api";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
-const FilterProfile = ({ setFilterParams, refresh}, location) => {
+const FilterProfile = ({ setFilterParams}, location) => {
   const [filter, setfilter] = useState({
     selectedTags: [],
     commonTags: [],
@@ -35,7 +35,7 @@ const FilterProfile = ({ setFilterParams, refresh}, location) => {
         });
       })
       .catch(err => console.log(err));
-  }, [refresh]);
+  }, []);
 
   const handleChangeTags = tags => {
     if (tags === null) {

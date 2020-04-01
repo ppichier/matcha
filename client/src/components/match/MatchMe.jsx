@@ -28,7 +28,7 @@ const MatchMe = () => {
     
   });
 
-  const [moreProfiles, setMoreProfiles] = useState([0, 21]);
+  const [moreProfiles, setMoreProfiles] = useState([0, 0]);
   const [isShow, setIsShow] = useState("match");
   const [moreParams, setMoreParams] = useState ({
     age: [],
@@ -39,7 +39,9 @@ const MatchMe = () => {
   });
 
   useEffect(() => {
-    firstFilter(moreProfiles)
+    console.log("________________");
+    console.log(isShow)
+    firstFilter((moreProfiles))
       .then(data => {
         if(isShow === "match" && data.stateProfile === "match")
         { setValues({ ...values, profiles: data.profiles, resultsNumber: data.resultsNumber });
@@ -71,13 +73,16 @@ const MatchMe = () => {
       event.preventDefault();
     firstFilter(moreProfiles)
       .then(data => {
+        console.log("____________________")
+          console.log(data.profiles)
           let profiles = values.profiles;
           profiles = profiles.concat(data.profiles);
           setValues({ ...values, profiles: _.uniqBy(profiles, 'pseudo'),  resultsNumber: data.resultsNumber});
       })
       .catch(err => console.log(err));
   }
-
+  console.log(values.profiles);
+  // console.log(values.profiles);
   const setFilterParams = (event, filterParams, moreProfiles) => {
   if (event) 
     event.preventDefault();
@@ -87,7 +92,7 @@ const MatchMe = () => {
         location: filterParams.location,
         score: filterParams.score,
         selectedTags: filterParams.selectedTags,
-        moreProfiles: (filterParams.selectedTags.length > 0) ? [0, 1000] : moreProfiles,
+        moreProfiles: moreProfiles,
         searchActif: isShow
       })
        .then(data => {  
@@ -98,7 +103,7 @@ const MatchMe = () => {
               resultsNumber: data.resultsNumber, 
               activateFilter: true
             });
-            setMoreProfiles((filterParams.selectedTags.length > 0) ?  [0,  data.resultsNumber] : moreProfiles);
+            setMoreProfiles(moreProfiles);
             setMoreParams({...moreParams,
               age: filterParams.age,
               userSize: filterParams.userSize,
@@ -123,7 +128,7 @@ const MatchMe = () => {
   }
 
   const onMoreProfiles = (event) => {
-    let moreProfilesTmp = moreProfiles.map(x => x + 21)
+    let moreProfilesTmp = moreProfiles.map(x => x + 20)
     setMoreProfiles(moreProfilesTmp);
     if (values.activateFilter === true )
         setFilterParams(event, moreParams, moreProfilesTmp);
@@ -150,7 +155,7 @@ const MatchMe = () => {
   };
   
   const loadProfiles = () => {
-   if (values.resultsNumber > 0 &&  (values.resultsNumber > moreProfiles[1]))  
+   if (values.resultsNumber > 0 &&  (values.resultsNumber > (moreProfiles[1] + 20)))  
       return(
         <div style={{ display: "flex", width: "50%" }}>
 
@@ -211,8 +216,7 @@ const MatchMe = () => {
               setSortParams={sortParams => setSortParams(sortParams)}
              />
             <FilterProfile
-              setFilterParams={(filterParams) => setFilterParams(null, filterParams, [0, 21])}
-              refresh={isShow}
+              setFilterParams={(filterParams) => setFilterParams(null, filterParams, [0, 0])}
             />
           </Col>
           <Col>
