@@ -410,16 +410,28 @@ exports.readProfile = async (req, res) => {
 
 exports.readGuestProfile = async (req, res) => {
   const uuid = req.body.guestUuid;
+
+  const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
+        // if(req.body.like.length > 0)
+        // {
+        //   const like = req.body.like;
+        //   // connection.query(
+        //   //   `INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (117, 124)`,
+        //   //   [],
+        // }
       connection.query(
         `SELECT user.*, genre.GenreId AS GenreId, sexual_orientation.SexualOrientationId AS SexualOrientationId FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
          SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?);
-         SELECT tag.Label AS CommonTagsLabel FROM  tag`,
-        [uuid, uuid],
+         SELECT tag.Label AS CommonTagsLabel FROM  tag;
+         SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId AS toto FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId AS toto FROM user WHERE Uuid = ?);
+         SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId AS toto FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId AS toto FROM user WHERE Uuid = ?)`,
+        [uuid, uuid, uuid, userUuid, userUuid, uuid],
         (err, result) => {
+          console.log(result)
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else if (result[0].length === 0) {
@@ -428,7 +440,7 @@ exports.readGuestProfile = async (req, res) => {
             console.log(result);
             const myTags = result[1].map(e => e.TagLabel);
             connection.release();
-            return res.json({
+            let dataUser = {
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
               pseudo: result[0][0].UserName,
@@ -442,6 +454,16 @@ exports.readGuestProfile = async (req, res) => {
               lat: result[0][0].Lat,
               lng: result[0][0].Lng,
               localisationActive: result[0][0].LocalisationActive
+            }
+            let dataLike ={
+              fakeCount: false,
+              logout: result[0][0].LastConnection,
+              like: (result[3].length > 0) ? 1 : 0,
+              likeMe: (result[4]. length > 0) ? 1 : 0
+            }
+            return res.json({
+              dataUser,
+              dataLike
             });
           }
         }

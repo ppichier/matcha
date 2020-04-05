@@ -6,6 +6,11 @@ import ChatPeople from "./ChatPeople";
 import ChatMessages from "./ChatMessages";
 import { Row, Col, Container } from "react-bootstrap";
 import { useState } from "react";
+// import { testPicker, testNimblePicker } from "./test/ssr";
+
+
+
+
 
 const Chat = ({ socket }) => {
   // console.log(socket);
@@ -26,6 +31,11 @@ const Chat = ({ socket }) => {
   const sendLastMessage = msg => {
     setLastMessage(msg);
   };
+//   const test = () => {
+//       const tet1 = testPicker();
+//       const test2 = testNimblePicker();
+//       console.log(test2)
+// }
 
   return (
     <Fragment>
@@ -52,6 +62,7 @@ const Chat = ({ socket }) => {
               sendMessageNotification={value => sendMessageNotification(value)}
               sendLastMessage={value => sendLastMessage(value)}
             />
+            
           </Col>
         </Row>
       </Container>
