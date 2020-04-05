@@ -60,7 +60,7 @@ const Profile = ({ location, history }) => {
           setInfosUser({ ...infosUser, redirect: true });
         } else {
           setInfosUser({ ...data.dataUser});
-          setValues({...data.dataLike})
+          // setValues({...data.dataLike})
         }
       })
       .catch(err => console.log(err));
@@ -76,10 +76,7 @@ const Profile = ({ location, history }) => {
   };
 
   const handleFakeCount = () => {
-    let tmp;
-    if (infoSeconder.fakeCount === false) tmp = { ...infoSeconder, fakeCount: true };
-    else tmp = { ...infoSeconder, fakeCount: false };
-    setValues(tmp);
+    // setInfoSeconder({ ...infoSeconder, fakeCount: !.infoSeconder.fakeCount });
   };
 
   const handleLike = () => {

@@ -4,10 +4,9 @@ import _ from 'lodash';
 
 
 const Reaction = ({children}) => {
-	console.log("+++++++++++++++++")
-	console.log(children)
 	const EmojiText = () =>{
 		let matchArr;
+
 		let lastOffset = 0;
 		const regex = new RegExp('(\:[a-zA-Z0-9-_+]+\:(\:skin-tone-[2-6]\:)?)', 'g');
 		const partsOfTheMessageText = [];
@@ -31,7 +30,7 @@ const Reaction = ({children}) => {
 			return (
 				<span>
 					{
-						partsOfTheMessageText.map(p => <span key={p}>{p}</span>)
+						partsOfTheMessageText.map((p, i) => <span key={i}>{p}</span>)
 					}
 				</span>
 			);

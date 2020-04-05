@@ -3,30 +3,28 @@ import "./ChatMessagesInput.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faSmileBeam } from "@fortawesome/free-solid-svg-icons";
 import 'emoji-mart/css/emoji-mart.css'
-import { Picker, emojiIndex } from 'emoji-mart';
+import { Picker } from 'emoji-mart';
 import { Emoji } from 'emoji-mart';
 import InputEmoji from 'react-input-emoji';
-// import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete';
-// import "@webscopeio/react-textarea-autocomplete/style.css";
 import Reaction from './Reaction';
 
 const ChatMessagesInput = ({
+  setMessageNative,
+  messageNative,
   message,
   setMessage,
   sendMessage,
   sendTypingEvent
 }) => {
   const [isShowEmoji, setIsShowEmoji] = useState(false);
-  const [msg, setMsg] = useState("");
-
   const handleSetShow = (event) => {
       event.preventDefault();
       setIsShowEmoji(!isShowEmoji)
   }
   const handleEmojiselect = (emoji) =>{
     setIsShowEmoji(!isShowEmoji)
-    setMsg(msg + emoji.native)
-    setMessage(msg + emoji.colons)
+    setMessageNative(messageNative + emoji.native)
+    setMessage(message + emoji.colons)
   }
 
   const handleShowEmoji = () => {
@@ -39,8 +37,8 @@ const ChatMessagesInput = ({
         className="pl-3 chat-messages-input-text"
         placeholder="Rédigez un message ..."
         maxLength="1000"
-        value={msg}
-        onChange={e => setMsg(e.target.value)}
+        value={messageNative}
+        onChange={e => {setMessage(e.target.value); setMessageNative(e.target.value)}}
         onKeyUp={e => (e.key === "Enter" ? sendMessage(e) : sendTypingEvent(e))}
       />
       <div className="ml-2 chat-messages-input-container-send">
