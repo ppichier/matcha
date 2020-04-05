@@ -29,7 +29,7 @@ const NavbarHeader = () => {
           <Nav.Link href="/match">
             <span className="navbar-tab">Match Moi !</span>
           </Nav.Link>
-          <Nav.Link href="#home">
+          <Nav.Link href="/popularity">
             <span className="navbar-tab">Popularite</span>
             <sup className="sup-notification-text">
               <Badge
@@ -39,9 +39,6 @@ const NavbarHeader = () => {
                 9
               </Badge>
             </sup>
-          </Nav.Link>
-          <Nav.Link href="#link1">
-            <span className="navbar-tab">Recherche</span>
           </Nav.Link>
           <Nav.Link href="/chat">
             <span className="navbar-tab">Chat</span>

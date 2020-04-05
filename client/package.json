@@ -13,6 +13,7 @@
     "google-map-react": "^1.1.6",
     "leaflet": "^1.6.0",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "query-string": "^6.10.1",
     "rc-slider": "^9.2.1",
     "react": "^16.12.0",
@@ -24,6 +25,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "react-select": "^3.0.8",
+    "react-slick": "^0.25.2",
     "socket.io-client": "^2.3.0"
   },
   "scripts": {

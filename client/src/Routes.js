@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Login from "./components/login/Login";
 import MatchMe from "./components/match/MatchMe";
+import Popularity from "./components/popularity/Popularity";
 import Profile from "./components/profile/Profile";
 import ProfileUser from "./components/profile/ProfileUser";
 import VerifyAccount from "./components/login/VerifyAccount";
@@ -48,8 +49,12 @@ const Routes = () => {
             exact
             component={Profile}
           ></PrivateRoute>
-          ;<PrivateRoute path="/match" exact component={MatchMe}></PrivateRoute>
-          ;
+          <PrivateRoute path="/match" exact component={MatchMe}></PrivateRoute>
+          <PrivateRoute
+            path="/popularity"
+            exact
+            component={Popularity}
+          ></PrivateRoute>
           <PrivateRoute
             path="/chat"
             exact

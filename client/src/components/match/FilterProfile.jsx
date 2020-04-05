@@ -2,14 +2,14 @@ import React, { Fragment, useState, useEffect } from "react";
 import Select from "react-select";
 import "../navbar/Navbar.css";
 import { Col, Form, Button } from "react-bootstrap";
-import Slider, {createSliderWithTooltip } from "rc-slider";
+import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import makeAnimated from "react-select/animated";
 import { readCommonTag } from "../../api";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
-const FilterProfile = ({ setFilterParams}, location) => {
+const FilterProfile = ({ setFilterParams }, location) => {
   const [filter, setfilter] = useState({
     selectedTags: [],
     commonTags: [],
@@ -35,6 +35,7 @@ const FilterProfile = ({ setFilterParams}, location) => {
         });
       })
       .catch(err => console.log(err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChangeTags = tags => {
