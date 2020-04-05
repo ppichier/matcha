@@ -21,7 +21,7 @@ const matchRoutes = require("./routes/match");
 const chatRoutes = require("./routes/chat");
 
 //faker
- //faker.generateFakeProfiles();
+//faker.generateFakeProfiles();
 
 //middlewares
 app.use(morgan("dev"));
@@ -42,18 +42,18 @@ const users_connected = {};
 
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
-    .filter(key => predicate(obj[key]))
+    .filter((key) => predicate(obj[key]))
     .reduce((res, key) => ((res[key] = obj[key]), res), {});
 
-const findSocketsGivenUuid = uuid => {
-  let sockets = Object.filter(users_connected, u => u === uuid);
+const findSocketsGivenUuid = (uuid) => {
+  let sockets = Object.filter(users_connected, (u) => u === uuid);
   console.log("++++++++++++++++++++");
   console.log(Object.keys(sockets));
   console.log("++++++++++++++++++++");
   return Object.keys(sockets);
 };
 
-io.on("connection", socket => {
+io.on("connection", (socket) => {
   console.log(chalk.magenta("connection ws"));
   let userUuid = null;
 
@@ -91,15 +91,16 @@ io.on("connection", socket => {
       // await saveLastMessage(userUuid, guestUuid, message);
       let guestSockets = findSocketsGivenUuid(guestUuid);
       let meSockets = findSocketsGivenUuid(userUuid);
-      [...guestSockets, ...meSockets].forEach(e => {
+      [...guestSockets, ...meSockets].forEach((e) => {
         io.to(e).emit("message", {
           from: userUuid,
           to: guestUuid,
-          msg: message
+          msg: message,
         });
       });
       cb();
     } catch (err) {
+      console.log(message);
       console.log(chalk.red("Error socket fetch saveMessage: ", err));
     }
   });
@@ -108,7 +109,7 @@ io.on("connection", socket => {
     let guestSockets = findSocketsGivenUuid(guestUuid);
     let typingEvent = message.length === 0 ? "stopTyping" : "isTyping";
 
-    guestSockets.forEach(e => {
+    guestSockets.forEach((e) => {
       io.to(e).emit(typingEvent, userUuid);
     });
   });
@@ -118,7 +119,7 @@ io.on("connection", socket => {
     delete users_connected[socket.id];
     setTimeout(() => {
       if (
-        Object.values(users_connected).filter(u => u === userIdDelete)
+        Object.values(users_connected).filter((u) => u === userIdDelete)
           .length === 0
       ) {
         console.log(chalk.magenta("No more socket for userid: ", userIdDelete));
