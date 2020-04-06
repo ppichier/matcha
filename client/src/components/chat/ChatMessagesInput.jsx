@@ -19,6 +19,7 @@ const ChatMessagesInput = ({
   guestUuid,
 }) => {
   const [isShowEmoji, setIsShowEmoji] = useState(false);
+  const [tmp, setTmp] = useState([]);
 
   useEffect(() => {
     setIsShowEmoji(false);
@@ -30,8 +31,9 @@ const ChatMessagesInput = ({
   };
   const handleEmojiselect = (emoji) => {
     setIsShowEmoji(!isShowEmoji);
-    setMessageNative(messageNative + emoji.native);
+    setTmp([emoji.native, emoji.colons])
     setMessage(message + emoji.colons);
+    setMessageNative(messageNative + emoji.native);
   };
 
   const handleShowEmoji = () => {
@@ -51,7 +53,7 @@ const ChatMessagesInput = ({
         maxLength="1000"
         value={messageNative}
         onChange={(e) => {
-          setMessage(e.target.value);
+          setMessage(tmp === "" ? e.target.value :  e.target.value.replace(tmp[0], tmp[1]));
           setMessageNative(e.target.value);
         }}
         onKeyUp={(e) =>
@@ -61,7 +63,7 @@ const ChatMessagesInput = ({
       <div className="ml-2 chat-messages-input-container-send">
         <button
           className="px-4 py-1 chat-messages-input-send"
-          onClick={(e) => sendMessage(e)}
+          onClick={(e) => {sendMessage(e); setTmp("")}}
         >
           <FontAwesomeIcon icon={faPaperPlane} />
         </button>
