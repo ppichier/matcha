@@ -65,7 +65,7 @@ const PopularitySlider = ({ people }) => {
               <div className="popularity-slider-pseudo">{p.pseudo}</div>
               <div className="popularity-slider-age">{p.age} ans</div>
               <div className="popularity-slider-date">
-                {moment(p.likeDate).fromNow()}
+                {moment(p.date).fromNow()}
               </div>
             </div>
           </div>
