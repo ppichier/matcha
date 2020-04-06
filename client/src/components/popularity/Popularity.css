@@ -4,3 +4,12 @@
   font-weight: bold;
   text-transform: uppercase;
 }
+
+.row-title > span {
+  padding-bottom: 5px;
+  border-bottom: 2px solid #fad5c0;
+}
+
+.row-title > span > span {
+  color: #fad5c0;
+}
