@@ -74,14 +74,22 @@ const Popularity = () => {
 
       <Container fluid className="my-2">
         <h3>Score de popularité :</h3>
-        <Row className="px-4 py-4">
+        <Row className="px-4 py-4 mb-2">
           <Col>
-            <div className="mb-4 row-title">Les derniers Like reçus</div>
+            <div className="mb-5 row-title">
+              <span>
+                Les derniers <span>Like</span> reçus
+              </span>
+            </div>
             <PopularitySlider people={peopleLike} />
           </Col>
         </Row>
         <Row className="px-4 py-4">
-          <div className="mb-4 row-title">Les dernieres visites reçues</div>
+          <div className="mb-5 row-title">
+            <span>
+              Les dernieres <span>visites</span> reçues
+            </span>
+          </div>
           <Col>
             <PopularitySlider people={peopleVisit} />
           </Col>
