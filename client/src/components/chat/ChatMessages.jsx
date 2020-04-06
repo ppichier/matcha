@@ -83,7 +83,6 @@ const ChatMessages = ({
   const sendMessage = (e) => {
     e.preventDefault();
     if (guestInfos && message) {
-      console.log(message);
       socket.emit("sendMessage", uuid, guestInfos.uuid, message, () => {
         setMessage("");
         setMessageNative("");

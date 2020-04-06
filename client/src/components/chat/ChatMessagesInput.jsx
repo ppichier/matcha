@@ -1,13 +1,10 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect} from "react";
 import "./ChatMessagesInput.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faSmileBeam } from "@fortawesome/free-solid-svg-icons";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
-import { Emoji } from "emoji-mart";
-import InputEmoji from "react-input-emoji";
-import Reaction from "./Reaction";
-import { useEffect } from "react";
+
 
 const ChatMessagesInput = ({
   setMessageNative,
@@ -42,6 +39,7 @@ const ChatMessagesInput = ({
         <Picker
           onSelect={(emoji) => handleEmojiselect(emoji)}
           style={{ position: "absolute", bottom: "50px", right: "0px" }}
+          set='google'
         />
       );
   };

@@ -1,12 +1,10 @@
 import React, { Fragment} from "react";
-import { Emoji, emojiIndex } from 'emoji-mart';
-import _ from 'lodash';
-
+import { Emoji } from 'emoji-mart';
 
 const Reaction = ({children}) => {
+	
 	const EmojiText = () =>{
 		let matchArr;
-
 		let lastOffset = 0;
 		const regex = new RegExp('(\:[a-zA-Z0-9-_+]+\:(\:skin-tone-[2-6]\:)?)', 'g');
 		const partsOfTheMessageText = [];
@@ -16,6 +14,7 @@ const Reaction = ({children}) => {
   					lastOffset = matchArr.index + matchArr[0].length;
 			const emoji = (
 			    <Emoji
+			     set={'google'}
 			      emoji={matchArr[0]}
 			      size={22}
 			    />

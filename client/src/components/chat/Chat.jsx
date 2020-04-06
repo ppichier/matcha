@@ -6,7 +6,6 @@ import ChatPeople from "./ChatPeople";
 import ChatMessages from "./ChatMessages";
 import { Row, Col, Container } from "react-bootstrap";
 import { useState } from "react";
-// import { testPicker, testNimblePicker } from "./test/ssr";
 
 
 
