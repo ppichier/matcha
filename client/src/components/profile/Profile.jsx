@@ -12,7 +12,7 @@ import {
   faHeart,
   faComment,
   faUserSlash,
-  faUser
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Profile = ({ location, history }) => {
@@ -20,7 +20,7 @@ const Profile = ({ location, history }) => {
     indexImages: 0,
     directionImages: null,
     fakeCount: false,
-    like: 0
+    like: 0,
   });
   const [currentUuid, setCurrentUuid] = useState("");
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
@@ -34,9 +34,10 @@ const Profile = ({ location, history }) => {
     sexualPreference: "",
     description: "",
     myTags: [],
-    redirect: false
+    redirect: false,
   });
 
+  // Loading wait to setInfosUser otherwise glitch first time
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (!query.uuid) {
@@ -45,27 +46,27 @@ const Profile = ({ location, history }) => {
     }
     setCurrentUuid(query.uuid);
     readSecondaryImages() // SECONDARY UUID NOT IMPLEMENTED
-      .then(data => {
+      .then((data) => {
         setBase64Images(data.images);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
 
     readGuestProfile(query.uuid)
-      .then(data => {
+      .then((data) => {
         if (data.err) {
           setInfosUser({ ...infosUser, redirect: true });
         } else {
           setInfosUser({ ...data });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, [location]);
 
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
       indexImages: selectedIndex,
-      directionImages: e.direction
+      directionImages: e.direction,
     };
     setValues(tmp);
   };
@@ -124,7 +125,7 @@ const Profile = ({ location, history }) => {
 
   const handleImages = () => {
     return base64Images
-      .filter(e => e !== "")
+      .filter((e) => e !== "")
       .map((image, i) => {
         return (
           <Carousel.Item key={i}>
@@ -240,7 +241,7 @@ const Profile = ({ location, history }) => {
                   style={{
                     justifyContent: "space-around",
                     flexWrap: "wrap",
-                    padding: "0 10%"
+                    padding: "0 10%",
                   }}
                 >
                   {handleiconLike()}

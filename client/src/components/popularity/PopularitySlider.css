@@ -1,0 +1,33 @@
+.popularity-slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: #212529;
+}
+
+.popularity-slider-image {
+  height: 210px;
+  width: 210px;
+  /* max-width: 210px; */
+  /* max-height: 210px; */
+}
+
+.popularity-slider-pseudo {
+  font-size: 1em;
+  color: #808080;
+  font-weight: 600;
+}
+
+.popularity-slider-age {
+  font-size: 1em;
+  color: #808080;
+}
+.popularity-slider-date {
+  font-size: 1em;
+  color: #808080;
+}
