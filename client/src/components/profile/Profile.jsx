@@ -23,6 +23,12 @@ const Profile = ({ location, history }) => {
     like: 0,
   });
   const [currentUuid, setCurrentUuid] = useState("");
+  const [infoSeconder, setInfoSeconder] = useState({
+    fakeCount: false,
+    logout: null,
+    like: 0,
+    likeMe: 0
+  });
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
   const [infosUser, setInfosUser] = useState({
     gender: "",
@@ -56,7 +62,8 @@ const Profile = ({ location, history }) => {
         if (data.err) {
           setInfosUser({ ...infosUser, redirect: true });
         } else {
-          setInfosUser({ ...data });
+          setInfosUser({ ...data.dataUser});
+          // setValues({...data.dataLike})
         }
       })
       .catch((err) => console.log(err));
@@ -72,21 +79,27 @@ const Profile = ({ location, history }) => {
   };
 
   const handleFakeCount = () => {
-    let tmp;
-    if (values.fakeCount === false) tmp = { ...values, fakeCount: true };
-    else tmp = { ...values, fakeCount: false };
-    setValues(tmp);
+    // setInfoSeconder({ ...infoSeconder, fakeCount: !.infoSeconder.fakeCount });
   };
 
   const handleLike = () => {
-    let tmp;
-    if (values.like === 0) tmp = { ...values, like: 1 };
-    else tmp = { ...values, like: 0 };
-    setValues(tmp);
+    setInfoSeconder({...infoSeconder, like: !infoSeconder.like});
+    // readGuestProfile({
+    //   query.uuid,
+    // })
+    //   .then(data => {
+    //     if (data.err) {
+    //       setInfosUser({ ...infosUser, redirect: true });
+    //     } else {
+    //       setInfosUser({ ...data.dataUser});
+    //       setValues({...data.dataLike})
+    //     }
+    //   })
+    //   .catch(err => console.log(err));
   };
 
   const handleiconLike = () => {
-    if (values.like === 0)
+    if (infoSeconder.like === 0)
       return (
         <FontAwesomeIcon
           icon={faHeart}
@@ -140,23 +153,23 @@ const Profile = ({ location, history }) => {
   };
 
   const isShow = () => {
-    if (infosUser.age >= 18) return <Fragment>{infosUser.age} ans</Fragment>;
+    if (infosUser.age >= 18) return <Fragment> {infosUser.age} ans</Fragment>;
   };
 
   const convGender = () => {
-    if (infosUser.gender === 1) return "un Homme";
-    if (infosUser.gender === 2) return "une Femme";
-    if (infosUser.gender === 3) return "un Transmasculin";
-    if (infosUser.gender === 4) return "une Transféminine";
-    if (infosUser.gender === 5) return "Bigenre";
+    if (infosUser.gender === 1) return " un Homme";
+    if (infosUser.gender === 2) return " une Femme";
+    if (infosUser.gender === 3) return " un Transmasculin";
+    if (infosUser.gender === 4) return " une Transféminine";
+    if (infosUser.gender === 5) return " Bigenre";
     else return "";
   };
   const convSexualPtoString = () => {
-    if (infosUser.sexualPreference === 1) return "un Homme";
-    else if (infosUser.sexualPreference === 2) return "une Femme";
-    else if (infosUser.sexualPreference === 3) return "un Transmasculin";
-    else if (infosUser.sexualPreference === 4) return "une Transféminine";
-    else if (infosUser.sexualPreference === 5) return "Bigenre";
+    if (infosUser.sexualPreference === 1) return " un Homme ";
+    else if (infosUser.sexualPreference === 2) return " une Femme ";
+    else if (infosUser.sexualPreference === 3) return " un Transmasculin ";
+    else if (infosUser.sexualPreference === 4) return " une Transféminine ";
+    else if (infosUser.sexualPreference === 5) return " Bigenre ";
     else return "";
   };
 
@@ -180,7 +193,7 @@ const Profile = ({ location, history }) => {
               <h3 className="descp">{infosUser.firstName}</h3>
               <p className="descp">
                 Je suis {convGender()}, {isShow()}, je cherche
-                {convSexualPtoString()} pour la vie
+                {convSexualPtoString()} ...
               </p>
             </Col>
           </Row>
@@ -261,3 +274,4 @@ const Profile = ({ location, history }) => {
 };
 
 export default Profile;
+

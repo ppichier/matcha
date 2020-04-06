@@ -9,16 +9,18 @@ const ChatMessages = ({
   guestInfos,
   uuid,
   sendMessageNotification,
-  sendLastMessage
+  sendLastMessage,
 }) => {
   const [allMessages, setAllMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [messageNative, setMessageNative] = useState("");
   const [guestTyping, setGuestTyping] = useState([]);
 
   useEffect(() => {
     if (uuid && guestInfos.uuid) {
       setMessage("");
-      socket.emit("join", uuid, guestInfos.uuid, messages => {
+      setMessageNative("");
+      socket.emit("join", uuid, guestInfos.uuid, (messages) => {
         // console.log(messages);
         setAllMessages([...messages]);
       });
@@ -29,7 +31,7 @@ const ChatMessages = ({
   }, [socket, uuid, guestInfos.uuid]);
 
   useEffect(() => {
-    socket.on("message", message => {
+    socket.on("message", (message) => {
       // console.log("Reception du message: ", message);
       const idx = guestTyping.indexOf(message.from);
       if (idx !== -1) {
@@ -48,15 +50,15 @@ const ChatMessages = ({
       sendLastMessage({
         with: message.from === uuid ? message.to : message.from,
         from: message.from,
-        msg: message.msg
+        msg: message.msg,
       });
     });
 
-    socket.on("isTyping", t => {
+    socket.on("isTyping", (t) => {
       if (guestTyping.indexOf(t) === -1) setGuestTyping([...guestTyping, t]);
     });
 
-    socket.on("stopTyping", t => {
+    socket.on("stopTyping", (t) => {
       const idx = guestTyping.indexOf(t);
       if (idx !== -1) {
         const guestTypingTmp = [...guestTyping];
@@ -75,19 +77,20 @@ const ChatMessages = ({
     allMessages,
     sendMessageNotification,
     guestTyping,
-    sendLastMessage
+    sendLastMessage,
   ]);
 
-  const sendMessage = e => {
+  const sendMessage = (e) => {
     e.preventDefault();
     if (guestInfos && message) {
-      socket.emit("sendMessage", uuid, guestInfos.uuid, message, () =>
-        setMessage("")
-      );
+      socket.emit("sendMessage", uuid, guestInfos.uuid, message, () => {
+        setMessage("");
+        setMessageNative("");
+      });
     }
   };
 
-  const sendTypingEvent = e => {
+  const sendTypingEvent = (e) => {
     // console.log(e);
     socket.emit(
       "typingMessage",
@@ -112,10 +115,13 @@ const ChatMessages = ({
           </div>
           <div className="chat-messages-container-input">
             <ChatMessagesInput
+              setMessageNative={setMessageNative}
+              messageNative={messageNative}
               message={message}
               setMessage={setMessage}
               sendMessage={sendMessage}
               sendTypingEvent={sendTypingEvent}
+              guestUuid={guestInfos.uuid}
             />
           </div>
         </Fragment>

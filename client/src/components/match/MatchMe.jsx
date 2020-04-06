@@ -13,9 +13,6 @@ import { firstFilter, heartClick, filterProfile } from "../../api";
 import _ from "lodash";
 import { faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
 
-// one fetch for list of profiles
-// x fetch for x imagess
-
 const MatchMe = () => {
   const [values, setValues] = useState({
     image: [],
@@ -74,16 +71,10 @@ const MatchMe = () => {
   const setFirstFilter = (event, moreProfiles) => {
     if (event) event.preventDefault();
     firstFilter(moreProfiles)
-      .then((data) => {
-        console.log("____________________");
-        console.log(data.profiles);
-        let profiles = values.profiles;
-        profiles = profiles.concat(data.profiles);
-        setValues({
-          ...values,
-          profiles: _.uniqBy(profiles, "pseudo"),
-          resultsNumber: data.resultsNumber,
-        });
+      .then(data => {
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
+          setValues({ ...values, profiles: _.uniqBy(profiles, 'pseudo'),  resultsNumber: data.resultsNumber});
       })
       .catch((err) => console.log(err));
   };

@@ -17,12 +17,12 @@ exports.updateProfile = (req, res) => {
     lng,
     userUuid,
     localisationActive,
-    widthProgressBar
+    widthProgressBar,
   } = req.body;
   pool.getConnection((err, connection) => {
     if (err) {
       return res.status(500).json({
-        err: "Internal Error HERE"
+        err: "Internal Error HERE",
       });
     } else {
       connection.query(
@@ -64,7 +64,7 @@ exports.updateProfile = (req, res) => {
                 lat,
                 lng,
                 localisationActive,
-                req.userUuid
+                req.userUuid,
               ],
               (err, result) => {
                 if (err) {
@@ -118,7 +118,7 @@ exports.uploadProfileImage = (req, res) => {
 
   return res.json({
     image: image64,
-    msg: "Profile image upload"
+    msg: "Profile image upload",
   });
 };
 
@@ -131,7 +131,7 @@ exports.uploadSecondaryImages = (req, res) => {
 
   if (len >= 5) {
     return res.status(400).json({
-      err: "Vous pouvez upload 5 photos maximum"
+      err: "Vous pouvez upload 5 photos maximum",
     });
   }
   for (let i = 0; i < len; i++) {
@@ -146,7 +146,7 @@ exports.uploadSecondaryImages = (req, res) => {
     pool.getConnection((err, connection) => {
       if (err) {
         return res.status(500).json({
-          err: "Internal Error"
+          err: "Internal Error",
         });
       }
       connection.query(
@@ -164,7 +164,7 @@ exports.uploadSecondaryImages = (req, res) => {
   }
   return res.json({
     images: image64,
-    msg: "Images uploaded"
+    msg: "Images uploaded",
   });
 };
 
@@ -198,7 +198,7 @@ exports.deleteProfileImage = (req, res) => {
                   connection
                 );
               } else {
-                fs.unlink(image, err => {
+                fs.unlink(image, (err) => {
                   if (err) {
                     error.handleError(
                       res,
@@ -210,7 +210,7 @@ exports.deleteProfileImage = (req, res) => {
                   } else {
                     connection.release();
                     return res.json({
-                      msg: "image delete"
+                      msg: "image delete",
                     });
                   }
                 });
@@ -254,7 +254,7 @@ exports.deleteSecondaryImage = (req, res) => {
                   connection
                 );
               } else {
-                fs.unlink(image, err => {
+                fs.unlink(image, (err) => {
                   if (err) {
                     error.handleError(
                       res,
@@ -267,7 +267,7 @@ exports.deleteSecondaryImage = (req, res) => {
                     connection.release();
 
                     return res.json({
-                      msg: "image delete"
+                      msg: "image delete",
                     });
                   }
                 });
@@ -286,7 +286,7 @@ exports.readSecondaryImages = (req, res) => {
 
   if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
     filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
-    filesNameTmp = filesName.map(e => e.substring(0, 6));
+    filesNameTmp = filesName.map((e) => e.substring(0, 6));
     for (let i = 0; i < 4; i++) {
       let j = filesNameTmp.indexOf(a[i]);
       if (j !== -1) {
@@ -302,7 +302,7 @@ exports.readSecondaryImages = (req, res) => {
 
   return res.json({
     images: image64,
-    msg: "Read image success"
+    msg: "Read image success",
   });
 };
 
@@ -311,7 +311,7 @@ exports.readImage = (req, res) => {
   let image64 = "";
   if (fs.existsSync(__dirname + `/../images/${uuid}/`)) {
     filesName = fs.readdirSync(__dirname + `/../images/${uuid}/`);
-    filesNameTmp = filesName.map(e => e.substring(0, 12));
+    filesNameTmp = filesName.map((e) => e.substring(0, 12));
     let j = filesNameTmp.indexOf("imageProfile");
     if (j !== -1) {
       const bitmap = fs.readFileSync(
@@ -320,13 +320,13 @@ exports.readImage = (req, res) => {
       image64 = new Buffer.from(bitmap).toString("base64");
       return res.json({
         image: image64,
-        imageFakeProfile: null
+        imageFakeProfile: null,
       });
     } else {
       return res.json({
         image: null,
         imageFakeProfile:
-          "https://image.flaticon.com/icons/png/512/1177/1177577.png"
+          "https://image.flaticon.com/icons/png/512/1177/1177577.png",
       });
     }
   } else {
@@ -345,13 +345,13 @@ exports.readImage = (req, res) => {
               return res.json({
                 image: null,
                 imageFakeProfile:
-                  "https://image.flaticon.com/icons/png/512/1177/1177577.png"
+                  "https://image.flaticon.com/icons/png/512/1177/1177577.png",
               });
             } else {
               connection.release();
               return res.json({
                 image: null,
-                imageFakeProfile: result[0].ImageProfile
+                imageFakeProfile: result[0].ImageProfile,
               });
             }
           }
@@ -370,17 +370,17 @@ exports.readProfile = async (req, res) => {
     } else {
       connection.query(
         `SELECT user.*, genre.GenreId AS GenreId, sexual_orientation.SexualOrientationId AS SexualOrientationId FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
-         SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?);
+         SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId FROM user WHERE Uuid = ?);
          SELECT tag.Label AS CommonTagsLabel FROM  tag`,
         [req.userUuid, req.userUuid],
         (err, result) => {
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
-            const myTags = result[1].map(e => e.TagLabel);
-            const commonTags = result[2].map(e => e.CommonTagsLabel);
-            const commonTagsTmp = commonTags.map(ct => {
-              if (myTags.findIndex(mt => mt === ct) > -1)
+            const myTags = result[1].map((e) => e.TagLabel);
+            const commonTags = result[2].map((e) => e.CommonTagsLabel);
+            const commonTagsTmp = commonTags.map((ct) => {
+              if (myTags.findIndex((mt) => mt === ct) > -1)
                 return { label: ct, checked: true };
               else return { label: ct, checked: false };
             });
@@ -399,7 +399,7 @@ exports.readProfile = async (req, res) => {
               myTags: [],
               lat: result[0][0].Lat,
               lng: result[0][0].Lng,
-              localisationActive: result[0][0].LocalisationActive
+              localisationActive: result[0][0].LocalisationActive,
             });
           }
         }
@@ -410,25 +410,29 @@ exports.readProfile = async (req, res) => {
 
 exports.readGuestProfile = async (req, res) => {
   const uuid = req.body.guestUuid;
+
+  const userUuid = req.userUuid;
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       connection.query(
         `SELECT user.*, genre.GenreId AS GenreId, sexual_orientation.SexualOrientationId AS SexualOrientationId FROM user LEFT JOIN genre ON user.GenreId = genre.GenreId  LEFT JOIN sexual_orientation ON user.SexualOrientationId = sexual_orientation.SexualOrientationId WHERE Uuid = ?;
-         SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId AS toto FROM user WHERE Uuid = ?);
-         SELECT tag.Label AS CommonTagsLabel FROM  tag`,
-        [uuid, uuid],
+         SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId FROM user WHERE Uuid = ?);
+         SELECT tag.Label AS CommonTagsLabel FROM  tag;
+         SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId FROM user WHERE Uuid = ?);
+         SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId FROM user WHERE Uuid = ?)`,
+        [uuid, uuid, uuid, userUuid, userUuid, uuid],
         (err, result) => {
+          console.log(result);
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else if (result[0].length === 0) {
             error.handleError(res, err, "invalid uuid", 404, connection);
           } else {
-            console.log(result);
-            const myTags = result[1].map(e => e.TagLabel);
+            const myTags = result[1].map((e) => e.TagLabel);
             connection.release();
-            return res.json({
+            let dataUser = {
               firstName: result[0][0].FirstName,
               lastName: result[0][0].LastName,
               pseudo: result[0][0].UserName,
@@ -441,7 +445,17 @@ exports.readGuestProfile = async (req, res) => {
               myTags,
               lat: result[0][0].Lat,
               lng: result[0][0].Lng,
-              localisationActive: result[0][0].LocalisationActive
+              localisationActive: result[0][0].LocalisationActive,
+            };
+            let dataLike = {
+              userBlocked: false,
+              logout: result[0][0].LastConnection,
+              like: result[3].length > 0 ? 1 : 0,
+              likeMe: result[4].length > 0 ? 1 : 0,
+            };
+            return res.json({
+              dataUser,
+              dataLike,
             });
           }
         }

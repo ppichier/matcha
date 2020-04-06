@@ -102,6 +102,7 @@ io.on("connection", (socket) => {
       });
       cb();
     } catch (err) {
+      console.log(message);
       console.log(chalk.red("Error socket fetch saveMessage: ", err));
     }
   });

@@ -1,12 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import "./ChatPeople.css";
 import { Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faComments } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { useEffect } from "react";
 import { getMatchUsers } from "../../api/chat";
 import { readImage } from "../../api/user";
+import Reaction from './Reaction';
 
 const ChatPeople = ({
   socket,
@@ -127,12 +126,12 @@ const ChatPeople = ({
     const withGuestLastMessage = lastMessages.find(r => r.with === peopleUuid);
     if (withGuestLastMessage) {
       if (withGuestLastMessage.from === peopleUuid) {
-        return <div>{withGuestLastMessage.msg}</div>;
+        return <div> {<Reaction children={withGuestLastMessage.msg} />}</div>;
       } else {
         return (
           <div>
             <FontAwesomeIcon icon={faReply} className="pr-1" />
-            {withGuestLastMessage.msg}
+             {<Reaction children={withGuestLastMessage.msg} />}
           </div>
         );
       }
