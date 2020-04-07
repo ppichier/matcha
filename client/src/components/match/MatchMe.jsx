@@ -12,6 +12,7 @@ import SortProfile from "./SortProfile";
 import { firstFilter, heartClick, filterProfile } from "../../api";
 import _ from "lodash";
 import { faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
+import { notificationAlert } from "../functions/notification";
 
 const MatchMe = () => {
   const [values, setValues] = useState({
@@ -35,7 +36,11 @@ const MatchMe = () => {
   useEffect(() => {
     firstFilter(moreProfiles)
       .then((data) => {
-        if (data.err) {
+        if (!data) {
+          notificationAlert("Server down", "danger", "bottom-center");
+          return;
+        } else if (data.err) {
+          notificationAlert(data.err, "danger", "bottom-center");
           return;
         }
         if (isShow === "match" && data.stateProfile === "match") {
@@ -72,13 +77,19 @@ const MatchMe = () => {
     if (event) event.preventDefault();
     firstFilter(moreProfiles)
       .then((data) => {
-        let profiles = values.profiles;
-        profiles = profiles.concat(data.profiles);
-        setValues({
-          ...values,
-          profiles: _.uniqBy(profiles, "pseudo"),
-          resultsNumber: data.resultsNumber,
-        });
+        if (!data) {
+          return;
+        } else if (data.err) {
+          notificationAlert(data.err, "danger", "bottom-center");
+        } else {
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
+          setValues({
+            ...values,
+            profiles: _.uniqBy(profiles, "pseudo"),
+            resultsNumber: data.resultsNumber,
+          });
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -95,6 +106,11 @@ const MatchMe = () => {
       searchActif: isShow,
     })
       .then((data) => {
+        if (!data) return;
+        else if (data.err) {
+          notificationAlert("Server down", "danger", "bottom-center");
+          return;
+        }
         if (moreProfiles[0] === 0) {
           setValues({
             ...values,

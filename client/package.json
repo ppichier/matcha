@@ -25,6 +25,7 @@
     "react-input-emoji": "^1.0.7",
     "react-leaflet": "^2.6.1",
     "react-lodash": "^0.1.2",
+    "react-notifications-component": "^2.4.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "react-select": "^3.0.8",

@@ -6,6 +6,7 @@ import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import makeAnimated from "react-select/animated";
 import { readCommonTag } from "../../api";
+import { notificationAlert } from "../functions/notification";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider.Range);
 
@@ -16,33 +17,37 @@ const FilterProfile = ({ setFilterParams }, location) => {
     age: [17, 17],
     location: [0, 0],
     score: [0, 0],
-    userSize: [129, 129]
+    userSize: [129, 129],
   });
   const animatedComponents = makeAnimated();
   useEffect(() => {
     readCommonTag()
-      .then(data => {
+      .then((data) => {
         if (!data) {
-          return;
-        }
-        if (data && data.err) {
+          notificationAlert("Server down", "danger", "bottom-center");
+        } else if (data.err) {
+          notificationAlert(
+            data.err + " - unable to fetch tags",
+            "danger",
+            "bottom-center"
+          );
         } else {
+          setfilter({
+            ...data,
+            ...filter,
+            commonTags: data.commonTags,
+          });
         }
-        setfilter({
-          ...data,
-          ...filter,
-          commonTags: data.commonTags
-        });
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleChangeTags = tags => {
+  const handleChangeTags = (tags) => {
     if (tags === null) {
       setfilter({ ...filter, selectedTags: [] });
     } else {
-      let tmp = tags.map(tag => tag.value);
+      let tmp = tags.map((tag) => tag.value);
       setfilter({ ...filter, selectedTags: tmp });
     }
   };
@@ -57,11 +62,11 @@ const FilterProfile = ({ setFilterParams }, location) => {
       options={filter.commonTags}
     />
   );
-  const handleChange = (name, i) => event => {
+  const handleChange = (name, i) => (event) => {
     let b = [event[0], event[1]];
     setfilter({
       ...filter,
-      [name]: b
+      [name]: b,
     });
   };
 
@@ -71,7 +76,7 @@ const FilterProfile = ({ setFilterParams }, location) => {
         style={{
           backgroundColor: "#fff",
           fontWeight: "bold",
-          color: "#808080"
+          color: "#808080",
         }}
       >
         <Form.Row className="px-4 pt-4">
@@ -86,7 +91,9 @@ const FilterProfile = ({ setFilterParams }, location) => {
               value={[filter.age[0], filter.age[1]]}
               onChange={handleChange("age")}
               marks={{ 18: 18, 65: 65 }}
-              tipFormatter={v => (v.toString() === "17" ? "Aucun" : `${v}ans`)}
+              tipFormatter={(v) =>
+                v.toString() === "17" ? "Aucun" : `${v}ans`
+              }
             />
           </Form.Group>
         </Form.Row>
@@ -99,7 +106,7 @@ const FilterProfile = ({ setFilterParams }, location) => {
               value={[filter.location[0], filter.location[1]]}
               onChange={handleChange("location")}
               marks={{ 0: "0", 100: "100" }}
-              tipFormatter={v => `${v}km`}
+              tipFormatter={(v) => `${v}km`}
             />
           </Form.Group>
         </Form.Row>
@@ -124,7 +131,9 @@ const FilterProfile = ({ setFilterParams }, location) => {
               value={[filter.userSize[0], filter.userSize[1]]}
               onChange={handleChange("userSize")}
               marks={{ 130: "130", 230: "230" }}
-              tipFormatter={v => (v.toString() === "129" ? "Aucun" : `${v}cm`)}
+              tipFormatter={(v) =>
+                v.toString() === "129" ? "Aucun" : `${v}cm`
+              }
             />
           </Form.Group>
         </Form.Row>

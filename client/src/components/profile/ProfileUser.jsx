@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import NavbarHeader from "../navbar/Navbar";
 import Picture from "./Picture";
 import ProfilePicture from "./ProfilePicture";
-import { Row, Col, Form, Button, Container, Toast } from "react-bootstrap";
+import { Row, Col, Form, Button, Container } from "react-bootstrap";
 import {
   updateProfile,
   readProfile,
@@ -19,6 +19,7 @@ import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import queryString from "query-string";
 import ProfileMap from "./ProfileMap";
+import { notificationAlert } from "../functions/notification";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
@@ -40,13 +41,6 @@ const ProfileUser = ({ props, location }) => {
     lng: 2.3551,
   });
 
-  const [secondaryValues, setSecondaryValues] = useState({
-    err: "",
-    msg: "",
-    showErrorToast: false,
-    showSuccessToast: false,
-  });
-
   const [imagesChild, setImagesChild] = useState({
     profileImage: false,
     secondaryImages: false,
@@ -63,21 +57,10 @@ const ProfileUser = ({ props, location }) => {
     readProfile(v.uuid)
       .then((data) => {
         if (data.err) {
-          setSecondaryValues({
-            err: data.err,
-            msg: "",
-            showErrorToast: true,
-            showSuccessToast: false,
-          });
+          notificationAlert(data.err, "danger", "bottom-center");
         } else {
           setValues({
             ...data,
-          });
-          setSecondaryValues({
-            err: "",
-            msg: "",
-            showErrorToast: false,
-            showSuccessToast: false,
           });
         }
       })
@@ -111,12 +94,7 @@ const ProfileUser = ({ props, location }) => {
         w = data.image === null ? w : (w += inc);
         readSecondaryImages().then((data) => {
           if (data.err) {
-            setSecondaryValues({
-              err: data.err,
-              msg: "",
-              showErrorToast: true,
-              showSuccessToast: false,
-            });
+            notificationAlert(data.err, "danger", "bottom-center");
           } else {
             w = data.images.filter((e) => e !== "").length > 0 ? (w += inc) : w;
             setWidthProgressBar(w);
@@ -126,37 +104,6 @@ const ProfileUser = ({ props, location }) => {
       .catch((err) => console.log(err));
   }, [values, imagesChild]);
 
-  const showError = () => {
-    return (
-      <Toast
-        style={{ backgroundColor: "red", maxWidth: "none" }}
-        animation
-        onClose={() =>
-          setSecondaryValues({ ...setSecondaryValues, showErrorToast: false })
-        }
-        show={secondaryValues.showErrorToast}
-        className="mt-2"
-      >
-        <Toast.Header closeButton={false}>{secondaryValues.err}</Toast.Header>
-      </Toast>
-    );
-  };
-
-  const showSuccess = () => {
-    return (
-      <Toast
-        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
-        animation
-        onClose={() =>
-          setSecondaryValues({ ...secondaryValues, showSuccessToast: false })
-        }
-        show={secondaryValues.showSuccessToast}
-        className="mt-2"
-      >
-        <Toast.Header closeButton={false}>{secondaryValues.msg}</Toast.Header>
-      </Toast>
-    );
-  };
   const handleChange = (name) => (event) => {
     let value = "";
     if (name === "userSize" || name === "age") {
@@ -165,22 +112,12 @@ const ProfileUser = ({ props, location }) => {
       value = event.target.value;
     }
     setValues({ ...values, [name]: value });
-    setSecondaryValues({
-      ...setSecondaryValues,
-      showSuccessToast: false,
-      showErrorToast: false,
-    });
   };
 
   const handleClickCommonTag = (tag, i) => (event) => {
     const lenTag = validatedTag(tag);
     if (lenTag.err !== null) {
-      setSecondaryValues({
-        msg: "",
-        err: lenTag.err,
-        showErrorToast: true,
-        showSuccessToast: false,
-      });
+      notificationAlert(lenTag.err, "danger", "bottom-center");
     } else {
       const a = values.commonTags;
       a.splice(i, 1);
@@ -197,12 +134,7 @@ const ProfileUser = ({ props, location }) => {
       event.preventDefault();
       const lenTag = validatedTag(event.target.value);
       if (lenTag.err !== null) {
-        setSecondaryValues({
-          msg: "",
-          err: lenTag.err,
-          showErrorToast: true,
-          showSuccessToast: false,
-        });
+        notificationAlert(lenTag.err, "danger", "bottom-center");
       } else {
         setValues({
           ...values,
@@ -236,12 +168,7 @@ const ProfileUser = ({ props, location }) => {
     const verif = verifValidated(values);
 
     if (verif.err !== null) {
-      setSecondaryValues({
-        msg: "",
-        err: verif.err,
-        showErrorToast: true,
-        showSuccessToast: false,
-      });
+      notificationAlert(verif.err, "danger", "bottom-center");
     } else {
       const joinTags = [...values.myTags];
       for (let i = 0; i < values.commonTags.length; i++) {
@@ -276,19 +203,13 @@ const ProfileUser = ({ props, location }) => {
       })
         .then((data) => {
           if (data.err) {
-            setSecondaryValues({
-              msg: "",
-              err: data.err,
-              showErrorToast: true,
-              showSuccessToast: false,
-            });
+            notificationAlert(data.err, "danger", "bottom-center");
           } else {
-            setSecondaryValues({
-              err: "",
-              msg: data.msg,
-              showSuccessToast: true,
-              showErrorToast: false,
-            });
+            notificationAlert(
+              "Votre profil a été mis à jour.",
+              "success",
+              "bottom-center"
+            );
             // redirect to /profile or /discover
           }
         })
@@ -302,20 +223,9 @@ const ProfileUser = ({ props, location }) => {
     })
       .then((data) => {
         if (data.err) {
-          setSecondaryValues({
-            msg: "",
-            err: data.err,
-            showErrorToast: true,
-            showSuccessToast: false,
-          });
+          notificationAlert(data.err, "danger", "bottom-center");
         } else if (data.msg) {
-          setSecondaryValues({
-            // email: "",
-            err: "",
-            msg: data.msg,
-            showErrorToast: false,
-            showSuccessToast: true,
-          });
+          notificationAlert(data.msg, "success", "bottom-center");
         }
       })
       .catch((err) => console.log(err));
@@ -372,12 +282,11 @@ const ProfileUser = ({ props, location }) => {
           notAllowedPosition
         );
       } else {
-        setSecondaryValues({
-          msg: "",
-          err: "Geolocalistation non supportée par le navigateur.",
-          showErrorToast: true,
-          showSuccessToast: false,
-        });
+        notificationAlert(
+          "Geolocalistation non supportée par le navigateur",
+          "danger",
+          "bottom-center"
+        );
       }
     } else {
       setValues({
@@ -653,8 +562,6 @@ const ProfileUser = ({ props, location }) => {
                 >
                   Valider
                 </Button>
-                {showError()}
-                {showSuccess()}
               </Col>
             </Row>
           </Col>

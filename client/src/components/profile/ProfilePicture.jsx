@@ -6,48 +6,54 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import {
   uploadProfileImage,
   deleteProfileImage,
-  readImage
+  readImage,
 } from "../../api/user";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { notificationAlert } from "../functions/notification";
 
 const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
   const [values, setValues] = useState({
     uploading: false,
     formData: new FormData(),
     err: "",
-    msg: ""
+    msg: "",
   });
 
   const [base64Image, setBase64Image] = useState("");
 
   useEffect(() => {
     readImage()
-      .then(data => {
+      .then((data) => {
         if (!data || data.err) {
           return;
         }
         setBase64Image(data.image);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, [base64Image]);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const value = event.target.files[0];
     const jwt = JSON.parse(localStorage.getItem("jwt"));
     if (value !== undefined) {
       values.formData.set("photo", value);
       values.formData.set("userUuid", jwt.user._id);
       uploadProfileImage(values.formData)
-        .then(data => {
+        .then((data) => {
           if (data.err) {
             setValues({ ...values, err: data.err });
           } else {
+            notificationAlert(
+              "Image de profil enregistrée.",
+              "success",
+              "bottom-center"
+            );
             imageProfileSet(true);
             setValues({ ...values, msg: data.msg });
             setBase64Image(data.image);
           }
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     }
   };
 
@@ -57,7 +63,7 @@ const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
         setBase64Image("");
         imageProfileSet(false);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   const handleImage = () => {
@@ -89,7 +95,7 @@ const ProfilePicture = ({ pseudo, firstName, birthday, imageProfileSet }) => {
     }
   };
 
-  const isShow = birthday => {
+  const isShow = (birthday) => {
     if (birthday >= 18) return <div>Age: {birthday} ans</div>;
   };
 

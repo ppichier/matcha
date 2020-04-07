@@ -2,43 +2,33 @@ import React, { useState } from "react";
 import { signin } from "../../api/auth";
 import { Redirect } from "react-router-dom";
 import "./Signin.css";
+import { notificationAlert } from "../functions/notification";
 
 const Signin = ({ forgotPassword }) => {
   const [values, setValues] = useState({
     pseudo: "",
     password: "",
-    err: "",
-    redirect: false
+    redirect: false,
   });
-  const msg_error = () => {
-    if (values.err) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          {values.err}
-        </div>
-      );
-    }
-  };
-  const handleChange = name => event => {
+
+  const handleChange = (name) => (event) => {
     const tmp = { ...values, [name]: event.target.value };
     setValues(tmp);
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     signin({
       pseudo: values.pseudo,
-      password: values.password
+      password: values.password,
     })
-      .then(data => {
+      .then((data) => {
         if (!data) {
-          console.error("Server down");
+          notificationAlert("Server down", "danger", "bottom-center");
           return;
         } else if (data.err) {
-          setValues({ ...values, err: data.err });
+          notificationAlert(data.err, "danger", "bottom-center");
         } else {
-          // set jwt on localstorage sent by the server
-          // redirect to /profile or /discover
           if (typeof window !== "undefined") {
             localStorage.setItem("jwt", JSON.stringify(data));
           } else {
@@ -47,13 +37,11 @@ const Signin = ({ forgotPassword }) => {
           setValues({ ...values, redirect: true });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   const redirectUser = () => {
     if (values.redirect) {
-      // and check valid token ??
-      // fake loader ??
       return <Redirect to="/profile/me" />;
     }
   };
@@ -95,7 +83,6 @@ const Signin = ({ forgotPassword }) => {
         >
           Mot de passe oublié?
         </button>
-        {msg_error()}
         {redirectUser()}
       </form>
     </div>

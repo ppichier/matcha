@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { signup } from "../../api/auth";
-import { Toast } from "react-bootstrap";
 import { verifValidated, verifValidatedPassword } from "../functions/utils";
 import "./Signup.css";
+import { notificationAlert } from "../functions/notification";
 
 const Signup = () => {
   const [values, setValues] = useState({
@@ -11,24 +11,17 @@ const Signup = () => {
     firstName: "",
     lastName: "",
     password: "",
-    err: "",
-    msg: "",
-    success: false,
-    showErrorToast: false,
-    showSuccessToast: false
   });
 
-  const handleChange = name => event => {
+  const handleChange = (name) => (event) => {
     const tmp = {
       ...values,
       [name]: event.target.value,
-      showSuccessToast: false,
-      showErrorToast: false
     };
     setValues(tmp);
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const verif = verifValidated(values);
     const verifPassword = verifValidatedPassword(values.password);
@@ -36,80 +29,36 @@ const Signup = () => {
     if (verif.err !== null || verifPassword.err != null) {
       if (verifPassword.err != null) error = verifPassword.err;
       else error = verif.err;
-      setValues({
-        ...values,
-        err: error,
-        success: false,
-        showErrorToast: true,
-        showSuccessToast: false
-      });
+      notificationAlert(error, "danger", "bottom-center");
     } else {
       signup({
         email: values.email,
         pseudo: values.pseudo,
         firstName: values.firstName,
         lastName: values.lastName,
-        password: values.password
+        password: values.password,
       })
-        .then(data => {
+        .then((data) => {
           if (!data) {
-            console.error("Server down");
+            notificationAlert("Server down", "danger", "bottom-center");
             return;
           } else if (data.err) {
-            setValues({
-              ...values,
-              err: data.err,
-              success: false,
-              showErrorToast: true,
-              showSuccessToast: false
-            });
+            notificationAlert(data.err, "danger", "bottom-center");
           } else {
+            notificationAlert(data.msg, "success", "bottom-center");
             setValues({
               ...values,
               pseudo: "",
               firstName: "",
               lastName: "",
               password: "",
-              err: "",
-              msg: data.msg,
-              success: true,
               emailConfirm: values.email,
               email: "",
-              showSuccessToast: true,
-              showErrorToast: false
             });
           }
         })
-        .catch(err => console.log(values.err));
+        .catch((err) => console.log(values.err));
     }
-  };
-
-  const showError = () => {
-    return (
-      <Toast
-        style={{ backgroundColor: "red", maxWidth: "none" }}
-        animation
-        onClose={() => setValues({ ...values, showErrorToast: false })}
-        show={values.showErrorToast}
-        className="mt-2"
-      >
-        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
-      </Toast>
-    );
-  };
-
-  const showSuccess = () => {
-    return (
-      <Toast
-        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
-        animation
-        onClose={() => setValues({ ...values, showSuccessToast: false })}
-        show={values.showSuccessToast}
-        className="mt-2"
-      >
-        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
-      </Toast>
-    );
   };
 
   return (
@@ -176,10 +125,7 @@ const Signup = () => {
         >
           S'inscrire
         </button>
-        {showSuccess()}
-        {showError()}
       </form>
-      {/* {JSON.stringify(values)} */}
     </div>
   );
 };

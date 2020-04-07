@@ -3,36 +3,37 @@ import "./Picture.css";
 import {
   uploadSecondaryImages,
   deleteSecondaryImage,
-  readSecondaryImages
+  readSecondaryImages,
 } from "../../api/user";
 import { Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faImages,
   faTimesCircle,
-  faBowlingBall
+  faBowlingBall,
 } from "@fortawesome/free-solid-svg-icons";
+import { notificationAlert } from "../functions/notification";
 
 const Picture = ({ imageSecondarySet }) => {
   const [values, setValues] = useState({
     formData: new FormData(),
     uploading: false,
     err: "",
-    msg: ""
+    msg: "",
   });
 
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
 
   useEffect(() => {
     readSecondaryImages()
-      .then(data => {
+      .then((data) => {
         if (!data || data.err) return;
         setBase64Images(data.images);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, []);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const files = Array.from(event.target.files);
 
     // TODO aficher msg or err
@@ -49,34 +50,39 @@ const Picture = ({ imageSecondarySet }) => {
     const jwt = JSON.parse(localStorage.getItem("jwt"));
     values.formData.set("userUuid", jwt.user._id);
     uploadSecondaryImages(values.formData)
-      .then(data => {
+      .then((data) => {
         if (data.err) {
           setValues({ ...values, err: data.err });
         } else {
           setValues({
             ...values,
             uploading: false,
-            msg: data.msg
+            msg: data.msg,
           });
           if (data.images.length > 0) imageSecondarySet(true);
           setBase64Images(data.images);
+          notificationAlert(
+            "Vos images ont été mises à jour.",
+            "success",
+            "bottom-center"
+          );
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
-  const removeImage = id => () => {
+  const removeImage = (id) => () => {
     const path_image = [...base64Images];
     path_image[id] = "";
     deleteSecondaryImage({ imageIdRemove: id })
       .then(() => {
-        if (path_image.filter(e => e !== "").length === 0)
+        if (path_image.filter((e) => e !== "").length === 0)
           imageSecondarySet(false);
         else imageSecondarySet(true);
         setBase64Images(path_image);
         setValues({ ...values });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -89,7 +95,7 @@ const Picture = ({ imageSecondarySet }) => {
             <FontAwesomeIcon icon={faBowlingBall} size="5x" color="#3B5998" />
           </div>
         );
-      case base64Images.filter(e => e !== "").length === 0:
+      case base64Images.filter((e) => e !== "").length === 0:
         return (
           <Fragment>
             <Col>

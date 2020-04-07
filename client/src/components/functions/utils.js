@@ -1,24 +1,24 @@
-export const verifValidatedPassword = password => {
+export const verifValidatedPassword = (password) => {
   let rgxpassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[&#($_);.+\-!])/;
-  let lenPassword = password;
+  let lenPassword = password.length;
   if (password === "") {
-    return { err: "Veuillez remplir tous les champ" };
-  } else if (lenPassword < 6 && lenPassword > 30) {
+    return { err: "Veuillez remplir tous les champs" };
+  } else if (lenPassword < 6 || lenPassword > 30) {
     return {
-      err: "Le code d'accès doit etre composé min de 6 caractères et max 30 "
+      err: "La longueur du mot de passe doit être comprise entre 6 et 30 caractères",
     };
   } else if (!rgxpassword.test(password)) {
     return {
       err:
-        " Votre mot de passe doit figurer au moins un chiffre, une majuscule et un caractère spécial..vali"
+        "Le mot de passe doit comporter au moins un chiffre, une majuscule et un caractère spécial",
     };
   }
   return {
-    err: null
+    err: null,
   };
 };
 
-export const verifValidatedEmail = email => {
+export const verifValidatedEmail = (email) => {
   // console.log(email);
   let rgxmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (email === "") {
@@ -27,11 +27,11 @@ export const verifValidatedEmail = email => {
     return { err: "Votre adresse email n'est pas valide." };
   }
   return {
-    err: null
+    err: null,
   };
 };
 
-export const verifValidated = values => {
+export const verifValidated = (values) => {
   let lenFirstName = values.firstName.trim().length;
   let lenLastName = values.lastName.trim().length;
   let lenPseudo = values.pseudo.trim().length;
@@ -50,34 +50,35 @@ export const verifValidated = values => {
       lenPseudo > 30
     ) {
       return {
-        err: "Votre nom ou prenom ..."
+        err:
+          "Les champs principaux doivent faire plus de 3  et moins de 30 caractères",
       };
     } else if (values.description) {
       if (values.description.length > 1000) {
         return {
           err:
-            "La longueur de la description doit être inférieur à 1000 caractères"
+            "La longueur de la description doit être inférieure à 1000 caractères",
         };
       }
     }
   }
   return {
-    err: null
+    err: null,
   };
 };
 
-export const valitedPassword = values => {
+export const valitedPassword = (values) => {
   // if(verifValidatedEmail != null && )
 };
 
-export const validatedTag = tag => {
+export const validatedTag = (tag) => {
   const lenTag = tag.length;
   if (lenTag > 12) {
     return {
-      err: "La longueur max d'un tag est de 12 caractères."
+      err: "La longueur max d'un tag est de 12 caractères.",
     };
   }
   return {
-    err: null
+    err: null,
   };
 };

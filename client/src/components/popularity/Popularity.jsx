@@ -5,6 +5,7 @@ import NavbarHeader from "../navbar/Navbar";
 import PopularitySlider from "./PopularitySlider";
 import { getUserLike, getUserVisit } from "../../api/popularity";
 import { readImage } from "../../api/user";
+import { notificationAlert } from "../functions/notification";
 
 const Popularity = () => {
   const [peopleLike, setPeopleLike] = useState([]);
@@ -13,7 +14,13 @@ const Popularity = () => {
   async function fetchDataLike() {
     try {
       const data = await getUserLike();
-      if (data.err) return;
+      if (!data) {
+        notificationAlert("Server down", "danger", "bottom-center");
+        return;
+      } else if (data.err) {
+        notificationAlert(data.err, "danger", "bottom-center");
+        return;
+      }
       if (data.people.length !== 0) {
         let data_p = data.people;
         let promises = data_p.map((p) => readImage(p.uuid));

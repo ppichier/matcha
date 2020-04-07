@@ -8,36 +8,30 @@ import queryString from "query-string";
 import { recoverPassword } from "../../api/auth";
 import {
   verifValidatedPassword,
-  verifValidatedEmail
+  verifValidatedEmail,
 } from "../functions/utils";
-import { Toast } from "react-bootstrap";
+import { notificationAlert } from "../functions/notification";
 
 const RecoverPassword = ({ location, history }) => {
   const [values, setValues] = useState({
     email: "",
     password: "",
     uuid: "",
-    err: "",
-    msg: "",
     redirect: false,
-    showErrorToast: false,
-    showSuccessToast: false
   });
 
   const parsed = queryString.parse(location.search);
 
-  const handleChange = name => event => {
+  const handleChange = (name) => (event) => {
     const tmp = {
       ...values,
       [name]: event.target.value,
       uuid: parsed.uuid,
-      showErrorToast: false,
-      showSuccessToast: false
     };
     setValues(tmp);
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const verifPassword = verifValidatedPassword(values.password);
     const verifEmail = verifValidatedEmail(values.email);
@@ -46,41 +40,29 @@ const RecoverPassword = ({ location, history }) => {
       if (verifPassword.err !== null) {
         error = verifPassword.err;
       } else error = verifValidatedEmail.err;
-      setValues({
-        ...values,
-        err: error,
-        showErrorToast: true,
-        showSuccessToast: false
-      });
+      notificationAlert(error, "danger", "bottom-center");
     } else {
       recoverPassword({
         email: values.email,
         password: values.password,
-        uuid: values.uuid
+        uuid: values.uuid,
       })
-        .then(data => {
+        .then((data) => {
           if (!data) {
-            console.error("Server down");
+            notificationAlert("Server down", "danger", "bottom-center");
             return;
           }
           if (data.err) {
-            setValues({
-              ...values,
-              err: data.err,
-              showErrorToast: true,
-              showSuccessToast: false
-            });
+            notificationAlert(data.err, "danger", "bottom-center");
           } else {
             setValues({
               ...values,
               redirect: true,
-              msg: data.msg,
-              showErrorToast: false,
-              showSuccessToast: true
             });
+            notificationAlert(data.msg, "success", "bottom-center");
           }
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     }
   };
 
@@ -88,34 +70,6 @@ const RecoverPassword = ({ location, history }) => {
     if (values.redirect) {
       return <Redirect to="/login" />;
     }
-  };
-
-  const showError = () => {
-    return (
-      <Toast
-        style={{ backgroundColor: "red", maxWidth: "none" }}
-        animation
-        onClose={() => setValues({ ...values, showErrorToast: false })}
-        show={values.showErrorToast}
-        className="mt-2"
-      >
-        <Toast.Header closeButton={false}>{values.err}</Toast.Header>
-      </Toast>
-    );
-  };
-
-  const showSuccess = () => {
-    return (
-      <Toast
-        style={{ backgroundColor: "#63c7ac", maxWidth: "none" }}
-        animation
-        onClose={() => setValues({ ...values, showSuccessToast: false })}
-        show={values.showSuccessToast}
-        className="mt-2"
-      >
-        <Toast.Header closeButton={false}>{values.msg}</Toast.Header>
-      </Toast>
-    );
   };
 
   return (
@@ -156,8 +110,6 @@ const RecoverPassword = ({ location, history }) => {
               >
                 Valider
               </button>
-              {showError()}
-              {showSuccess()}
               {redirectUser()}
             </form>
           </Col>

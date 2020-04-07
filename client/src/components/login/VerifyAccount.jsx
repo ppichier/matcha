@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import queryString from "query-string";
 import { verifyAccount } from "../../api/auth";
 import { Redirect } from "react-router-dom";
+import { notificationAlert } from "../functions/notification";
 
 const VerifyAccount = ({ location }) => {
   const [redirect, setRedirect] = useState(null);
@@ -11,14 +12,17 @@ const VerifyAccount = ({ location }) => {
 
     const values = queryString.parse(location.search);
     verifyAccount(values.uuid, abortController.signal)
-      .then(data => {
+      .then((data) => {
+        if (!data) {
+          notificationAlert("Server down", "danger", "bottom-center");
+        }
         if (data.err) {
           setRedirect(true);
         } else {
           setRedirect(false);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   }, [location]);
