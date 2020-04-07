@@ -7,10 +7,6 @@ import ChatMessages from "./ChatMessages";
 import { Row, Col, Container } from "react-bootstrap";
 import { useState } from "react";
 
-
-
-
-
 const Chat = ({ socket }) => {
   // console.log(socket);
 
@@ -23,18 +19,18 @@ const Chat = ({ socket }) => {
     setUuid(JSON.parse(localStorage.getItem("jwt")).user._id);
   }, []);
 
-  const sendMessageNotification = uuidToNotify => {
+  const sendMessageNotification = (uuidToNotify) => {
     setMessageNotification(uuidToNotify);
   };
 
-  const sendLastMessage = msg => {
+  const sendLastMessage = (msg) => {
     setLastMessage(msg);
   };
-//   const test = () => {
-//       const tet1 = testPicker();
-//       const test2 = testNimblePicker();
-//       console.log(test2)
-// }
+  //   const test = () => {
+  //       const tet1 = testPicker();
+  //       const test2 = testNimblePicker();
+  //       console.log(test2)
+  // }
 
   return (
     <Fragment>
@@ -45,7 +41,7 @@ const Chat = ({ socket }) => {
             <ChatPeople
               socket={socket}
               uuid={uuid}
-              sendGuestInfos={value => {
+              sendGuestInfos={(value) => {
                 setGuestInfos({ ...value });
                 setMessageNotification(null);
               }}
@@ -58,10 +54,11 @@ const Chat = ({ socket }) => {
               socket={socket}
               guestInfos={guestInfos}
               uuid={uuid}
-              sendMessageNotification={value => sendMessageNotification(value)}
-              sendLastMessage={value => sendLastMessage(value)}
+              sendMessageNotification={(value) =>
+                sendMessageNotification(value)
+              }
+              sendLastMessage={(value) => sendLastMessage(value)}
             />
-            
           </Col>
         </Row>
       </Container>

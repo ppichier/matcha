@@ -71,10 +71,14 @@ const MatchMe = () => {
   const setFirstFilter = (event, moreProfiles) => {
     if (event) event.preventDefault();
     firstFilter(moreProfiles)
-      .then(data => {
-          let profiles = values.profiles;
-          profiles = profiles.concat(data.profiles);
-          setValues({ ...values, profiles: _.uniqBy(profiles, 'pseudo'),  resultsNumber: data.resultsNumber});
+      .then((data) => {
+        let profiles = values.profiles;
+        profiles = profiles.concat(data.profiles);
+        setValues({
+          ...values,
+          profiles: _.uniqBy(profiles, "pseudo"),
+          resultsNumber: data.resultsNumber,
+        });
       })
       .catch((err) => console.log(err));
   };

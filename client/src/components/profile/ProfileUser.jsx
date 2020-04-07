@@ -7,7 +7,7 @@ import {
   updateProfile,
   readProfile,
   readImage,
-  readSecondaryImages
+  readSecondaryImages,
 } from "../../api/user";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -37,19 +37,19 @@ const ProfileUser = ({ props, location }) => {
     userSize: "129",
     localisationActive: false,
     lat: 48.865,
-    lng: 2.3551
+    lng: 2.3551,
   });
 
   const [secondaryValues, setSecondaryValues] = useState({
     err: "",
     msg: "",
     showErrorToast: false,
-    showSuccessToast: false
+    showSuccessToast: false,
   });
 
   const [imagesChild, setImagesChild] = useState({
     profileImage: false,
-    secondaryImages: false
+    secondaryImages: false,
   });
 
   const [widthProgressBar, setWidthProgressBar] = useState(0);
@@ -61,27 +61,27 @@ const ProfileUser = ({ props, location }) => {
     //Send uuid profile
 
     readProfile(v.uuid)
-      .then(data => {
+      .then((data) => {
         if (data.err) {
           setSecondaryValues({
             err: data.err,
             msg: "",
             showErrorToast: true,
-            showSuccessToast: false
+            showSuccessToast: false,
           });
         } else {
           setValues({
-            ...data
+            ...data,
           });
           setSecondaryValues({
             err: "",
             msg: "",
             showErrorToast: false,
-            showSuccessToast: false
+            showSuccessToast: false,
           });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, [location]);
 
   useEffect(() => {
@@ -101,29 +101,29 @@ const ProfileUser = ({ props, location }) => {
         : w;
     w =
       values.myTags.length > 0 ||
-      values.commonTags.filter(e => e.checked).length > 0
+      values.commonTags.filter((e) => e.checked).length > 0
         ? (w += inc)
         : w;
     w = values.localisationActive ? (w += inc) : w;
 
     readImage()
-      .then(data => {
+      .then((data) => {
         w = data.image === null ? w : (w += inc);
-        readSecondaryImages().then(data => {
+        readSecondaryImages().then((data) => {
           if (data.err) {
             setSecondaryValues({
               err: data.err,
               msg: "",
               showErrorToast: true,
-              showSuccessToast: false
+              showSuccessToast: false,
             });
           } else {
-            w = data.images.filter(e => e !== "").length > 0 ? (w += inc) : w;
+            w = data.images.filter((e) => e !== "").length > 0 ? (w += inc) : w;
             setWidthProgressBar(w);
           }
         });
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, [values, imagesChild]);
 
   const showError = () => {
@@ -157,7 +157,7 @@ const ProfileUser = ({ props, location }) => {
       </Toast>
     );
   };
-  const handleChange = name => event => {
+  const handleChange = (name) => (event) => {
     let value = "";
     if (name === "userSize" || name === "age") {
       value = event;
@@ -168,18 +168,18 @@ const ProfileUser = ({ props, location }) => {
     setSecondaryValues({
       ...setSecondaryValues,
       showSuccessToast: false,
-      showErrorToast: false
+      showErrorToast: false,
     });
   };
 
-  const handleClickCommonTag = (tag, i) => event => {
+  const handleClickCommonTag = (tag, i) => (event) => {
     const lenTag = validatedTag(tag);
     if (lenTag.err !== null) {
       setSecondaryValues({
         msg: "",
         err: lenTag.err,
         showErrorToast: true,
-        showSuccessToast: false
+        showSuccessToast: false,
       });
     } else {
       const a = values.commonTags;
@@ -187,12 +187,12 @@ const ProfileUser = ({ props, location }) => {
       a.splice(i, 0, { label: tag, checked: event.target.checked });
       setValues({
         ...values,
-        commonTags: a
+        commonTags: a,
       });
     }
   };
 
-  const handlePress = event => {
+  const handlePress = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       const lenTag = validatedTag(event.target.value);
@@ -201,38 +201,38 @@ const ProfileUser = ({ props, location }) => {
           msg: "",
           err: lenTag.err,
           showErrorToast: true,
-          showSuccessToast: false
+          showSuccessToast: false,
         });
       } else {
         setValues({
           ...values,
-          myTags: [...values.myTags, event.target.value]
+          myTags: [...values.myTags, event.target.value],
         });
       }
     }
   };
 
-  const ageFormatter = v => {
+  const ageFormatter = (v) => {
     if (v.toString() === "17") {
       return "Age";
     }
     return `${v} ans`;
   };
 
-  const cmFormatter = v => {
+  const cmFormatter = (v) => {
     if (v.toString() === "129") {
       return "Taille";
     }
     return `${v}cm`;
   };
 
-  const handleDeleteTag = i => () => {
+  const handleDeleteTag = (i) => () => {
     const tab = [...values.myTags];
     tab.splice(i, 1);
     setValues({ ...values, myTags: tab });
   };
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event) => {
     const verif = verifValidated(values);
 
     if (verif.err !== null) {
@@ -240,7 +240,7 @@ const ProfileUser = ({ props, location }) => {
         msg: "",
         err: verif.err,
         showErrorToast: true,
-        showSuccessToast: false
+        showSuccessToast: false,
       });
     } else {
       const joinTags = [...values.myTags];
@@ -252,8 +252,8 @@ const ProfileUser = ({ props, location }) => {
       let lng = values.lng;
       if (!values.localisationActive) {
         let res = await fetch(`https://geolocation-db.com/json/`, {
-          method: "GET"
-        }).catch(err => console.log(err));
+          method: "GET",
+        }).catch((err) => console.log(err));
         let coords = await res.json();
         lat = coords.latitude;
         lng = coords.longitude;
@@ -272,41 +272,41 @@ const ProfileUser = ({ props, location }) => {
         widthProgressBar: widthProgressBar,
         lat,
         lng,
-        localisationActive: values.localisationActive
+        localisationActive: values.localisationActive,
       })
-        .then(data => {
+        .then((data) => {
           if (data.err) {
             setSecondaryValues({
               msg: "",
               err: data.err,
               showErrorToast: true,
-              showSuccessToast: false
+              showSuccessToast: false,
             });
           } else {
             setSecondaryValues({
               err: "",
               msg: data.msg,
               showSuccessToast: true,
-              showErrorToast: false
+              showErrorToast: false,
             });
             // redirect to /profile or /discover
           }
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     }
   };
-  const handleChangePassword = event => {
+  const handleChangePassword = (event) => {
     event.preventDefault();
     forgotPassword({
-      email: values.email
+      email: values.email,
     })
-      .then(data => {
+      .then((data) => {
         if (data.err) {
           setSecondaryValues({
             msg: "",
             err: data.err,
             showErrorToast: true,
-            showSuccessToast: false
+            showSuccessToast: false,
           });
         } else if (data.msg) {
           setSecondaryValues({
@@ -314,22 +314,22 @@ const ProfileUser = ({ props, location }) => {
             err: "",
             msg: data.msg,
             showErrorToast: false,
-            showSuccessToast: true
+            showSuccessToast: true,
           });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
-  const imageProfileSet = value => {
+  const imageProfileSet = (value) => {
     setImagesChild({ ...imagesChild, profileImage: value });
   };
 
-  const imageSecondarySet = value => {
+  const imageSecondarySet = (value) => {
     setImagesChild({ ...imagesChild, secondaryImages: value });
   };
 
-  const updateProfilePosition = coord => {
+  const updateProfilePosition = (coord) => {
     setValues({ ...values, lat: coord.lat, lng: coord.lng });
   };
 
@@ -340,20 +340,20 @@ const ProfileUser = ({ props, location }) => {
           <ProfileMap
             lat={values.lat}
             lng={values.lng}
-            updateProfilePosition={coord => updateProfilePosition(coord)}
+            updateProfilePosition={(coord) => updateProfilePosition(coord)}
           />
         </div>
       );
     } else return <Fragment></Fragment>;
   };
 
-  const getLocation = e => {
-    const showPosition = position => {
+  const getLocation = (e) => {
+    const showPosition = (position) => {
       setValues({
         ...values,
         lat: position.coords.latitude,
         lng: position.coords.longitude,
-        localisationActive: true
+        localisationActive: true,
       });
     };
 
@@ -361,7 +361,7 @@ const ProfileUser = ({ props, location }) => {
       //check for ip to localize
       setValues({
         ...values,
-        localisationActive: false
+        localisationActive: false,
       });
     };
 
@@ -376,13 +376,13 @@ const ProfileUser = ({ props, location }) => {
           msg: "",
           err: "Geolocalistation non supportée par le navigateur.",
           showErrorToast: true,
-          showSuccessToast: false
+          showSuccessToast: false,
         });
       }
     } else {
       setValues({
         ...values,
-        localisationActive: false
+        localisationActive: false,
       });
     }
   };
@@ -401,7 +401,7 @@ const ProfileUser = ({ props, location }) => {
                     firstName={values.firstName}
                     city={values.city}
                     birthday={values.age}
-                    imageProfileSet={value => imageProfileSet(value)}
+                    imageProfileSet={(value) => imageProfileSet(value)}
                   />
                 </Row>
                 <Row
@@ -414,7 +414,7 @@ const ProfileUser = ({ props, location }) => {
                     id="switch"
                     label="Activer la localisation"
                     checked={values.localisationActive}
-                    onChange={e => {
+                    onChange={(e) => {
                       getLocation(e);
                     }}
                   />
@@ -434,7 +434,9 @@ const ProfileUser = ({ props, location }) => {
           </Col>
           <Col md={7} className="pl-5">
             <Row className="mt-5 mb-1 row-picture">
-              <Picture imageSecondarySet={value => imageSecondarySet(value)} />
+              <Picture
+                imageSecondarySet={(value) => imageSecondarySet(value)}
+              />
             </Row>
             <Row className="pt-4 row-infos">
               <Col>
@@ -595,7 +597,7 @@ const ProfileUser = ({ props, location }) => {
                               <div className="mytags mr-2 pl-2 mt-2" key={i}>
                                 <div
                                   dangerouslySetInnerHTML={{
-                                    __html: "#" + tag
+                                    __html: "#" + tag,
                                   }}
                                 />
 

@@ -432,8 +432,8 @@ exports.readGuestProfile = async (req, res) => {
             error.handleError(res, err, "invalid uuid", 404, connection);
           } else {
             connection.query(
-              "INSERT INTO user_visit (UserVisitor, UserVisited) VALUES (?, ?)",
-              [userId, result[0][0].UserId],
+              "INSERT INTO user_visit (UserVisitor, UserVisited) VALUES (?, ?); UPDATE USER SET Score = Score + 1 WHERE UserId = ?", // We have to check limit score
+              [userId, result[0][0].UserId, result[0][0].UserId],
               (err, r) => {
                 if (err)
                   error.handleError(res, err, "Intenal error", 500, connection);

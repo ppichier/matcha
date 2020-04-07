@@ -14,10 +14,10 @@ const NavbarHeader = () => {
     if (typeof window != "undefined") {
       if (localStorage.getItem("jwt")) {
         logout()
-          .then(data => {
+          .then((data) => {
             localStorage.removeItem("jwt");
           })
-          .catch(err => console.log(err));
+          .catch((err) => console.log(err));
       }
     }
   };
