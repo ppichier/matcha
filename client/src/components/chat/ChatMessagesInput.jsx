@@ -1,14 +1,11 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./ChatMessagesInput.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faSmileBeam } from "@fortawesome/free-solid-svg-icons";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 
-
 const ChatMessagesInput = ({
-  setMessageNative,
-  messageNative,
   message,
   setMessage,
   sendMessage,
@@ -16,7 +13,6 @@ const ChatMessagesInput = ({
   guestUuid,
 }) => {
   const [isShowEmoji, setIsShowEmoji] = useState(false);
-  const [tmp, setTmp] = useState([]);
 
   useEffect(() => {
     setIsShowEmoji(false);
@@ -28,9 +24,7 @@ const ChatMessagesInput = ({
   };
   const handleEmojiselect = (emoji) => {
     setIsShowEmoji(!isShowEmoji);
-    setTmp([emoji.native, emoji.colons])
-    setMessage(message + emoji.colons);
-    setMessageNative(messageNative + emoji.native);
+    setMessage(message + emoji.native);
   };
 
   const handleShowEmoji = () => {
@@ -39,29 +33,30 @@ const ChatMessagesInput = ({
         <Picker
           onSelect={(emoji) => handleEmojiselect(emoji)}
           style={{ position: "absolute", bottom: "50px", right: "0px" }}
-          set='google'
+          set="google"
         />
       );
   };
+
   return (
     <form className="chat-messages-input-form">
       <input
         className="pl-3 chat-messages-input-text"
         placeholder="Rédigez un message ..."
         maxLength="1000"
-        value={messageNative}
-        onChange={(e) => {
-          setMessage(tmp === "" ? e.target.value :  e.target.value.replace(tmp[0], tmp[1]));
-          setMessageNative(e.target.value);
-        }}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
         onKeyUp={(e) =>
           e.key === "Enter" ? sendMessage(e) : sendTypingEvent(e)
         }
       />
+      <input type="hidden" value={message} />
       <div className="ml-2 chat-messages-input-container-send">
         <button
           className="px-4 py-1 chat-messages-input-send"
-          onClick={(e) => {sendMessage(e); setTmp("")}}
+          onClick={(e) => {
+            sendMessage(e);
+          }}
         >
           <FontAwesomeIcon icon={faPaperPlane} />
         </button>

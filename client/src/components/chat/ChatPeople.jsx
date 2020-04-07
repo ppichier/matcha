@@ -5,14 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faComments } from "@fortawesome/free-solid-svg-icons";
 import { getMatchUsers } from "../../api/chat";
 import { readImage } from "../../api/user";
-import Reaction from './Reaction';
 
 const ChatPeople = ({
   socket,
   uuid,
   sendGuestInfos,
   messageNotification,
-  lastMessage
+  lastMessage,
 }) => {
   const [guestIndex, setGuestIndex] = useState(null);
   const [matchPeople, setMatchPeople] = useState([]);
@@ -22,7 +21,7 @@ const ChatPeople = ({
 
   useEffect(() => {
     getMatchUsers()
-      .then(data => {
+      .then((data) => {
         if (data.err) return;
         else {
           // console.log(data);
@@ -30,7 +29,7 @@ const ChatPeople = ({
           setLastMessages([...data.lastMessages]);
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const ChatPeople = ({
 
   useEffect(() => {
     if (lastMessage !== null) {
-      const idx = lastMessages.findIndex(e => e.with === lastMessage.with);
+      const idx = lastMessages.findIndex((e) => e.with === lastMessage.with);
       let lastMessagesTmp = [...lastMessages];
       if (idx > -1) {
         lastMessagesTmp[idx] = { ...lastMessage };
@@ -56,19 +55,19 @@ const ChatPeople = ({
 
   useEffect(() => {
     if (matchPeople.length !== 0) {
-      let promises = matchPeople.map(people => readImage(people.uuid));
+      let promises = matchPeople.map((people) => readImage(people.uuid));
       Promise.all(promises)
-        .then(data => {
+        .then((data) => {
           if (data.err) return;
           else {
             setMatchImages([...data]);
           }
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     }
   }, [matchPeople]);
 
-  const updateIndex = index => {
+  const updateIndex = (index) => {
     let guestDiv = document.getElementsByClassName("chat-people-item");
     if (guestIndex !== null) {
       guestDiv[guestIndex].classList.remove("chat-people-item-selected");
@@ -89,7 +88,7 @@ const ChatPeople = ({
     guestDiv[index].classList.add("chat-people-item-selected");
   };
 
-  const profileImage = i => {
+  const profileImage = (i) => {
     let sourceImage =
       "https://image.flaticon.com/icons/png/512/1177/1177577.png";
     if (matchImages.length === 0 || !matchImages[i])
@@ -122,16 +121,18 @@ const ChatPeople = ({
     else return <Fragment />;
   };
 
-  const displayLastMessage = peopleUuid => {
-    const withGuestLastMessage = lastMessages.find(r => r.with === peopleUuid);
+  const displayLastMessage = (peopleUuid) => {
+    const withGuestLastMessage = lastMessages.find(
+      (r) => r.with === peopleUuid
+    );
     if (withGuestLastMessage) {
       if (withGuestLastMessage.from === peopleUuid) {
-        return <div> {<Reaction children={withGuestLastMessage.msg} />}</div>;
+        return <div> {withGuestLastMessage.msg}</div>;
       } else {
         return (
           <div>
             <FontAwesomeIcon icon={faReply} className="pr-1" />
-             {<Reaction children={withGuestLastMessage.msg} />}
+            {withGuestLastMessage.msg}
           </div>
         );
       }

@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import "./ChatMessagesDisplay.css";
 import { Image } from "react-bootstrap";
 import { useEffect } from "react";
-import Reaction from './Reaction';
 
 const ChatMessagesDisplay = ({
   allMessages,
@@ -15,18 +14,18 @@ const ChatMessagesDisplay = ({
     if (!a) return;
     a.scrollTo({
       top: a.scrollHeight,
-      left: 0
+      left: 0,
     });
   }, [guestInfos, allMessages]);
 
   const messageFromMe = (i, msg) => {
-      return (
-         <div key={i} className="chat-messages-display-container-me">
-          <div className="chat-messages-display-message-item chat-messages-display-message-item-color-me">
-            {<Reaction children={msg}/>}
-          </div>
+    return (
+      <div key={i} className="chat-messages-display-container-me">
+        <div className="chat-messages-display-message-item chat-messages-display-message-item-color-me">
+          {msg}
         </div>
-      );
+      </div>
+    );
   };
 
   const messageFromGuest = (i, msg) => {
@@ -41,9 +40,9 @@ const ChatMessagesDisplay = ({
           }
           roundedCircle
         />
-          <div className="chat-messages-display-message-item chat-messages-display-message-item-color-guest">
-            {<Reaction children={msg}/>}
-          </div>
+        <div className="chat-messages-display-message-item chat-messages-display-message-item-color-guest">
+          {msg}
+        </div>
       </div>
     );
   };
@@ -59,7 +58,7 @@ const ChatMessagesDisplay = ({
       );
     else return <Fragment />;
   };
-  
+
   const messagesDisplay = () => {
     if (guestInfos.uuid)
       return (

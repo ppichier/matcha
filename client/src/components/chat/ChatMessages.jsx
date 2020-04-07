@@ -13,15 +13,12 @@ const ChatMessages = ({
 }) => {
   const [allMessages, setAllMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [messageNative, setMessageNative] = useState("");
   const [guestTyping, setGuestTyping] = useState([]);
 
   useEffect(() => {
     if (uuid && guestInfos.uuid) {
       setMessage("");
-      setMessageNative("");
       socket.emit("join", uuid, guestInfos.uuid, (messages) => {
-        // console.log(messages);
         setAllMessages([...messages]);
       });
       // return () => {
@@ -85,7 +82,6 @@ const ChatMessages = ({
     if (guestInfos && message) {
       socket.emit("sendMessage", uuid, guestInfos.uuid, message, () => {
         setMessage("");
-        setMessageNative("");
       });
     }
   };
@@ -115,8 +111,6 @@ const ChatMessages = ({
           </div>
           <div className="chat-messages-container-input">
             <ChatMessagesInput
-              setMessageNative={setMessageNative}
-              messageNative={messageNative}
               message={message}
               setMessage={setMessage}
               sendMessage={sendMessage}
