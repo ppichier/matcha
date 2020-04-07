@@ -51,8 +51,18 @@ router.post(
   createUploadDirectory,
   uploadSecondaryImages
 );
-router.post("/profile/deleteProfileImage", verifyToken, deleteProfileImage);
-router.post("/profile/deleteSecondaryImage", verifyToken, deleteSecondaryImage);
+router.post(
+  "/profile/deleteProfileImage",
+  verifyToken,
+  checkDatabaseStatus,
+  deleteProfileImage
+);
+router.post(
+  "/profile/deleteSecondaryImage",
+  verifyToken,
+  checkDatabaseStatus,
+  deleteSecondaryImage
+);
 
 router.get("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
 router.post("/profile/readImage", verifyToken, readImage);
