@@ -13,14 +13,16 @@ const {
   changePage,
   updateProfile,
   deleteTag,
-  readGuestProfile
+  readGuestProfile,
 } = require("../controllers/user");
+
+const { getUserId } = require("../middlewares");
 
 const {
   createUploadDirectory,
   deletePreviousImage,
   updateTags,
-  checkDatabaseStatus
+  checkDatabaseStatus,
 } = require("../middlewares/users");
 
 const { updateProfileValidator } = require("../validator");
@@ -55,7 +57,12 @@ router.post("/profile/deleteSecondaryImage", verifyToken, deleteSecondaryImage);
 router.get("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
 router.post("/profile/readImage", verifyToken, readImage);
 router.post("/profile/readProfile", verifyToken, readProfile);
-router.post("/profile/readGuestProfile", verifyToken, readGuestProfile);
+router.post(
+  "/profile/readGuestProfile",
+  verifyToken,
+  getUserId,
+  readGuestProfile
+);
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);
 

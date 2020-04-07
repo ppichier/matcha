@@ -27,7 +27,7 @@ const Routes = () => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   // console.log(jwt);
   if (jwt && jwt.token) {
-    socket.emit("register", jwt.token, data => {
+    socket.emit("register", jwt.token, (data) => {
       // console.log(data);
     });
   }
@@ -45,7 +45,7 @@ const Routes = () => {
             component={ProfileUser}
           ></PrivateRoute>
           <PrivateRoute
-            path="/profile"
+            path="/profile/:id"
             exact
             component={Profile}
           ></PrivateRoute>

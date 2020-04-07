@@ -409,6 +409,7 @@ exports.readProfile = async (req, res) => {
 };
 
 exports.readGuestProfile = async (req, res) => {
+  let userId = req.userId;
   const uuid = req.body.guestUuid;
 
   const userUuid = req.userUuid;
@@ -424,39 +425,49 @@ exports.readGuestProfile = async (req, res) => {
          SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId FROM user WHERE Uuid = ?)`,
         [uuid, uuid, uuid, userUuid, userUuid, uuid],
         (err, result) => {
-          console.log(result);
+          // console.log(result);
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else if (result[0].length === 0) {
             error.handleError(res, err, "invalid uuid", 404, connection);
           } else {
-            const myTags = result[1].map((e) => e.TagLabel);
-            connection.release();
-            let dataUser = {
-              firstName: result[0][0].FirstName,
-              lastName: result[0][0].LastName,
-              pseudo: result[0][0].UserName,
-              email: result[0][0].Email,
-              userSize: result[0][0].UserSize,
-              age: result[0][0].Age,
-              gender: result[0][0].GenreId,
-              sexualPreference: result[0][0].SexualOrientationId,
-              description: result[0][0].Bio,
-              myTags,
-              lat: result[0][0].Lat,
-              lng: result[0][0].Lng,
-              localisationActive: result[0][0].LocalisationActive,
-            };
-            let dataLike = {
-              userBlocked: false,
-              logout: result[0][0].LastConnection,
-              like: result[3].length > 0 ? 1 : 0,
-              likeMe: result[4].length > 0 ? 1 : 0,
-            };
-            return res.json({
-              dataUser,
-              dataLike,
-            });
+            connection.query(
+              "INSERT INTO user_visit (UserVisitor, UserVisited) VALUES (?, ?)",
+              [userId, result[0][0].UserId],
+              (err, r) => {
+                if (err)
+                  error.handleError(res, err, "Intenal error", 500, connection);
+                else {
+                  connection.release();
+                  const myTags = result[1].map((e) => e.TagLabel);
+                  let dataUser = {
+                    firstName: result[0][0].FirstName,
+                    lastName: result[0][0].LastName,
+                    pseudo: result[0][0].UserName,
+                    email: result[0][0].Email,
+                    userSize: result[0][0].UserSize,
+                    age: result[0][0].Age,
+                    gender: result[0][0].GenreId,
+                    sexualPreference: result[0][0].SexualOrientationId,
+                    description: result[0][0].Bio,
+                    myTags,
+                    lat: result[0][0].Lat,
+                    lng: result[0][0].Lng,
+                    localisationActive: result[0][0].LocalisationActive,
+                  };
+                  let dataLike = {
+                    userBlocked: false,
+                    logout: result[0][0].LastConnection,
+                    like: result[3].length > 0 ? 1 : 0,
+                    likeMe: result[4].length > 0 ? 1 : 0,
+                  };
+                  return res.json({
+                    dataUser,
+                    dataLike,
+                  });
+                }
+              }
+            );
           }
         }
       );

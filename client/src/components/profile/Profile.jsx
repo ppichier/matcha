@@ -1,12 +1,13 @@
 import React, { useState, Fragment, useEffect } from "react";
 import { Carousel, Container, Row, Col, Badge, Form } from "react-bootstrap";
+import { useParams, Redirect } from "react-router-dom";
 import "./Profile.css";
 import "./ProfileUser.css";
 import CardPicture from "../match/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { readGuestProfile, readSecondaryImages } from "../../api/user";
-import queryString from "query-string";
+import CustomSpinner from "../auth/Spinner";
 
 import {
   faHeart,
@@ -27,7 +28,7 @@ const Profile = ({ location, history }) => {
     fakeCount: false,
     logout: null,
     like: 0,
-    likeMe: 0
+    likeMe: 0,
   });
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
   const [infosUser, setInfosUser] = useState({
@@ -41,33 +42,38 @@ const Profile = ({ location, history }) => {
     description: "",
     myTags: [],
     redirect: false,
+    loading: true,
   });
 
-  // Loading wait to setInfosUser otherwise glitch first time
-  useEffect(() => {
-    const query = queryString.parse(location.search);
-    if (!query.uuid) {
-      setInfosUser({ ...infosUser, redirect: true });
-      return;
-    }
-    setCurrentUuid(query.uuid);
-    readSecondaryImages() // SECONDARY UUID NOT IMPLEMENTED
-      .then((data) => {
-        setBase64Images(data.images);
-      })
-      .catch((err) => console.log(err));
+  let { id } = useParams();
 
-    readGuestProfile(query.uuid)
-      .then((data) => {
-        if (data.err) {
-          setInfosUser({ ...infosUser, redirect: true });
+  const fetchData = async () => {
+    try {
+      const data = await readGuestProfile(id);
+      if (data.err) {
+        setInfosUser({ ...infosUser, loading: false, redirect: true });
+      } else {
+        setInfosUser({ ...data.dataUser, loading: false });
+        setCurrentUuid();
+        const secImg = await readSecondaryImages(); // SECONDARY UUID NOT IMPLEMENTED
+        if (secImg.err) {
+          // return;
         } else {
-          setInfosUser({ ...data.dataUser});
-          // setValues({...data.dataLike})
+          setBase64Images(secImg.images);
         }
-      })
-      .catch((err) => console.log(err));
-  }, [location]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (!id) {
+      setInfosUser({ ...infosUser, redirect: true });
+    } else {
+      fetchData();
+    }
+  }, [id]);
 
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
@@ -83,7 +89,7 @@ const Profile = ({ location, history }) => {
   };
 
   const handleLike = () => {
-    setInfoSeconder({...infoSeconder, like: !infoSeconder.like});
+    setInfoSeconder({ ...infoSeconder, like: !infoSeconder.like });
     // readGuestProfile({
     //   query.uuid,
     // })
@@ -174,104 +180,100 @@ const Profile = ({ location, history }) => {
   };
 
   const redirectUser = () => {
-    if (infosUser.redirect === true) {
-      return <Fragment>Profile not valid</Fragment>;
+    if (infosUser.loading) {
+      return <CustomSpinner />;
+    } else if (infosUser.redirect) {
+      return <Redirect to={"/404notfound"} />;
     } else {
       return (
         <Fragment>
-          <Carousel
-            activeIndex={values.indexImages}
-            direction={values.directionImages}
-            onSelect={handleSelect}
-            className="mt-5"
-          >
-            {handleImages()}
-          </Carousel>
+          <NavbarHeader />
+          <Container className="my-4">
+            <Row>
+              <Col md={4} className="mt-5 ">
+                <Row>
+                  <Col>
+                    <Row className="row-pictureProfile">
+                      <CardPicture
+                        lastName={infosUser.lastName}
+                        pseudo={infosUser.pseudo}
+                        birthday={infosUser.age}
+                        userUuid={currentUuid}
+                      />
+                    </Row>
+                    <Row
+                      className="Row mt-4 py-3"
+                      style={{
+                        justifyContent: "space-around",
+                        flexWrap: "wrap",
+                        padding: "0 10%",
+                      }}
+                    >
+                      {handleiconLike()}
+                      <FontAwesomeIcon icon={faComment} className="fa-2x" />
+                      {handleiconfakeCount()}
+                    </Row>
+                  </Col>
+                </Row>
+              </Col>
+              <Col md={8} className="pl-5">
+                <Carousel
+                  activeIndex={values.indexImages}
+                  direction={values.directionImages}
+                  onSelect={handleSelect}
+                  className="mt-5"
+                >
+                  {handleImages()}
+                </Carousel>
 
-          <Row className="mb-4 pt-3 pb-4 mt-4 Row">
-            <Col>
-              <h3 className="descp">{infosUser.firstName}</h3>
-              <p className="descp">
-                Je suis {convGender()}, {isShow()}, je cherche
-                {convSexualPtoString()} ...
-              </p>
-            </Col>
-          </Row>
-          <Row className="mb-4 pt-3 pb-4 mt-4 Row">
-            <Col>
-              <h3 className="descp">Centres d'intérêt</h3>
-              <div className="descp mytags-main">
-                {infosUser.myTags.map((tag, i) => {
-                  return (
-                    <Badge key={i} className="mytags  mr-2 pl-2 mt-2">
-                      #{tag}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </Col>
-          </Row>
-          <Row className="mb-4 pt-3 pb-4 mt-4 Row">
-            <Col>
-              <h3 className="descp">A propos de moi</h3>
-              <p className="descp">{infosUser.description}</p>
-            </Col>
-          </Row>
-          <Form>
-            <Form.Check
-              style={{ color: "red" }}
-              type="checkbox"
-              id="fake account"
-              label="Signaler un faux compte"
-              name="fake_account"
-              onChange={handleFakeCount}
-            />
-          </Form>
+                <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+                  <Col>
+                    <h3 className="descp">{infosUser.firstName}</h3>
+                    <p className="descp">
+                      Je suis {convGender()}, {isShow()}, je cherche
+                      {convSexualPtoString()} ...
+                    </p>
+                  </Col>
+                </Row>
+                <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+                  <Col>
+                    <h3 className="descp">Centres d'intérêt</h3>
+                    <div className="descp mytags-main">
+                      {infosUser.myTags.map((tag, i) => {
+                        return (
+                          <Badge key={i} className="mytags  mr-2 pl-2 mt-2">
+                            #{tag}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  </Col>
+                </Row>
+                <Row className="mb-4 pt-3 pb-4 mt-4 Row">
+                  <Col>
+                    <h3 className="descp">A propos de moi</h3>
+                    <p className="descp">{infosUser.description}</p>
+                  </Col>
+                </Row>
+                <Form>
+                  <Form.Check
+                    style={{ color: "red" }}
+                    type="checkbox"
+                    id="fake account"
+                    label="Signaler un faux compte"
+                    name="fake_account"
+                    onChange={handleFakeCount}
+                  />
+                </Form>
+              </Col>
+            </Row>
+          </Container>
         </Fragment>
       );
     }
   };
 
-  return (
-    <Fragment>
-      {/* {redirectUser()} */}
-      <NavbarHeader />
-      <Container className="my-4">
-        <Row>
-          <Col md={4} className="mt-5 ">
-            <Row>
-              <Col>
-                <Row className="row-pictureProfile">
-                  <CardPicture
-                    lastName={infosUser.lastName}
-                    pseudo={infosUser.pseudo}
-                    birthday={infosUser.age}
-                    userUuid={currentUuid}
-                  />
-                </Row>
-                <Row
-                  className="Row mt-4 py-3"
-                  style={{
-                    justifyContent: "space-around",
-                    flexWrap: "wrap",
-                    padding: "0 10%",
-                  }}
-                >
-                  {handleiconLike()}
-                  <FontAwesomeIcon icon={faComment} className="fa-2x" />
-                  {handleiconfakeCount()}
-                </Row>
-              </Col>
-            </Row>
-          </Col>
-          <Col md={8} className="pl-5">
-            {redirectUser()}
-          </Col>
-        </Row>
-      </Container>
-    </Fragment>
-  );
+  return <Fragment>{redirectUser()}</Fragment>;
 };
 
 export default Profile;
-

@@ -37,7 +37,6 @@ exports.getUserVisit = (req, res) => {
             error.handleError(res, err, "Internal error", 500, connection);
           } else {
             connection.release();
-            console.log(result);
             return res.json({ people: result });
           }
         }

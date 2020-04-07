@@ -12,14 +12,14 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
 
   useEffect(() => {
     readImage(userUuid)
-      .then(data => {
+      .then((data) => {
         if (data.image) setBase64Image(data.image);
         else if (data.imageFakeProfile) {
           setBase64Image("");
           setFakeImage(data.imageFakeProfile);
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, [base64Image, userUuid]);
 
   const handleImage = () => {
@@ -51,7 +51,7 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
     }
   };
 
-  const isShow = age => {
+  const isShow = (age) => {
     if (age >= 18) return <div>{age} ans</div>;
     else return <Fragment />;
   };
@@ -59,11 +59,11 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
     <Fragment>
       <div className="profile-header-container">
         <Link
-          to={`/profile?uuid=${userUuid}`}
+          to={`/profile/${userUuid}`}
           style={{
             color: "grey",
             fontWeight: "500",
-            textDecoration: "none"
+            textDecoration: "none",
           }}
         >
           <div>
