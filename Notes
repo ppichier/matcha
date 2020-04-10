@@ -24,6 +24,10 @@
 ## [BACK] - error 500 when not logged and go to /match
 
 
+## [SOCKET] - Score in MatchMe and Profile socket on/emit if user like
+## [SOCKET] - if user like / dislike socket emit on chat appear disapear
+
+
 -------------- Medium features ------------------
 ## [FRONT] - spinner loading (Redirect when user log, ...)
 ## [FRONT] - alert login page style

@@ -14,9 +14,10 @@
 .navbar-tab {
   color: #fff;
 }
-.navbar-tab:hover{
-    /*-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff,  0 0 80px #fff,  0 0 100px #fff;*/
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff,  0 0 80px #fff,  0 0 100px #fff;
+.navbar-tab:hover {
+  /*-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff,  0 0 80px #fff,  0 0 100px #fff;*/
+  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff,
+    0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff, 0 0 80px #fff, 0 0 100px #fff;
 }
 
 @-webkit-keyframes Gradient {
@@ -67,6 +68,6 @@
 sup {
   font-size: 90% !important;
 }
-.icon:hover{
-    -webkit-box-shadow: 10px 10px 30px 15px white;
+.icon:hover {
+  -webkit-box-shadow: 10px 10px 30px 15px white;
 }

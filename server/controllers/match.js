@@ -130,7 +130,6 @@ exports.filterProfile = (req, res) => {
                 userIdUser,
               ],
               (err, result) => {
-                console.log(result[0]);
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);
                 } else {
@@ -297,7 +296,6 @@ exports.firstFilter = (req, res) => {
                     }))
                     .value();
                   let profiles = utils.sortProfile(merged);
-                  console.log(profiles.length);
                   return res.json({
                     profiles,
                     resultsNumber,
@@ -321,6 +319,9 @@ const getIds = (userUuid, userLikedUuid, connection) => {
       [[userUuid], [userLikedUuid]],
       (err, result) => {
         if (err) reject(500);
+        // if (!result[0][0] || !result[1][0]) { // check if userUuid exist in prod
+        //   reject(500);
+        // }
         else {
           resolve({
             userId: result[0][0].UserId,
@@ -364,11 +365,24 @@ const deleteRowUserLike = (userId, userLikedId, connection) => {
   // Checi if B likes A -> yes : socketio emit notif - delete messages
   return new Promise((resolve, reject) => {
     connection.query(
-      "DELETE FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?",
-      [userId, userLikedId],
+      "DELETE FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?; DELETE FROM message WHERE (MessageSender = ? AND MessageReceiver = ?) OR (MessageSender = ? AND MessageReceiver = ?);DELETE FROM last_message WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?)",
+      [
+        userId,
+        userLikedId,
+        userId,
+        userLikedId,
+        userLikedId,
+        userId,
+        userId,
+        userLikedId,
+        userLikedId,
+        userId,
+      ],
       (err, result) => {
-        if (err) reject(500);
-        else if (result.affectedRows > 0) {
+        if (err) {
+          console.log(err);
+          reject(500);
+        } else if (result.affectedRows > 0) {
           connection.query(
             "UPDATE USER SET Score = Score - 10 WHERE UserId = ?",
             [userLikedId],
@@ -387,8 +401,27 @@ const deleteRowUserLike = (userId, userLikedId, connection) => {
   });
 };
 
+const checkProfileImage = (userId, connection) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "SELECT ImageProfile, Image1, Image2, Image3, Image4 FROM user WHERE UserId = ?",
+      [userId],
+      (err, result) => {
+        if (err) reject(500);
+        else {
+          for (let [key, value] of Object.entries(result[0])) {
+            if (value !== null) resolve(true);
+          }
+          resolve(false);
+        }
+      }
+    );
+  });
+};
+
+const deleteMessages = () => {};
+
 exports.heartClick = (req, res) => {
-  console.log(req.body);
   pool.getConnection(async (err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
@@ -399,8 +432,18 @@ exports.heartClick = (req, res) => {
           req.body.userUuid,
           connection
         );
+
         let p = {};
         if (req.body.isLiked) {
+          let userHasImages = await checkProfileImage(userId, connection);
+          if (!userHasImages) {
+            connection.release();
+            return res
+              .status(403)
+              .json({
+                err: "Vous devez avoir au moins une photo pour pouvoir liker.",
+              });
+          }
           p = await addRowUserLike(userId, userLikedId, connection);
         } else {
           p = await deleteRowUserLike(userId, userLikedId, connection);

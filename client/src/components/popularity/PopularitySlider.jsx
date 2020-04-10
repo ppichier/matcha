@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import "./PopularitySlider.css";
 import Slider from "react-slick";
+import { Link } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { useEffect } from "react";
 import moment from "moment";
@@ -60,14 +61,19 @@ const PopularitySlider = ({ people }) => {
       {people.map((p, i) => {
         return (
           <div key={i}>
-            <div className="popularity-slider-container">
-              {imageProfile(p)}
-              <div className="popularity-slider-pseudo">{p.pseudo}</div>
-              <div className="popularity-slider-age">{p.age} ans</div>
-              <div className="popularity-slider-date">
-                {moment(p.date).fromNow()}
+            <Link
+              to={`profile/${p.uuid}`}
+              style={{ color: "inherit", textDecoration: "inherit" }}
+            >
+              <div className="popularity-slider-container">
+                {imageProfile(p)}
+                <div className="popularity-slider-pseudo">{p.pseudo}</div>
+                <div className="popularity-slider-age">{p.age} ans</div>
+                <div className="popularity-slider-date">
+                  {moment(p.date).fromNow()}
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
         );
       })}

@@ -16,8 +16,6 @@ import { notificationAlert } from "../functions/notification";
 
 const MatchMe = () => {
   const [values, setValues] = useState({
-    image: [],
-    uploading: false,
     profiles: [],
     resultsNumber: 0,
     activateFilter: false,
@@ -157,21 +155,20 @@ const MatchMe = () => {
     else setFirstFilter(event, moreProfilesTmp);
   };
 
-  const onHeartClick = (i) => {
+  const onHeartClick = (i, uuid) => {
+    let newProfiles = [...values.profiles];
+    let idx = newProfiles.findIndex((p) => p.userUuid === uuid);
     let userLiked = {
-      userUuid: "",
-      isLiked: 0,
+      userUuid: uuid,
+      isLiked: !newProfiles[idx].isLiked,
     };
-    let newProfiles = values.profiles.map((profile, j) => {
-      if (i === j) {
-        profile.isLiked = !profile.isLiked;
-        userLiked.userUuid = profile.userUuid;
-        userLiked.isLiked = profile.isLiked;
-        return profile;
-      } else return profile;
-    });
-    heartClick(userLiked).then(() => {
-      setValues({ ...values, profiles: newProfiles });
+    heartClick(userLiked).then((data) => {
+      if (data.err) {
+        notificationAlert(data.err, "danger", "bottom-center");
+      } else {
+        newProfiles[idx].isLiked = userLiked.isLiked;
+        setValues({ ...values, profiles: newProfiles });
+      }
     });
   };
 
@@ -208,7 +205,7 @@ const MatchMe = () => {
           <div className="heart-container mb-2 mr-2">
             <Button
               variant={profile.isLiked ? "danger" : "outline-secondary"}
-              onClick={() => onHeartClick(i)}
+              onClick={() => onHeartClick(i, profile.userUuid)}
               style={{
                 border: "2px solid",
                 borderRadius: "50%",

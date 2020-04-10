@@ -73,14 +73,13 @@ const Popularity = () => {
     fetchDataLike();
     fetchDataVisit();
   }, []);
-  console.log();
 
   return (
     <Fragment>
       <NavbarHeader />
 
       <Container fluid className="my-2">
-        <h3>Score de popularité :</h3>
+        {/* <h3>Score de popularité :</h3> */}
         <Row className="px-4 py-4 mb-2">
           <Col>
             <div className="mb-5 row-title">
