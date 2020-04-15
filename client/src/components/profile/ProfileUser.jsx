@@ -23,7 +23,7 @@ import { notificationAlert } from "../functions/notification";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
-const ProfileUser = ({ props, location }) => {
+const ProfileUser = ({ props, location, socket }) => {
   const [values, setValues] = useState({
     myTags: [],
     commonTags: [],
@@ -47,6 +47,16 @@ const ProfileUser = ({ props, location }) => {
   });
 
   const [widthProgressBar, setWidthProgressBar] = useState(0);
+
+  useEffect(() => {
+    socket.emit(
+      "register",
+      JSON.parse(localStorage.getItem("jwt")).token,
+      (data) => {
+        // console.log(data);
+      }
+    );
+  }, [socket]);
 
   useEffect(() => {
     const v = queryString.parse(location.search);

@@ -40,7 +40,8 @@ const port = process.env.PORT || 8000;
 
 /* TEST SOCKET */
 
-const users_connected = {};
+let users_connected = {};
+let visit_rooms = {};
 
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
@@ -60,23 +61,37 @@ io.on("connection", (socket) => {
   let userUuid = null;
 
   socket.on("register", (token, cb) => {
+    console.log(chalk.magenta("REGISTER: ", token));
     if (!users_connected.hasOwnProperty(socket.id)) {
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) return { err: "Socket connection error" };
+        if (err) {
+          console.log(chalk.yellow(err));
+          return { err: "Socket connection error" };
+        }
         users_connected[socket.id] = decoded._id;
         userUuid = decoded._id;
+        console.log(users_connected);
+        console.log(chalk.magenta(`${userUuid} est en ligne`));
+        io.to(userUuid).emit("online");
       });
     }
     cb(users_connected);
   });
 
   socket.on("logout", (userUuid, cb) => {
+    //
     // if user click on deconnect delete all row with user_id concerned
     // and emit event offline user
   });
 
+  socket.on("visit", (userUuid, guestUuid, cb) => {
+    console.log(chalk.redBright("MON ID: ", userUuid));
+    console.log(chalk.redBright("VISIT ID: ", guestUuid));
+    socket.join(guestUuid);
+  });
+
   socket.on("join", async (userUuid, guestUuid, cb) => {
-    // console.log("joining room", userUuid);
+    console.log("joining room", userUuid);
     try {
       const messages = await getAllMessages(userUuid, guestUuid);
       cb(messages);
@@ -125,6 +140,7 @@ io.on("connection", (socket) => {
           .length === 0
       ) {
         console.log(chalk.magenta("No more socket for userid: ", userIdDelete));
+        io.to(userIdDelete).emit("offline");
         // no more socket of userid so emit event offline
       } else {
         console.log("Sockets still exist for userid:", userIdDelete);

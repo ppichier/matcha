@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { readGuestProfile, readSecondaryImages } from "../../api/user";
 import CustomSpinner from "../auth/Spinner";
 
-
 import {
   faHeart,
   faComment,
@@ -17,7 +16,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Profile = ({ location, history }) => {
+const Profile = ({ location, socket }) => {
   const [values, setValues] = useState({
     indexImages: 0,
     directionImages: null,
@@ -54,6 +53,15 @@ const Profile = ({ location, history }) => {
       if (data.err) {
         setInfosUser({ ...infosUser, loading: false, redirect: true });
       } else {
+        const uuid = JSON.parse(localStorage.getItem("jwt")).user._id;
+        socket.emit("visit", uuid, id, () => {});
+        socket.on("online", () => {
+          console.log(`${id} est en ligne`);
+        });
+
+        socket.on("offline", () => {
+          console.log(`${id} est hors ligne`);
+        });
         setInfosUser({ ...data.dataUser, loading: false });
         setCurrentUuid();
         const secImg = await readSecondaryImages(); // SECONDARY UUID NOT IMPLEMENTED
