@@ -82,7 +82,7 @@ const Popularity = () => {
         {/* <h3>Score de popularité :</h3> */}
         <Row className="px-4 py-4 mb-2">
           <Col>
-            <div className="mb-5 row-title">
+            <div className="mb-3 row-title">
               <span>
                 Les derniers <span>Like</span> reçus
               </span>
@@ -91,7 +91,7 @@ const Popularity = () => {
           </Col>
         </Row>
         <Row className="px-4 py-4">
-          <div className="mb-5 row-title">
+          <div className="mb-3 row-title">
             <span>
               Les dernieres <span>visites</span> reçues
             </span>

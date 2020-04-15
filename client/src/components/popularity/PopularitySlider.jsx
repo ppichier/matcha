@@ -65,7 +65,7 @@ const PopularitySlider = ({ people }) => {
               to={`profile/${p.uuid}`}
               style={{ color: "inherit", textDecoration: "inherit" }}
             >
-              <div className="popularity-slider-container">
+              <div className="popularity-slider-container py-3 px-3">
                 {imageProfile(p)}
                 <div className="popularity-slider-pseudo">{p.pseudo}</div>
                 <div className="popularity-slider-age">{p.age} ans</div>

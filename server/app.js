@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join", async (userUuid, guestUuid, cb) => {
-    console.log("joining room", userUuid);
+    // console.log("joining room", userUuid);
     try {
       const messages = await getAllMessages(userUuid, guestUuid);
       cb(messages);
