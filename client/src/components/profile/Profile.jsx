@@ -58,7 +58,7 @@ const Profile = ({ location, socket }) => {
         socket.on("online", () => {
           console.log(`${id} est en ligne`);
         });
-
+        // return socket  clean after render !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         socket.on("offline", () => {
           console.log(`${id} est hors ligne`);
         });
