@@ -79,9 +79,9 @@ const NavbarHeader = () => {
             id="basic-nav-dropdown"
             alignRight
           >
-            <NavDropdown.Item href="/profile/me">Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/profile/me" className="drop">Profile</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="/login" onClick={handleLogout}>
+            <NavDropdown.Item href="/login" onClick={handleLogout} className="drop">
               Déconnexion
             </NavDropdown.Item>
           </NavDropdown>

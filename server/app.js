@@ -49,9 +49,7 @@ Object.filter = (obj, predicate) =>
 
 const findSocketsGivenUuid = (uuid) => {
   let sockets = Object.filter(users_connected, (u) => u === uuid);
-  console.log("++++++++++++++++++++");
   console.log(Object.keys(sockets));
-  console.log("++++++++++++++++++++");
   return Object.keys(sockets);
 };
 
@@ -86,6 +84,13 @@ io.on("connection", (socket) => {
     }
   });
 
+  // +++++++++++++++++++++++++++
+
+  //  socket.on("log", (userUuid, cb) => {
+  //   console.log("en ligne", userUuid);
+  // });
+
+  // +++++++++++++++++++++++++++++++++
   socket.on("sendMessage", async (userUuid, guestUuid, message, cb) => {
     // socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
     try {

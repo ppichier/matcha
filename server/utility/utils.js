@@ -25,6 +25,29 @@ exports.getUserTags = userId => {
   });
 };
 
+exports.getUserInfos = userUuid => {
+  return new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        error.handleError(res, err, "Internal error", 500, connection);
+      } else {
+        connection.query(
+          `SELECT * FROM user WHERE Uuid= ?`,
+          [userUuid],
+          (err, result) => {
+            connection.release();
+            if (err) {
+              reject("Internal Error");
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      }
+    });
+  });
+};
+
 exports.validatorFilter = selectedTags => {
   return new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
@@ -54,4 +77,24 @@ exports.sortProfile = profiles => {
     ["distance", "tagsNumber", "score"],
     ["asc", "desc", "desc"]
   );
+};
+
+exports.getIds = (userUuid, userLikedUuid, connection) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      // We have to check limit score
+      "SELECT UserId FROM user WHERE Uuid = ?; SELECT UserId FROM user WHERE Uuid = ?",
+      [[userUuid], [userLikedUuid]],
+      (err, result) => {
+        if (err) reject(500);
+        else {
+          console.log(result)
+          resolve({
+            userId: result[0][0].UserId,
+            userIdSend: result[1][0].UserId,
+          });
+        }
+      }
+    );
+  });
 };

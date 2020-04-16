@@ -18,7 +18,9 @@
     /*-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff,  0 0 80px #fff,  0 0 100px #fff;*/
     text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff,  0 0 80px #fff,  0 0 100px #fff;
 }
-
+.dropdown-item:hover{
+   text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue !important;
+}
 @-webkit-keyframes Gradient {
   0% {
     background-position: 0% 50%;

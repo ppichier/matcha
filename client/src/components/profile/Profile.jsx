@@ -6,30 +6,33 @@ import "./ProfileUser.css";
 import CardPicture from "../match/CardPicture";
 import NavbarHeader from "../navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { readGuestProfile, readSecondaryImages } from "../../api/user";
+import { readGuestProfile, readSecondaryImages, userBlocked,  userReport} from "../../api/user";
+import {heartClick} from "../../api";
 import CustomSpinner from "../auth/Spinner";
-
+import moment from "moment";
+import iconProfile from '../../images/imgIconProfil.png';
 
 import {
   faHeart,
   faComment,
+  faCommentDots,
   faUserSlash,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Profile = ({ location, history }) => {
+const Profile = ({ location, history}) => {
+  
   const [values, setValues] = useState({
     indexImages: 0,
     directionImages: null,
-    fakeCount: false,
-    like: 0,
   });
   const [currentUuid, setCurrentUuid] = useState("");
   const [infoSeconder, setInfoSeconder] = useState({
-    fakeCount: false,
-    logout: null,
-    like: 0,
-    likeMe: 0,
+    userReport: "",
+    userBlocked: "",
+    logout: "",
+    like: "",
+    likeMe: "",
   });
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
   const [infosUser, setInfosUser] = useState({
@@ -41,13 +44,14 @@ const Profile = ({ location, history }) => {
     age: "",
     sexualPreference: "",
     description: "",
+    score: "",
+    distance: "",
     myTags: [],
     redirect: false,
     loading: true,
   });
 
   let { id } = useParams();
-
   const fetchData = async () => {
     try {
       const data = await readGuestProfile(id);
@@ -55,8 +59,9 @@ const Profile = ({ location, history }) => {
         setInfosUser({ ...infosUser, loading: false, redirect: true });
       } else {
         setInfosUser({ ...data.dataUser, loading: false });
+        setInfoSeconder({ ...data.dataLike});
         setCurrentUuid();
-        const secImg = await readSecondaryImages(); // SECONDARY UUID NOT IMPLEMENTED
+        const secImg = await readSecondaryImages(id); // SECONDARY UUID NOT IMPLEMENTED
         if (secImg.err) {
           // return;
         } else {
@@ -76,6 +81,10 @@ const Profile = ({ location, history }) => {
     }
   }, [id]);
 
+
+      // socket.emit("joint",id, () => {
+      // });
+
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
@@ -85,52 +94,79 @@ const Profile = ({ location, history }) => {
     setValues(tmp);
   };
 
-  const handleFakeCount = () => {
-    // setInfoSeconder({ ...infoSeconder, fakeCount: !.infoSeconder.fakeCount });
+  const isUserBlocked = (i) => {
+    setInfoSeconder({ ...infoSeconder, userBlocked: i });
+    userBlocked({
+       userUuid: id,
+      userBlocked: i,
+    }).then(() => {});  
   };
 
-  const handleLike = () => {
-    setInfoSeconder({ ...infoSeconder, like: !infoSeconder.like });
-    // readGuestProfile({
-    //   query.uuid,
-    // })
-    //   .then(data => {
-    //     if (data.err) {
-    //       setInfosUser({ ...infosUser, redirect: true });
-    //     } else {
-    //       setInfosUser({ ...data.dataUser});
-    //       setValues({...data.dataLike})
-    //     }
-    //   })
-    //   .catch(err => console.log(err));
-  };
+const onHeartClick = (i) => {
+  if(infoSeconder.userBlocked !== 1)
+  {
+    setInfoSeconder({ ...infoSeconder, like: i });
+    let userLiked = {
+      userUuid: id,
+      isLiked: i,
+    }
+    heartClick(userLiked).then(() => {});  
+  }
+};
 
-  const handleiconLike = () => {
-    if (infoSeconder.like === 0)
+  const handleIconLike = () => {
+    if (infoSeconder.like === 1)
       return (
         <FontAwesomeIcon
           icon={faHeart}
-          className="fa-2x faHeart"
-          onClick={handleLike}
+           className="fa-2x faHeartLiked"
+          onClick={() => onHeartClick(0)}
+        
+        />
+      );
+    else if(infoSeconder.like === 0 && infoSeconder.likeMe === 1)
+      return (
+        <FontAwesomeIcon
+          icon={faHeart}
+          className="fa-2x faHeartLikeMe"
+          onClick={() => onHeartClick(1)}
         />
       );
     else
       return (
         <FontAwesomeIcon
           icon={faHeart}
-          className="fa-2x faHeartliked"
-          onClick={handleLike}
+          className="fa-2x faHeart"
+          onClick={() => onHeartClick(1)}
         />
       );
   };
 
-  const handleiconfakeCount = () => {
-    if (values.fakeCount === true)
+   const handleIconChat = () => {
+    if (infoSeconder.likeMe === 1  && infoSeconder.like === 1)
+      return (
+        <FontAwesomeIcon
+          icon={faCommentDots} 
+          className="fa-2x faComment" 
+          onClick={event =>  window.location.href='/chat'}  
+        />
+      );
+    else
+      return (
+        <FontAwesomeIcon
+          icon={faComment} 
+          className="fa-2x "
+        />
+      );
+  };
+        
+  const handleUserBlocked = () => {
+    if (infoSeconder.userBlocked === 1)
       return (
         <FontAwesomeIcon
           icon={faUserSlash}
-          className="fa-2x faHeartliked"
-          onClick={handleFakeCount}
+          className="fa-2x faUserBlocked"
+          onClick={() => isUserBlocked(0)}
         />
       );
     else
@@ -138,28 +174,48 @@ const Profile = ({ location, history }) => {
         <FontAwesomeIcon
           icon={faUser}
           className="fa-2x"
-          onClick={handleFakeCount}
+          onClick={() => isUserBlocked(1)}
         />
       );
   };
 
   const handleImages = () => {
-    return base64Images
-      .filter((e) => e !== "")
-      .map((image, i) => {
-        return (
-          <Carousel.Item key={i}>
-            <img
-              className="d-block w-100 image"
-              src={"data:image/png;base64, " + image}
-              alt="First slide"
-            />
-          </Carousel.Item>
+    if(base64Images.length > 0)
+      return base64Images
+        .filter((e) => e !== "")
+        .map((image, i) => {
+          return (
+            <Carousel.Item key={i}>
+              <img
+                className="d-block w-100 image"
+                src={"data:image/png;base64, " + image}
+                alt="First slide"
+              />
+         </Carousel.Item>
+          );
+        });
+    else
+          return (
+            <Carousel.Item>
+              <img
+                className="d-block w-100 image"
+                src={iconProfile} 
+                alt="First slide"
+              />
+         </Carousel.Item>
         );
-      });
   };
 
-  const isShow = () => {
+  const handleUserReport = (e) =>{
+    let fakeAccount = (e.target.checked === true) ?  1 : 0
+    setInfoSeconder({ ...infoSeconder, userReport: e.target.checked});
+    userReport({
+      userUuid: id,
+      userReport: fakeAccount
+    }).then(() => {});  
+  }
+
+  const showAge = () => {
     if (infosUser.age >= 18) return <Fragment> {infosUser.age} ans</Fragment>;
   };
 
@@ -168,7 +224,7 @@ const Profile = ({ location, history }) => {
     if (infosUser.gender === 2) return " une Femme";
     if (infosUser.gender === 3) return " un Transmasculin";
     if (infosUser.gender === 4) return " une Transféminine";
-    if (infosUser.gender === 5) return " Bigenre";
+    if (infosUser.gender === 5 || infosUser.gender === 6) return " Bigenre";
     else return "";
   };
   const convSexualPtoString = () => {
@@ -176,7 +232,7 @@ const Profile = ({ location, history }) => {
     else if (infosUser.sexualPreference === 2) return " une Femme ";
     else if (infosUser.sexualPreference === 3) return " un Transmasculin ";
     else if (infosUser.sexualPreference === 4) return " une Transféminine ";
-    else if (infosUser.sexualPreference === 5) return " Bigenre ";
+    else if (infosUser.sexualPreference === 5 || infosUser.sexualPreference === 6) return " Bigenre ";
     else return "";
   };
 
@@ -194,12 +250,17 @@ const Profile = ({ location, history }) => {
               <Col md={4} className="mt-5 ">
                 <Row>
                   <Col>
-                    <Row className="row-pictureProfile">
+                    <Row className="row-pictureProfile mt-4 py-3"  style={{ justifyContent: "center" }}>
                       <CardPicture
+                        className="styleCard"
+                        firstName={infosUser.firstName}
                         lastName={infosUser.lastName}
                         pseudo={infosUser.pseudo}
-                        birthday={infosUser.age}
-                        userUuid={currentUuid}
+                        age={infosUser.age}
+                        stateConnection={infoSeconder.logout ? moment(infoSeconder.logout).fromNow() : 'en ligne'}
+                        score={infosUser.score}
+                        distance={infosUser.distance}
+                        userUuid={id}
                       />
                     </Row>
                     <Row
@@ -210,29 +271,29 @@ const Profile = ({ location, history }) => {
                         padding: "0 10%",
                       }}
                     >
-                      {handleiconLike()}
-                      <FontAwesomeIcon icon={faComment} className="fa-2x" />
-                      {handleiconfakeCount()}
+                      {handleIconLike()}
+                      {handleIconChat()}
+                      {handleUserBlocked()}
                     </Row>
                   </Col>
                 </Row>
               </Col>
-              <Col md={8} className="pl-5">
+              <Col md={8} className="pl-5 mt-5">
                 <Carousel
                   activeIndex={values.indexImages}
                   direction={values.directionImages}
                   onSelect={handleSelect}
-                  className="mt-5"
+                  className="mt-4"
                 >
                   {handleImages()}
                 </Carousel>
 
                 <Row className="mb-4 pt-3 pb-4 mt-4 Row">
                   <Col>
-                    <h3 className="descp">{infosUser.firstName}</h3>
                     <p className="descp">
-                      Je suis {convGender()}, {isShow()}, je cherche
-                      {convSexualPtoString()} ...
+                      Je suis {convGender()}, je cherche
+                      {convSexualPtoString()} .
+                      {showAge()}
                     </p>
                   </Col>
                 </Row>
@@ -260,10 +321,9 @@ const Profile = ({ location, history }) => {
                   <Form.Check
                     style={{ color: "red" }}
                     type="checkbox"
-                    id="fake account"
+                    checked={infoSeconder.userReport}
                     label="Signaler un faux compte"
-                    name="fake_account"
-                    onChange={handleFakeCount}
+                    onChange={(e) => handleUserReport(e)}
                   />
                 </Form>
               </Col>

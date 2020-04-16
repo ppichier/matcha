@@ -1,6 +1,8 @@
 const fs = require("fs");
 const error = require("./error");
 const pool = require("../db");
+const utils = require("../utility/utils");
+
 
 exports.updateProfile = (req, res) => {
   const {
@@ -280,18 +282,18 @@ exports.deleteSecondaryImage = (req, res) => {
   });
 };
 
-exports.readSecondaryImages = (req, res) => {
+ exports.readSecondaryImages = (req, res) => {
+  let uuid = req.body.guestUuid ? req.body.guestUuid : req.userUuid;
   let image64 = [];
   let a = ["image1", "image2", "image3", "image4"];
-
-  if (fs.existsSync(__dirname + `/../images/${req.userUuid}/`)) {
-    filesName = fs.readdirSync(__dirname + `/../images/${req.userUuid}/`);
+  if (fs.existsSync(__dirname + `/../images/${uuid}/`)) {
+    filesName = fs.readdirSync(__dirname + `/../images/${uuid}/`);
     filesNameTmp = filesName.map((e) => e.substring(0, 6));
     for (let i = 0; i < 4; i++) {
       let j = filesNameTmp.indexOf(a[i]);
       if (j !== -1) {
         const bitmap = fs.readFileSync(
-          __dirname + `/../images/${req.userUuid}/` + filesName[j]
+          __dirname + `/../images/${uuid}/` + filesName[j]
         );
         image64.push(new Buffer.from(bitmap).toString("base64"));
       } else {
@@ -411,8 +413,16 @@ exports.readProfile = async (req, res) => {
 exports.readGuestProfile = async (req, res) => {
   let userId = req.userId;
   const uuid = req.body.guestUuid;
-
   const userUuid = req.userUuid;
+  let lat = "";
+  let lng = "";
+  try {
+        let result = await utils.getUserInfos(userUuid);
+        lat = result[0].Lat;
+        lng = result[0].Lng
+      } catch {
+          error.handleError(res, err, "Intenal error", 500, connection);
+        }
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
@@ -422,10 +432,12 @@ exports.readGuestProfile = async (req, res) => {
          SELECT tag.Label AS TagLabel FROM user_tag INNER JOIN tag ON user_tag.TagId = tag.TagId WHERE UserId = (SELECT UserId FROM user WHERE Uuid = ?);
          SELECT tag.Label AS CommonTagsLabel FROM  tag;
          SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId FROM user WHERE Uuid = ?);
-         SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId FROM user WHERE Uuid = ?)`,
-        [uuid, uuid, uuid, userUuid, userUuid, uuid],
+         SELECT LikeSender, LikeReceiver FROM user_like WHERE LikeSender = (SELECT UserId FROM user WHERE Uuid = ?) And LikeReceiver = (SELECT UserId FROM user WHERE Uuid = ?);
+         SELECT ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE Uuid = ?;
+         SELECT UserBlockedSender, UserBlockedReceiver FROM user_blocked WHERE UserBlockedSender = (SELECT UserId FROM user WHERE Uuid = ?) And UserBlockedReceiver = (SELECT UserId FROM user WHERE Uuid = ?);
+         SELECT UserReportSender, UserReportReceiver FROM user_report WHERE UserReportSender = (SELECT UserId FROM user WHERE Uuid = ?) And UserReportReceiver = (SELECT UserId FROM user WHERE Uuid = ?)`,
+        [uuid, uuid, uuid, userUuid, userUuid, uuid, uuid, userUuid, uuid, userUuid, uuid],
         (err, result) => {
-          // console.log(result);
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else if (result[0].length === 0) {
@@ -438,6 +450,7 @@ exports.readGuestProfile = async (req, res) => {
                 if (err)
                   error.handleError(res, err, "Intenal error", 500, connection);
                 else {
+                  console.log(result[5][0].DISTANCE)
                   connection.release();
                   const myTags = result[1].map((e) => e.TagLabel);
                   let dataUser = {
@@ -450,16 +463,16 @@ exports.readGuestProfile = async (req, res) => {
                     gender: result[0][0].GenreId,
                     sexualPreference: result[0][0].SexualOrientationId,
                     description: result[0][0].Bio,
+                    score: result[0][0].Score,
+                    distance: Math.round(result[5][0].DISTANCE * 100) / 100,
                     myTags,
-                    lat: result[0][0].Lat,
-                    lng: result[0][0].Lng,
-                    localisationActive: result[0][0].LocalisationActive,
                   };
                   let dataLike = {
-                    userBlocked: false,
+                    userReport: result[7].length > 0 ? true : false,
+                    userBlocked: result[6].length > 0 ? 1 : 0,
                     logout: result[0][0].LastConnection,
-                    like: result[3].length > 0 ? 1 : 0,
-                    likeMe: result[4].length > 0 ? 1 : 0,
+                    like: result[4].length > 0 ? 1 : 0,
+                    likeMe: result[3].length > 0 ? 1 : 0, 
                   };
                   return res.json({
                     dataUser,
@@ -475,6 +488,92 @@ exports.readGuestProfile = async (req, res) => {
   });
 };
 
+
+exports.userBlocked = (req, res) => {
+  pool.getConnection(async (err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      try {
+        let { userId, userIdSend } = await utils.getIds(
+          req.userUuid,
+          req.body.userUuid,
+          connection
+        );
+        let p = {};
+        if (req.body.userBlocked) {
+           connection.query(
+            "INSERT INTO user_blocked (UserBlockedSender, UserBlockedReceiver) VALUES (?, ?)",
+            [userId, userIdSend],
+            (err, result) => {
+            if (err) reject(500);
+            else {
+              connection.release();
+              p =({ msg: "user est bloque" });
+            }
+          });
+        } else {
+           connection.query(
+            "DELETE FROM user_blocked WHERE UserBlockedSender = ? AND UserBlockedReceiver = ?",
+            [userId, userIdSend],
+            (err, result) => {
+            if (err) reject(500);
+            else {
+              connection.release();
+              p =({ msg: "user est debloque" });
+            }
+          });
+        }
+        return res.json(p);
+      } catch {
+        error.handleError(res, err, "Internal error", 500, connection);
+      }
+    }
+  });
+};
+
+exports.userReport = (req, res) => {
+  pool.getConnection(async (err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      try {
+        let { userId, userIdSend } = await utils.getIds(
+          req.userUuid,
+          req.body.userUuid,
+          connection
+        );
+        let p = {};
+        if (req.body.userReport) {
+           connection.query(
+            "INSERT INTO user_report (UserReportSender, UserReportReceiver) VALUES (?, ?)",
+            [userId, userIdSend],
+            (err, result) => {
+            if (err) reject(500);
+            else {
+              connection.release();
+              p =({ msg: "user est bloque" });
+            }
+          });
+        } else {
+           connection.query(
+            "DELETE FROM user_report WHERE UserReportSender = ? AND UserReportReceiver = ?",
+            [userId, userIdSend],
+            (err, result) => {
+            if (err) reject(500);
+            else {
+              connection.release();
+              p =({ msg: "user est debloque" });
+            }
+          });
+        }
+        return res.json(p);
+      } catch {
+        error.handleError(res, err, "Internal error", 500, connection);
+      }
+    }
+  });
+};
 exports.changePage = (req, res) => {
   return res.json({ auth: true });
 };

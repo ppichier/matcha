@@ -105,7 +105,8 @@ exports.filterProfile = (req, res) => {
             connection.query(
               `SELECT *, (SELECT count(*) FROM user WHERE ${reqSql} ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE ${reqSql} ORDER BY DISTANCE ASC ${offset};
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
-                SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
+                SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?;
+                SELECT UserLikeId AS likesMe, LikeSender AS UserId FROM user_like WHERE LikeReceiver = ?`,
               [
                 sexualOrientationId,
                 genreId,
@@ -127,6 +128,7 @@ exports.filterProfile = (req, res) => {
                 userIdUser,
                 sexualOrientationId,
                 genreId,
+                userIdUser,
                 userIdUser,
               ],
               (err, result) => {
@@ -158,7 +160,8 @@ exports.filterProfile = (req, res) => {
                     _.merge(
                       _.keyBy(a[0], "UserId"),
                       _.keyBy(a[1], "UserId"),
-                      _.keyBy(a[2], "UserId")
+                      _.keyBy(a[2], "UserId"),
+                      _.keyBy(a[3], "UserId")
                     )
                   )
                     .map((e) => ({
@@ -169,6 +172,7 @@ exports.filterProfile = (req, res) => {
                       distance: Math.round(e.DISTANCE * 100) / 100,
                       userUuid: e.Uuid,
                       isLiked: e.likes ? e.likes : 0,
+                      likeMe: e.likeMe? e.likesMe : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,
                     }))
@@ -247,7 +251,8 @@ exports.firstFilter = (req, res) => {
             connection.query(
               `SELECT *,( SELECT count(*) FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) AND UserId <> ? ORDER BY DISTANCE ASC LIMIT 20 OFFSET ?;
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
-               SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?`,
+               SELECT UserLikeId AS likes, LikeReceiver AS UserId FROM user_like WHERE LikeSender= ?;
+                SELECT UserLikeId AS likesMe, LikeSender AS UserId FROM user_like WHERE LikeReceiver = ?`,
 
               [
                 sexualOrientationId,
@@ -258,6 +263,7 @@ exports.firstFilter = (req, res) => {
                 moreProfiles[1],
                 sexualOrientationId,
                 genreId,
+                userIdUser,
                 userIdUser,
               ],
               async (err, result) => {
@@ -281,7 +287,9 @@ exports.firstFilter = (req, res) => {
                     _.merge(
                       _.keyBy(a[0], "UserId"),
                       _.keyBy(a[1], "UserId"),
-                      _.keyBy(a[2], "UserId")
+                      _.keyBy(a[2], "UserId"),
+                      _.keyBy(a[3], "UserId")
+
                     )
                   )
                     .map((e) => ({
@@ -292,12 +300,12 @@ exports.firstFilter = (req, res) => {
                       distance: Math.round(e.DISTANCE * 100) / 100,
                       userUuid: e.Uuid,
                       isLiked: e.likes ? e.likes : 0,
+                      likesMe: e.likesMe ? e.likesMe : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,
                     }))
                     .value();
                   let profiles = utils.sortProfile(merged);
-                  console.log(profiles.length);
                   return res.json({
                     profiles,
                     resultsNumber,
@@ -313,24 +321,6 @@ exports.firstFilter = (req, res) => {
   });
 };
 
-const getIds = (userUuid, userLikedUuid, connection) => {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      // We have to check limit score
-      "SELECT UserId FROM user WHERE Uuid = ?; SELECT UserId FROM user WHERE Uuid = ?",
-      [[userUuid], [userLikedUuid]],
-      (err, result) => {
-        if (err) reject(500);
-        else {
-          resolve({
-            userId: result[0][0].UserId,
-            userLikedId: result[1][0].UserId,
-          });
-        }
-      }
-    );
-  });
-};
 
 const addRowUserLike = (userId, userLikedId, connection) => {
   // Checi if B likes A -> yes : socketio emit notif
@@ -388,22 +378,21 @@ const deleteRowUserLike = (userId, userLikedId, connection) => {
 };
 
 exports.heartClick = (req, res) => {
-  console.log(req.body);
-  pool.getConnection(async (err, connection) => {
+    pool.getConnection(async (err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       try {
-        let { userId, userLikedId } = await getIds(
+        let { userId, userIdSend } = await utils.getIds(
           req.userUuid,
           req.body.userUuid,
           connection
         );
         let p = {};
         if (req.body.isLiked) {
-          p = await addRowUserLike(userId, userLikedId, connection);
+          p = await addRowUserLike(userId, userIdSend, connection);
         } else {
-          p = await deleteRowUserLike(userId, userLikedId, connection);
+          p = await deleteRowUserLike(userId, userIdSend, connection);
         }
         return res.json(p);
       } catch {
