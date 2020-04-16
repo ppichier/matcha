@@ -84,13 +84,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // +++++++++++++++++++++++++++
-
-  //  socket.on("log", (userUuid, cb) => {
-  //   console.log("en ligne", userUuid);
-  // });
-
-  // +++++++++++++++++++++++++++++++++
   socket.on("sendMessage", async (userUuid, guestUuid, message, cb) => {
     // socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
     try {

@@ -24,7 +24,7 @@ const CardPicture = ({ pseudo, firstName, lastName, age, stateConnection, score,
       .catch((err) => console.log(err));
   }, [base64Image, userUuid]);
 
-  let stateConnectionUser = (stateConnection) ? "En ligne " + (stateConnection) : ""
+  let stateConnectionUser = (stateConnection) ? (stateConnection) : ""
 
   const handleImage = () => {
     if (base64Image) {
@@ -57,8 +57,8 @@ const CardPicture = ({ pseudo, firstName, lastName, age, stateConnection, score,
   const handleConnection = () => {
     if(stateConnectionUser === "en ligne")
      return(<div className="pt-1 connection" style={{color: "#32CD32"}}>{stateConnectionUser}</div>);
-    else
-      return(<div className="pt-1 connection" style={{color: "#696969"}}>{stateConnectionUser}</div>)
+    else if(stateConnectionUser)
+      return(<div className="pt-1 connection" style={{color: "#696969"}}>{"En ligne " + stateConnectionUser}</div>)
 
   }
   const isShow = (age) => {

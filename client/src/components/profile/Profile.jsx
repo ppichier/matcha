@@ -81,10 +81,6 @@ const Profile = ({ location, history}) => {
     }
   }, [id]);
 
-
-      // socket.emit("joint",id, () => {
-      // });
-
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
       ...values,
