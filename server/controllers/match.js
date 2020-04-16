@@ -132,7 +132,6 @@ exports.filterProfile = (req, res) => {
                 userIdUser,
               ],
               (err, result) => {
-                console.log(result[0]);
                 if (err) {
                   error.handleError(res, err, "Intenal error", 500, connection);
                 } else {
@@ -172,7 +171,7 @@ exports.filterProfile = (req, res) => {
                       distance: Math.round(e.DISTANCE * 100) / 100,
                       userUuid: e.Uuid,
                       isLiked: e.likes ? e.likes : 0,
-                      likeMe: e.likeMe? e.likesMe : 0,
+                      likeMe: e.likeMe ? e.likesMe : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,
                     }))
@@ -289,7 +288,6 @@ exports.firstFilter = (req, res) => {
                       _.keyBy(a[1], "UserId"),
                       _.keyBy(a[2], "UserId"),
                       _.keyBy(a[3], "UserId")
-
                     )
                   )
                     .map((e) => ({
@@ -320,7 +318,6 @@ exports.firstFilter = (req, res) => {
     }
   });
 };
-
 
 const addRowUserLike = (userId, userLikedId, connection) => {
   // Checi if B likes A -> yes : socketio emit notif
@@ -378,7 +375,7 @@ const deleteRowUserLike = (userId, userLikedId, connection) => {
 };
 
 exports.heartClick = (req, res) => {
-    pool.getConnection(async (err, connection) => {
+  pool.getConnection(async (err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
