@@ -14,6 +14,8 @@ const {
   updateProfile,
   deleteTag,
   readGuestProfile,
+  userBlocked,
+  userReport,
 } = require("../controllers/user");
 
 const { getUserId } = require("../middlewares");
@@ -64,7 +66,7 @@ router.post(
   deleteSecondaryImage
 );
 
-router.get("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
+router.post("/profile/readSecondaryImages", verifyToken, readSecondaryImages);
 router.post("/profile/readImage", verifyToken, readImage);
 router.post("/profile/readProfile", verifyToken, readProfile);
 router.post(
@@ -73,6 +75,9 @@ router.post(
   getUserId,
   readGuestProfile
 );
+router.post("/profile/userBlocked", verifyToken, userBlocked);
+router.post("/profile/userReport", verifyToken, userReport);
+
 // router.post("/profile/updateProfile", updateProfileValidator, updateProfile);
 // router.post("/profile/updateProfile", updateProfile);
 

@@ -64,6 +64,8 @@ const MatchMe = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShow]);
 
+  console.log(values.profiles.likesMe)
+
   const handleShow = (showParams) => {
     setIsShow(showParams);
     let btn = showParams === "match" ? "search" : "match";
@@ -204,8 +206,8 @@ const MatchMe = () => {
           />
           <div className="heart-container mb-2 mr-2">
             <Button
-              variant={profile.isLiked ? "danger" : "outline-secondary"}
-              onClick={() => onHeartClick(i, profile.userUuid)}
+              variant = {(profile.likesMe || profile.isLiked) ? ( profile.isLiked ? "danger" : "info") : "outline-secondary"}
+              onClick={() => onHeartClick(i)}
               style={{
                 border: "2px solid",
                 borderRadius: "50%",

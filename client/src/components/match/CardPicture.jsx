@@ -6,7 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { readImage } from "../../api/user";
 
-const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
+
+
+const CardPicture = ({ pseudo, firstName, lastName, age, stateConnection, score, distance, userUuid }) => {
   const [base64Image, setBase64Image] = useState("");
   const [fakeImage, setFakeImage] = useState("");
 
@@ -21,6 +23,8 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
       })
       .catch((err) => console.log(err));
   }, [base64Image, userUuid]);
+
+  let stateConnectionUser = (stateConnection) ? (stateConnection) : ""
 
   const handleImage = () => {
     if (base64Image) {
@@ -50,7 +54,13 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
       );
     }
   };
+  const handleConnection = () => {
+    if(stateConnectionUser === "en ligne")
+     return(<div className="pt-1 connection" style={{color: "#32CD32"}}>{stateConnectionUser}</div>);
+    else if(stateConnectionUser)
+      return(<div className="pt-1 connection" style={{color: "#696969"}}>{"En ligne " + stateConnectionUser}</div>)
 
+  }
   const isShow = (age) => {
     if (age >= 18) return <div>{age} ans</div>;
     else return <Fragment />;
@@ -77,10 +87,10 @@ const CardPicture = ({ pseudo, firstName, age, score, distance, userUuid }) => {
                 />
               </span>
             </div>
-
             <div className="pt-3">
+            {handleConnection()}
               <div style={{ fontWeight: "600" }} className="pt-1">
-                {firstName}
+                {firstName} {lastName}
               </div>
               <div className="desc pt-1">{pseudo}</div>
               <div className="desc pt-1">{isShow(age)}</div>

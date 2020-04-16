@@ -8,7 +8,7 @@ import { Row, Col, Container } from "react-bootstrap";
 import { useState } from "react";
 
 const Chat = ({ socket }) => {
-  // console.log(socket);
+  console.log(socket);
 
   const [uuid, setUuid] = useState(null);
   const [guestInfos, setGuestInfos] = useState({ uuid: null });
@@ -26,11 +26,6 @@ const Chat = ({ socket }) => {
   const sendLastMessage = (msg) => {
     setLastMessage(msg);
   };
-  //   const test = () => {
-  //       const tet1 = testPicker();
-  //       const test2 = testNimblePicker();
-  //       console.log(test2)
-  // }
 
   return (
     <Fragment>

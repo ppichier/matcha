@@ -50,9 +50,7 @@ Object.filter = (obj, predicate) =>
 
 const findSocketsGivenUuid = (uuid) => {
   let sockets = Object.filter(users_connected, (u) => u === uuid);
-  console.log("++++++++++++++++++++");
   console.log(Object.keys(sockets));
-  console.log("++++++++++++++++++++");
   return Object.keys(sockets);
 };
 

@@ -7,8 +7,7 @@ import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "../../api/auth";
-// localStorage.getItem("jwt")
-// jwt.user._d
+
 const NavbarHeader = () => {
   const handleLogout = () => {
     if (typeof window != "undefined") {
@@ -31,25 +30,9 @@ const NavbarHeader = () => {
           </Nav.Link>
           <Nav.Link href="/popularity">
             <span className="navbar-tab">Popularite</span>
-            <sup className="sup-notification-text">
-              <Badge
-                style={{ backgroundColor: "#FFDC80", color: "white" }}
-                pill
-              >
-                9
-              </Badge>
-            </sup>
           </Nav.Link>
           <Nav.Link href="/chat">
             <span className="navbar-tab">Chat</span>
-            <sup className="sup-notification-text">
-              <Badge
-                style={{ backgroundColor: "#FCAF45", color: "white" }}
-                pill
-              >
-                99+
-              </Badge>
-            </sup>
           </Nav.Link>
         </Nav>
       </Navbar.Collapse>
@@ -79,9 +62,9 @@ const NavbarHeader = () => {
             id="basic-nav-dropdown"
             alignRight
           >
-            <NavDropdown.Item href="/profile/me">Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/profile/me" className="drop">Profile</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="/login" onClick={handleLogout}>
+            <NavDropdown.Item href="/login" onClick={handleLogout} className="drop">
               Déconnexion
             </NavDropdown.Item>
           </NavDropdown>

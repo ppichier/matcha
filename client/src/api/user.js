@@ -72,14 +72,17 @@ export const deleteSecondaryImage = data => {
     .catch(err => console.log(err));
 };
 
-export const readSecondaryImages = () => {
+export const readSecondaryImages = (guestUuid) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/readSecondaryImages`, {
-    method: "GET",
+    method: "POST",
     headers: {
       Accept: "application/json",
-      Authorization: `Bearer ${jwt.token}`
-    }
+      Authorization: `Bearer ${jwt.token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ guestUuid })
+    
   })
     .then(res => res.json())
     .catch(err => console.log(err));
@@ -145,16 +148,33 @@ export const Picture = data => {
     .catch(err => console.log(err));
 };
 
-// export const deleteTag = tag => {
-//   let jwt = JSON.parse(localStorage.getItem("jwt"));
-//   return fetch(`${API}/profile/deleteTag`, {
-//     method: "POST",
-//     headers: {
-//       Accept: "application/json",
-//       Authorization: `Bearer ${jwt.token}`
-//     },
-//     body: JSON.stringify({ tag })
-//   })
-//     .then(res => res.json())
-//     .catch(err => console.log(err));
-// };
+export const userBlocked = userBlocked => {
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/profile/userBlocked`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt.token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ ...userBlocked })
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};
+
+export const userReport = userReport => {
+  console.log(userReport)
+  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  return fetch(`${API}/profile/userReport`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${jwt.token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ ...userReport })
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};

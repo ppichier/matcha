@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import "./Signin.css";
 import { notificationAlert } from "../functions/notification";
 
-const Signin = ({ forgotPassword }) => {
+const Signin = ({ forgotPassword}) => {
   const [values, setValues] = useState({
     pseudo: "",
     password: "",
@@ -31,6 +31,7 @@ const Signin = ({ forgotPassword }) => {
         } else {
           if (typeof window !== "undefined") {
             localStorage.setItem("jwt", JSON.stringify(data));
+            // socket.emit("log", data, () => {}
           } else {
             console.error("Failed to save in local storage");
           }
