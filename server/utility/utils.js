@@ -2,7 +2,7 @@ const error = require("../controllers/error");
 const pool = require("../db");
 const _ = require("lodash");
 
-exports.getUserTags = userId => {
+exports.getUserTags = (userId) => {
   return new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) {
@@ -25,7 +25,7 @@ exports.getUserTags = userId => {
   });
 };
 
-exports.getUserInfos = userUuid => {
+exports.getUserInfos = (userUuid) => {
   return new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) {
@@ -48,7 +48,7 @@ exports.getUserInfos = userUuid => {
   });
 };
 
-exports.validatorFilter = selectedTags => {
+exports.validatorFilter = (selectedTags) => {
   return new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) {
@@ -70,8 +70,10 @@ exports.validatorFilter = selectedTags => {
   });
 };
 
-exports.sortProfile = profiles => {
-  profiles = profiles.map(r => ({ ...r })).filter(e => e.firstName !== undefined);
+exports.sortProfile = (profiles) => {
+  profiles = profiles
+    .map((r) => ({ ...r }))
+    .filter((e) => e.firstName !== undefined);
   return _.orderBy(
     profiles,
     ["distance", "tagsNumber", "score"],
@@ -88,10 +90,9 @@ exports.getIds = (userUuid, userLikedUuid, connection) => {
       (err, result) => {
         if (err) reject(500);
         else {
-          console.log(result)
           resolve({
             userId: result[0][0].UserId,
-            userIdSend: result[1][0].UserId,
+            userLikedId: result[1][0].UserId,
           });
         }
       }

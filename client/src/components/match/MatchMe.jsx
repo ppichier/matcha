@@ -64,8 +64,6 @@ const MatchMe = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShow]);
 
-  console.log(values.profiles.likesMe)
-
   const handleShow = (showParams) => {
     setIsShow(showParams);
     let btn = showParams === "match" ? "search" : "match";
@@ -93,7 +91,7 @@ const MatchMe = () => {
       })
       .catch((err) => console.log(err));
   };
-  // console.log(values.profiles);
+
   const setFilterParams = (event, filterParams, moreProfiles) => {
     if (event) event.preventDefault();
     filterProfile({
@@ -206,8 +204,14 @@ const MatchMe = () => {
           />
           <div className="heart-container mb-2 mr-2">
             <Button
-              variant = {(profile.likesMe || profile.isLiked) ? ( profile.isLiked ? "danger" : "info") : "outline-secondary"}
-              onClick={() => onHeartClick(i)}
+              variant={
+                profile.likesMe || profile.isLiked
+                  ? profile.isLiked
+                    ? "danger"
+                    : "info"
+                  : "outline-secondary"
+              }
+              onClick={() => onHeartClick(i, profile.userUuid)}
               style={{
                 border: "2px solid",
                 borderRadius: "50%",
@@ -226,6 +230,7 @@ const MatchMe = () => {
   return (
     <Fragment>
       <NavbarHeader />
+
       <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>
           <Col md={3}>
@@ -246,7 +251,7 @@ const MatchMe = () => {
             >
               <Button
                 variant="outline-info"
-                className="btn-switsh  btn-active"
+                className="btn-switsh btn-active"
                 id="match"
                 onClick={() => handleShow("match")}
               >

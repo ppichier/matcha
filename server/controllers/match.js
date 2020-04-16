@@ -170,8 +170,8 @@ exports.filterProfile = (req, res) => {
                       age: e.Age,
                       distance: Math.round(e.DISTANCE * 100) / 100,
                       userUuid: e.Uuid,
-                      isLiked: e.likes ? e.likes : 0,
-                      likeMe: e.likeMe ? e.likesMe : 0,
+                      isLiked: e.likes ? 1 : 0,
+                      likesMe: e.likesMe ? 1 : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,
                     }))
@@ -297,8 +297,8 @@ exports.firstFilter = (req, res) => {
                       age: e.Age,
                       distance: Math.round(e.DISTANCE * 100) / 100,
                       userUuid: e.Uuid,
-                      isLiked: e.likes ? e.likes : 0,
-                      likesMe: e.likesMe ? e.likesMe : 0,
+                      isLiked: e.likes ? 1 : 0,
+                      likesMe: e.likesMe ? 1 : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,
                     }))
@@ -334,6 +334,7 @@ const addRowUserLike = (userId, userLikedId, connection) => {
             "INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?); UPDATE USER SET Score = Score + 10 WHERE UserId = ?",
             [userId, userLikedId, userLikedId],
             (err, result) => {
+              console.log(err);
               if (err) reject(500);
               else {
                 connection.release();
@@ -366,7 +367,6 @@ const deleteRowUserLike = (userId, userLikedId, connection) => {
       ],
       (err, result) => {
         if (err) {
-          console.log(err);
           reject(500);
         } else if (result.affectedRows > 0) {
           connection.query(
@@ -405,37 +405,32 @@ const checkProfileImage = (userId, connection) => {
   });
 };
 
-const deleteMessages = () => {};
-
 exports.heartClick = (req, res) => {
   pool.getConnection(async (err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       try {
-        let { userId, userIdSend } = await utils.getIds(
+        let { userId, userLikedId } = await utils.getIds(
           req.userUuid,
           req.body.userUuid,
           connection
         );
-
         let p = {};
         if (req.body.isLiked) {
           let userHasImages = await checkProfileImage(userId, connection);
           if (!userHasImages) {
             connection.release();
-            return res
-              .status(403)
-              .json({
-                err: "Vous devez avoir au moins une photo pour pouvoir liker.",
-              });
+            return res.status(403).json({
+              err: "Vous devez avoir au moins une photo pour pouvoir liker.",
+            });
           }
           p = await addRowUserLike(userId, userLikedId, connection);
         } else {
-          p = await deleteRowUserLike(userId, userIdSend, connection);
+          p = await deleteRowUserLike(userId, userLikedId, connection);
         }
         return res.json(p);
-      } catch {
+      } catch (err) {
         error.handleError(res, err, "Internal error", 500, connection);
       }
     }
