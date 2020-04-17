@@ -1,0 +1,36 @@
+.notifications-box {
+  border: 3px solid #f5f7fa;
+  background-color: #fff;
+  width: 300px;
+  height: 326px;
+  border-radius: 3px;
+  overflow-y: auto;
+}
+
+.notifications-item {
+  font-weight: 400;
+  border: 3px solid #f5f7fa;
+  padding: 10px;
+  /* height: 20%; */
+}
+
+.notifications-item-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.notifications-item-title {
+  font-size: 0.8em;
+  color: #17a2b8;
+}
+
+.notifications-item-content {
+  font-size: 0.8em;
+}
+
+.notifications-item-date {
+  font-size: 0.8em;
+  color: #808080;
+  top: 3px;
+  right: 3px;
+}

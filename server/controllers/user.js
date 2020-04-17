@@ -3,7 +3,6 @@ const error = require("./error");
 const pool = require("../db");
 const utils = require("../utility/utils");
 
-
 exports.updateProfile = (req, res) => {
   const {
     email,
@@ -282,7 +281,7 @@ exports.deleteSecondaryImage = (req, res) => {
   });
 };
 
- exports.readSecondaryImages = (req, res) => {
+exports.readSecondaryImages = (req, res) => {
   let uuid = req.body.guestUuid ? req.body.guestUuid : req.userUuid;
   let image64 = [];
   let a = ["image1", "image2", "image3", "image4"];
@@ -417,12 +416,12 @@ exports.readGuestProfile = async (req, res) => {
   let lat = "";
   let lng = "";
   try {
-        let result = await utils.getUserInfos(userUuid);
-        lat = result[0].Lat;
-        lng = result[0].Lng
-      } catch {
-          error.handleError(res, err, "Intenal error", 500, connection);
-        }
+    let result = await utils.getUserInfos(userUuid);
+    lat = result[0].Lat;
+    lng = result[0].Lng;
+  } catch {
+    error.handleError(res, err, "Intenal error", 500, connection);
+  }
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
@@ -436,7 +435,19 @@ exports.readGuestProfile = async (req, res) => {
          SELECT ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE Uuid = ?;
          SELECT UserBlockedSender, UserBlockedReceiver FROM user_blocked WHERE UserBlockedSender = (SELECT UserId FROM user WHERE Uuid = ?) And UserBlockedReceiver = (SELECT UserId FROM user WHERE Uuid = ?);
          SELECT UserReportSender, UserReportReceiver FROM user_report WHERE UserReportSender = (SELECT UserId FROM user WHERE Uuid = ?) And UserReportReceiver = (SELECT UserId FROM user WHERE Uuid = ?)`,
-        [uuid, uuid, uuid, userUuid, userUuid, uuid, uuid, userUuid, uuid, userUuid, uuid],
+        [
+          uuid,
+          uuid,
+          uuid,
+          userUuid,
+          userUuid,
+          uuid,
+          uuid,
+          userUuid,
+          uuid,
+          userUuid,
+          uuid,
+        ],
         (err, result) => {
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
@@ -444,13 +455,21 @@ exports.readGuestProfile = async (req, res) => {
             error.handleError(res, err, "invalid uuid", 404, connection);
           } else {
             connection.query(
-              "INSERT INTO user_visit (UserVisitor, UserVisited) VALUES (?, ?); UPDATE USER SET Score = Score + 1 WHERE UserId = ?", // We have to check limit score
-              [userId, result[0][0].UserId, result[0][0].UserId],
+              "INSERT INTO user_visit (UserVisitor, UserVisited) VALUES (?, ?); UPDATE USER SET Score = Score + 1 WHERE UserId = ?; INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ? ", // We have to check limit score
+              [
+                userId,
+                result[0][0].UserId,
+                result[0][0].UserId,
+                userId,
+                result[0][0].UserId,
+                1,
+                result[0][0].UserId,
+              ],
               (err, r) => {
                 if (err)
                   error.handleError(res, err, "Intenal error", 500, connection);
                 else {
-                  console.log(result[5][0].DISTANCE)
+                  console.log(result[5][0].DISTANCE);
                   connection.release();
                   const myTags = result[1].map((e) => e.TagLabel);
                   let dataUser = {
@@ -472,7 +491,7 @@ exports.readGuestProfile = async (req, res) => {
                     userBlocked: result[6].length > 0 ? 1 : 0,
                     logout: result[0][0].LastConnection,
                     like: result[4].length > 0 ? 1 : 0,
-                    likeMe: result[3].length > 0 ? 1 : 0, 
+                    likeMe: result[3].length > 0 ? 1 : 0,
                   };
                   return res.json({
                     dataUser,
@@ -488,41 +507,42 @@ exports.readGuestProfile = async (req, res) => {
   });
 };
 
-
 exports.userBlocked = (req, res) => {
   pool.getConnection(async (err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       try {
-        let { userId, userIdSend } = await utils.getIds(
+        let { userId, userLikedId } = await utils.getIds(
           req.userUuid,
           req.body.userUuid,
           connection
         );
         let p = {};
         if (req.body.userBlocked) {
-           connection.query(
+          connection.query(
             "INSERT INTO user_blocked (UserBlockedSender, UserBlockedReceiver) VALUES (?, ?)",
-            [userId, userIdSend],
+            [userId, userLikedId],
             (err, result) => {
-            if (err) reject(500);
-            else {
-              connection.release();
-              p =({ msg: "user est bloque" });
+              if (err) reject(500);
+              else {
+                connection.release();
+                p = { msg: "user est bloque" };
+              }
             }
-          });
+          );
         } else {
-           connection.query(
+          connection.query(
             "DELETE FROM user_blocked WHERE UserBlockedSender = ? AND UserBlockedReceiver = ?",
-            [userId, userIdSend],
+            [userId, userLikedId],
             (err, result) => {
-            if (err) reject(500);
-            else {
-              connection.release();
-              p =({ msg: "user est debloque" });
+              if (err) reject(500);
+              else {
+                connection.release();
+                p = { msg: "user est debloque" };
+              }
             }
-          });
+          );
         }
         return res.json(p);
       } catch {
@@ -538,34 +558,38 @@ exports.userReport = (req, res) => {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       try {
-        let { userId, userIdSend } = await utils.getIds(
+        let { userId, userLikedId } = await utils.getIds(
           req.userUuid,
           req.body.userUuid,
           connection
         );
         let p = {};
         if (req.body.userReport) {
-           connection.query(
+          connection.query(
             "INSERT INTO user_report (UserReportSender, UserReportReceiver) VALUES (?, ?)",
-            [userId, userIdSend],
+            [userId, userLikedId],
             (err, result) => {
-            if (err) reject(500);
-            else {
-              connection.release();
-              p =({ msg: "user est bloque" });
+              if (err) {
+                console.log(err);
+                reject(500);
+              } else {
+                connection.release();
+                p = { msg: "user est bloque" };
+              }
             }
-          });
+          );
         } else {
-           connection.query(
+          connection.query(
             "DELETE FROM user_report WHERE UserReportSender = ? AND UserReportReceiver = ?",
-            [userId, userIdSend],
+            [userId, userLikedId],
             (err, result) => {
-            if (err) reject(500);
-            else {
-              connection.release();
-              p =({ msg: "user est debloque" });
+              if (err) reject(500);
+              else {
+                connection.release();
+                p = { msg: "user est debloque" };
+              }
             }
-          });
+          );
         }
         return res.json(p);
       } catch {
@@ -574,6 +598,7 @@ exports.userReport = (req, res) => {
     }
   });
 };
+
 exports.changePage = (req, res) => {
   return res.json({ auth: true });
 };

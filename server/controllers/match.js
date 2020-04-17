@@ -327,18 +327,30 @@ const addRowUserLike = (userId, userLikedId, connection) => {
       [userId, userLikedId],
       (err, result) => {
         if (err) reject(500);
-        else if (result.length !== 0) resolve({ msg: "like" });
-        else {
+        else if (result.length !== 0) {
+          connection.release();
+          resolve({ msg: "like" });
+        } else {
           connection.query(
             //We have to check if score is 0.
-            "INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?); UPDATE USER SET Score = Score + 10 WHERE UserId = ?",
-            [userId, userLikedId, userLikedId],
+            "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ? ;INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?); UPDATE USER SET Score = Score + 10 WHERE UserId = ?;  ",
+            [userLikedId, userId, userId, userLikedId, userLikedId],
             (err, result) => {
-              console.log(err);
               if (err) reject(500);
               else {
-                connection.release();
-                resolve({ msg: "like" });
+                let typeNotif = 2;
+                if (result[0].length > 0) typeNotif = 3;
+                connection.query(
+                  "INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;",
+                  [userId, userLikedId, typeNotif, userLikedId],
+                  (err, result) => {
+                    if (err) reject(500);
+                    else {
+                      connection.release();
+                      resolve({ msg: "like" });
+                    }
+                  }
+                );
               }
             }
           );
@@ -368,14 +380,28 @@ const deleteRowUserLike = (userId, userLikedId, connection) => {
       (err, result) => {
         if (err) {
           reject(500);
-        } else if (result.affectedRows > 0) {
+        } else if (result[0].affectedRows > 0) {
           connection.query(
-            "UPDATE USER SET Score = Score - 10 WHERE UserId = ?",
-            [userLikedId],
+            "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ? ;UPDATE USER SET Score = Score - 10 WHERE UserId = ?",
+            [userLikedId, userId, userLikedId],
             (err, result) => {
               if (err) reject(500);
-              connection.release();
-              resolve({ msg: "dislike" });
+              else if (result[0].length > 0) {
+                connection.query(
+                  "INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;",
+                  [userId, userLikedId, 5, userLikedId],
+                  (err, result) => {
+                    if (err) reject(500);
+                    else {
+                      connection.release();
+                      resolve({ msg: "like" });
+                    }
+                  }
+                );
+              } else {
+                connection.release();
+                resolve({ msg: "dislike" });
+              }
             }
           );
         } else {

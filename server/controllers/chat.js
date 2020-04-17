@@ -15,17 +15,15 @@ exports.getMatchUsers = (req, res) => {
           if (err) {
             error.handleError(res, err, "Internal error", 500, connection);
           } else {
-            console.log(result);
-            let ids = result.map(e => {
+            let ids = result.map((e) => {
               return { id: e.id, uuid: e.uuid };
             });
             // ids = [...ids, { id: userId, uuid: req.userUuid }];
-            let guestIds = result.map(e => e.id);
-            let matchPeople = result.map(e => {
+            let guestIds = result.map((e) => e.id);
+            let matchPeople = result.map((e) => {
               return { ...e, id: undefined };
             });
 
-            console.log(guestIds);
             connection.query(
               "SELECT LastMessageFrom AS `from`, LastMessageTo AS `to`, LastMessageContent AS msg FROM last_message WHERE (LastMessageFrom = ? AND LastMessageTo IN (?) ) OR (LastMessageFrom IN (?) AND LastMessageTo = ?)",
               [userId, guestIds, guestIds, userId],
@@ -39,28 +37,25 @@ exports.getMatchUsers = (req, res) => {
                     connection
                   );
                 } else {
-                  console.log(result);
-                  console.log(ids);
-                  let lastMessages = result.map(e => {
+                  let lastMessages = result.map((e) => {
                     // const f = ids.find(r => r.id === e.to);
                     // if (!f) return;
                     if (e.from === userId) {
                       return {
-                        with: ids.find(r => r.id === e.to).uuid,
+                        with: ids.find((r) => r.id === e.to).uuid,
                         from: req.userUuid,
                         // to: ids.find(r => r.id === e.to).uuid,
-                        msg: e.msg
+                        msg: e.msg,
                       };
                     } else {
                       return {
-                        with: ids.find(r => r.id === e.from).uuid,
-                        from: ids.find(r => r.id === e.from).uuid,
+                        with: ids.find((r) => r.id === e.from).uuid,
+                        from: ids.find((r) => r.id === e.from).uuid,
                         // to: req.userUuid,
-                        msg: e.msg
+                        msg: e.msg,
                       };
                     }
                   });
-                  console.log(lastMessages);
                   connection.release();
                   return res.json({ matchPeople, lastMessages });
                 }

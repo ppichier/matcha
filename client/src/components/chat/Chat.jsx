@@ -8,8 +8,6 @@ import { Row, Col, Container } from "react-bootstrap";
 import { useState } from "react";
 
 const Chat = ({ socket }) => {
-  console.log(socket);
-
   const [uuid, setUuid] = useState(null);
   const [guestInfos, setGuestInfos] = useState({ uuid: null });
   const [messageNotification, setMessageNotification] = useState(null);

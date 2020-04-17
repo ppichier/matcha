@@ -33,11 +33,13 @@
 ## [FRONT] - alert login page style
 ## [FRONT] - Profile.jsx on XS navbar padding right?? 
 ## [FRONT] - 404 page style
+## [FRONT] - Load more profiles style match
 ## [FRONT] - SVG style
 ## [FRONT] - spinner when register
 ## [FRONT] - profile/me , display firstname if xxxxl
 ## [FRONT] - maxwidth minwidth, carousel
 ## [FRONT] - score of popularity increment visual speed++ 
+## [BACK] - if user visit his own profile , it should not be in history !! (score++ , ...)
 
 
 -----------------Not important--------------

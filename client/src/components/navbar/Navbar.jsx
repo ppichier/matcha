@@ -1,14 +1,29 @@
-import React from "react";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Nav from "react-bootstrap/Nav";
-import Badge from "react-bootstrap/Badge";
+import React, { useEffect } from "react";
+import { Navbar, NavDropdown, Badge, Nav } from "react-bootstrap";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "../../api/auth";
+import { useState } from "react";
+import Notifications from "./Notifications";
+import { getNotificationsNumber } from "../../api/notifications";
 
 const NavbarHeader = () => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationsNumber, setNotificationsNumber] = useState(0);
+
+  useEffect(() => {
+    getNotificationsNumber().then((data) => {
+      console.log(data.notificationsNumber);
+      if (!data) return;
+      else if (data.err) {
+        //err
+      } else {
+        setNotificationsNumber(data.notificationsNumber);
+      }
+    });
+  });
+
   const handleLogout = () => {
     if (typeof window != "undefined") {
       if (localStorage.getItem("jwt")) {
@@ -20,6 +35,12 @@ const NavbarHeader = () => {
       }
     }
   };
+
+  const handleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    setNotificationsNumber(0);
+  };
+
   return (
     <Navbar variant="dark" expand="md" className="navbar-main">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -38,22 +59,30 @@ const NavbarHeader = () => {
       </Navbar.Collapse>
       <Navbar.Collapse className="justify-content-end">
         <Nav className="navbar-container">
-          <Nav.Link href="#home">
-            <div>
-              <FontAwesomeIcon
-                icon={faBell}
-                className="fa-lg mr-2 navbar-tab icon"
-              />
-              <sup className="sup-notification-icon">
-                <Badge
-                  style={{ backgroundColor: "#FCAF45", color: "white" }}
-                  pill
-                >
-                  4
-                </Badge>
-              </sup>
+          <div
+            className="notifications-container"
+            onClick={() => handleNotifications()}
+          >
+            <FontAwesomeIcon
+              icon={faBell}
+              className="fa-lg mr-0 navbar-tab icon"
+            />
+            <sup className="sup-notification-icon">
+              <Badge pill>
+                {notificationsNumber ? notificationsNumber : null}
+              </Badge>
+            </sup>
+            <div
+              style={{
+                position: "absolute",
+                top: "50px",
+                right: "14px",
+                zIndex: "1000",
+              }}
+            >
+              <Notifications showNotifications={showNotifications} />
             </div>
-          </Nav.Link>
+          </div>
           <NavDropdown
             className="mt-1"
             title={
@@ -62,9 +91,15 @@ const NavbarHeader = () => {
             id="basic-nav-dropdown"
             alignRight
           >
-            <NavDropdown.Item href="/profile/me" className="drop">Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/profile/me" className="drop">
+              Profile
+            </NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="/login" onClick={handleLogout} className="drop">
+            <NavDropdown.Item
+              href="/login"
+              onClick={handleLogout}
+              className="drop"
+            >
               Déconnexion
             </NavDropdown.Item>
           </NavDropdown>

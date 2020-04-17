@@ -20,6 +20,7 @@ const userRoutes = require("./routes/user");
 const matchRoutes = require("./routes/match");
 const chatRoutes = require("./routes/chat");
 const popularityRoutes = require("./routes/popularity");
+const notificationsRoutes = require("./routes/notifications");
 
 //faker
 //faker.generateFakeProfiles();
@@ -35,6 +36,7 @@ app.use("/api", userRoutes);
 app.use("/api", matchRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", popularityRoutes);
+app.use("/api", notificationsRoutes);
 
 const port = process.env.PORT || 8000;
 

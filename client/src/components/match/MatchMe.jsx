@@ -163,7 +163,8 @@ const MatchMe = () => {
       isLiked: !newProfiles[idx].isLiked,
     };
     heartClick(userLiked).then((data) => {
-      if (data.err) {
+      if (!data) return;
+      else if (data.err) {
         notificationAlert(data.err, "danger", "bottom-center");
       } else {
         newProfiles[idx].isLiked = userLiked.isLiked;

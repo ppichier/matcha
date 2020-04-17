@@ -75,8 +75,26 @@ exports.saveMessage = (userUuid, guestUuid, message) => {
                 to: result[1][0].UserId,
               };
               connection.query(
-                "INSERT INTO message (MessageSender, MessageReceiver, MessageContent) VALUES (?, ?, ?); SELECT * FROM last_message WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?)",
-                [ids.from, ids.to, message, ids.from, ids.to, ids.to, ids.from],
+                `INSERT INTO message (MessageSender, MessageReceiver, MessageContent) VALUES (?, ?, ?);
+                SELECT * FROM last_message WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?);
+                DELETE FROM notification WHERE NotificationSender = ? AND NotificationReceiver = ? AND NotificationType = 4;
+                INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?);
+                UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;`,
+                [
+                  ids.from,
+                  ids.to,
+                  message,
+                  ids.from,
+                  ids.to,
+                  ids.to,
+                  ids.from,
+                  ids.from,
+                  ids.to,
+                  ids.from,
+                  ids.to,
+                  4,
+                  ids.to,
+                ],
                 (err, result) => {
                   if (err) {
                     connection.release();

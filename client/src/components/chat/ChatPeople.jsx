@@ -165,7 +165,7 @@ const ChatPeople = ({
               {/* Logo online + notif message */}
               <div className="ml-3 chat-people-item-infos">
                 <div className="chat-people-item-pseudo">
-                  {people.userName}{" "}
+                  {people.userName}
                 </div>
                 <div className="chat-people-item-last-msg">
                   {displayLastMessage(people.uuid)}
