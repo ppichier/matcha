@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import "./CardPicture.css";
 import { Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faToggleOn, faToggleOff} from "@fortawesome/free-solid-svg-icons";
 import { readImage } from "../../api/user";
+import { Row, Col, Form, Button, Container } from "react-bootstrap";
+
 
 
 
@@ -56,11 +58,21 @@ const CardPicture = ({ pseudo, firstName, lastName, age, stateConnection, score,
   };
   const handleConnection = () => {
     if(stateConnectionUser === "en ligne")
-     return(<div className="pt-1 connection" style={{color: "#32CD32"}}>{stateConnectionUser}</div>);
+     return( <div style={{color: "#32CD32"}}>
+      <FontAwesomeIcon
+          icon={faToggleOn}
+        />
+      <Fragment>{stateConnectionUser}</Fragment>
+      </div>);
     else if(stateConnectionUser)
-      return(<div className="pt-1 connection" style={{color: "#696969"}}>{"En ligne " + stateConnectionUser}</div>)
-
+      return(<div style={{color: "#D3D3D3"}}>
+      <FontAwesomeIcon
+          icon={faToggleOn}
+        />
+      <Fragment>{"En ligne " + stateConnectionUser}</Fragment>
+      </div>);
   }
+
   const isShow = (age) => {
     if (age >= 18) return <div>{age} ans</div>;
     else return <Fragment />;

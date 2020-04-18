@@ -20,7 +20,7 @@
     0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff, 0 0 80px #fff, 0 0 100px #fff;
 }
 .dropdown-item:hover {
-  text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue !important;
+  text-shadow: 1px 1px 2px #fad5c0, 0 0 1em #23d5ab, 0 0 0.2em  #23d5ab !important;
 }
 @-webkit-keyframes Gradient {
   0% {
