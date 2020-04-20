@@ -27,7 +27,7 @@ const Chat = ({ socket }) => {
 
   return (
     <Fragment>
-      <NavbarHeader />
+      <NavbarHeader socket={socket} />
       <Container fluid className="px-0 chat-container">
         <Row className="chat-row" noGutters>
           <Col md={3} className="chat-col1">

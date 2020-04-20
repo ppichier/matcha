@@ -53,11 +53,17 @@ const Routes = () => {
             component={Profile}
             socket={socket}
           ></PrivateRoute>
-          <PrivateRoute path="/match" exact component={MatchMe}></PrivateRoute>
+          <PrivateRoute
+            path="/match"
+            exact
+            component={MatchMe}
+            socket={socket}
+          ></PrivateRoute>
           <PrivateRoute
             path="/popularity"
             exact
             component={Popularity}
+            socket={socket}
           ></PrivateRoute>
           <PrivateRoute
             path="/chat"

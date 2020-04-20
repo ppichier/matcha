@@ -308,7 +308,7 @@ const ProfileUser = ({ props, location, socket }) => {
 
   return (
     <Fragment>
-      <NavbarHeader />
+      <NavbarHeader socket={socket} />
       <Container>
         <Row className="main-row-container">
           <Col md={5} className="mt-5 ">

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Navbar, NavDropdown, Badge, Nav } from "react-bootstrap";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,13 +8,12 @@ import { useState } from "react";
 import Notifications from "./Notifications";
 import { getNotificationsNumber } from "../../api/notifications";
 
-const NavbarHeader = () => {
+const NavbarHeader = ({ socket }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notificationsNumber, setNotificationsNumber] = useState(0);
 
   useEffect(() => {
     getNotificationsNumber().then((data) => {
-      console.log(data.notificationsNumber);
       if (!data) return;
       else if (data.err) {
         //err
@@ -22,7 +21,21 @@ const NavbarHeader = () => {
         setNotificationsNumber(data.notificationsNumber);
       }
     });
-  });
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("receiveNotification", () => {
+        setNotificationsNumber(notificationsNumber + 1);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off();
+      }
+    };
+  }, [notificationsNumber]);
 
   const handleLogout = () => {
     if (typeof window != "undefined") {
@@ -38,7 +51,7 @@ const NavbarHeader = () => {
 
   const handleNotifications = () => {
     setShowNotifications(!showNotifications);
-    setNotificationsNumber(0);
+    setNotificationsNumber(0); // ! only check if showNotification become true
   };
 
   return (

@@ -14,7 +14,7 @@ import _ from "lodash";
 import { faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
 import { notificationAlert } from "../functions/notification";
 
-const MatchMe = () => {
+const MatchMe = ({ socket }) => {
   const [values, setValues] = useState({
     profiles: [],
     resultsNumber: 0,
@@ -230,7 +230,7 @@ const MatchMe = () => {
 
   return (
     <Fragment>
-      <NavbarHeader />
+      <NavbarHeader socket={socket} />
 
       <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>

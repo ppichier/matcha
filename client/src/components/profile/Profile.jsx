@@ -115,6 +115,7 @@ const Profile = ({ location, socket }) => {
       let userLiked = {
         userUuid: id,
         isLiked: i,
+        socket,
       };
       heartClick(userLiked).then(() => {});
     }
@@ -247,7 +248,7 @@ const Profile = ({ location, socket }) => {
     } else {
       return (
         <Fragment>
-          <NavbarHeader />
+          <NavbarHeader socket={socket} />
           <Container className="my-4">
             <Row>
               <Col md={4} className="mt-5 ">

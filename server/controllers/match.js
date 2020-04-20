@@ -3,6 +3,7 @@ const pool = require("../db");
 const utils = require("../utility/utils");
 const _ = require("lodash");
 const chalk = require("chalk");
+const findSocketsGivenUuid = require("../app");
 
 exports.readCommonTag = async (req, res) => {
   pool.getConnection((err, connection) => {
@@ -319,8 +320,14 @@ exports.firstFilter = (req, res) => {
   });
 };
 
-const addRowUserLike = (userId, userLikedId, connection) => {
-  // Checi if B likes A -> yes : socketio emit notif
+const addRowUserLike = (
+  userId,
+  userLikedId,
+  userUuid,
+  guestUuid,
+  connection
+) => {
+  // Check if B likes A -> yes : socketio emit notif
   return new Promise((resolve, reject) => {
     connection.query(
       "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?",
@@ -333,24 +340,67 @@ const addRowUserLike = (userId, userLikedId, connection) => {
         } else {
           connection.query(
             //We have to check if score is 0.
-            "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ? ;INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?); UPDATE USER SET Score = Score + 10 WHERE UserId = ?;  ",
+            "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?; INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?); UPDATE USER SET Score = Score + 10 WHERE UserId = ?",
             [userLikedId, userId, userId, userLikedId, userLikedId],
             (err, result) => {
-              if (err) reject(500);
-              else {
-                let typeNotif = 2;
-                if (result[0].length > 0) typeNotif = 3;
-                connection.query(
-                  "INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;",
-                  [userId, userLikedId, typeNotif, userLikedId],
-                  (err, result) => {
-                    if (err) reject(500);
-                    else {
-                      connection.release();
-                      resolve({ msg: "like" });
+              if (err) {
+                reject(500);
+              } else {
+                if (result[0].length > 0) {
+                  connection.query(
+                    `INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?);
+                    INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?);
+                    UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ? AND UserId = ? ;
+                    `,
+                    [
+                      userId,
+                      userLikedId,
+                      3,
+                      userLikedId,
+                      userId,
+                      3,
+                      userId,
+                      userLikedId,
+                    ],
+                    (err, result) => {
+                      if (err) {
+                        console.log(err);
+
+                        reject(500);
+                      } else {
+                        let guestSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                          guestUuid
+                        );
+                        let meSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                          userUuid
+                        );
+                        [...guestSockets, ...meSockets].forEach((e) => {
+                          io.to(e).emit("receiveNotification");
+                        });
+                        connection.release();
+                        resolve({ msg: "like" });
+                      }
                     }
-                  }
-                );
+                  );
+                } else {
+                  connection.query(
+                    `INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;`,
+                    [userId, userLikedId, 2, userLikedId],
+                    (err, result) => {
+                      if (err) reject(500);
+                      else {
+                        let guestSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                          guestUuid
+                        );
+                        guestSockets.forEach((e) => {
+                          io.to(e).emit("receiveNotification");
+                        });
+                        connection.release();
+                        resolve({ msg: "like" });
+                      }
+                    }
+                  );
+                }
               }
             }
           );
@@ -360,7 +410,7 @@ const addRowUserLike = (userId, userLikedId, connection) => {
   });
 };
 
-const deleteRowUserLike = (userId, userLikedId, connection) => {
+const deleteRowUserLike = (userId, userLikedId, guestUuid, connection) => {
   // Checi if B likes A -> yes : socketio emit notif - delete messages
   return new Promise((resolve, reject) => {
     connection.query(
@@ -394,6 +444,12 @@ const deleteRowUserLike = (userId, userLikedId, connection) => {
                     if (err) reject(500);
                     else {
                       connection.release();
+                      let guestSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                        guestUuid
+                      );
+                      guestSockets.forEach((e) => {
+                        io.to(e).emit("receiveNotification");
+                      });
                       resolve({ msg: "like" });
                     }
                   }
@@ -443,17 +499,28 @@ exports.heartClick = (req, res) => {
           connection
         );
         let p = {};
+        let userHasImages = await checkProfileImage(userId, connection);
+        if (!userHasImages) {
+          connection.release();
+          return res.status(403).json({
+            err: "Vous devez avoir au moins une photo pour pouvoir liker.",
+          });
+        }
         if (req.body.isLiked) {
-          let userHasImages = await checkProfileImage(userId, connection);
-          if (!userHasImages) {
-            connection.release();
-            return res.status(403).json({
-              err: "Vous devez avoir au moins une photo pour pouvoir liker.",
-            });
-          }
-          p = await addRowUserLike(userId, userLikedId, connection);
+          p = await addRowUserLike(
+            userId,
+            userLikedId,
+            req.userUuid,
+            req.body.userUuid,
+            connection
+          );
         } else {
-          p = await deleteRowUserLike(userId, userLikedId, connection);
+          p = await deleteRowUserLike(
+            userId,
+            userLikedId,
+            req.body.userUuid,
+            connection
+          );
         }
         return res.json(p);
       } catch (err) {

@@ -12,7 +12,7 @@ const { getAllMessages, saveMessage } = require("./socket/chat");
 //app
 const app = express();
 const http = require("http").createServer(app);
-const io = require("socket.io")(http);
+global.io = require("socket.io")(http);
 
 //import routes
 const authRoutes = require("./routes/auth");
@@ -42,15 +42,14 @@ const port = process.env.PORT || 8000;
 
 /* TEST SOCKET */
 
-let users_connected = {};
-let visit_rooms = {};
+users_connected = {};
 
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
     .filter((key) => predicate(obj[key]))
     .reduce((res, key) => ((res[key] = obj[key]), res), {});
 
-const findSocketsGivenUuid = (uuid) => {
+exports.findSocketsGivenUuid = (uuid) => {
   let sockets = Object.filter(users_connected, (u) => u === uuid);
   console.log(Object.keys(sockets));
   return Object.keys(sockets);
@@ -88,6 +87,10 @@ io.on("connection", (socket) => {
     console.log(chalk.redBright("MON ID: ", userUuid));
     console.log(chalk.redBright("VISIT ID: ", guestUuid));
     socket.join(guestUuid);
+    let guestSockets = findSocketsGivenUuid(guestUuid);
+    [...guestSockets].forEach((e) => {
+      io.to(e).emit("receiveNotification");
+    });
   });
 
   socket.on("join", async (userUuid, guestUuid, cb) => {
@@ -108,6 +111,9 @@ io.on("connection", (socket) => {
       // await saveLastMessage(userUuid, guestUuid, message);
       let guestSockets = findSocketsGivenUuid(guestUuid);
       let meSockets = findSocketsGivenUuid(userUuid);
+      [...guestSockets].forEach((e) => {
+        io.to(e).emit("receiveNotification");
+      });
       [...guestSockets, ...meSockets].forEach((e) => {
         io.to(e).emit("message", {
           from: userUuid,

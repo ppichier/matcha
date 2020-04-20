@@ -13,7 +13,6 @@ const Notifications = ({ showNotifications }) => {
 
   useEffect(() => {
     if (showNotifications) {
-      console.log("youpi");
       readNotifications().then((data) => {
         if (!data) return;
         else if (data.err) {
@@ -23,6 +22,7 @@ const Notifications = ({ showNotifications }) => {
           setlistNotifications(data.listNotifications);
         }
       });
+
       //fetchAllNotification
       //spinner fecthing !
     }
