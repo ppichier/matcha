@@ -115,7 +115,6 @@ const Profile = ({ location, socket }) => {
       let userLiked = {
         userUuid: id,
         isLiked: i,
-        socket,
       };
       heartClick(userLiked).then(() => {});
     }

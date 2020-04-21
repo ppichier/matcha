@@ -99,3 +99,9 @@ exports.getIds = (userUuid, userLikedUuid, connection) => {
     );
   });
 };
+
+exports.findSocketsGivenUuid = (uuid) => {
+  let sockets = Object.filter(users_connected, (u) => u === uuid);
+  console.log(Object.keys(sockets));
+  return Object.keys(sockets);
+};

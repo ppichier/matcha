@@ -3,7 +3,7 @@ const pool = require("../db");
 const utils = require("../utility/utils");
 const _ = require("lodash");
 const chalk = require("chalk");
-const findSocketsGivenUuid = require("../app");
+// const findSocketsGivenUuid = require("../app");
 
 exports.readCommonTag = async (req, res) => {
   pool.getConnection((err, connection) => {
@@ -368,10 +368,10 @@ const addRowUserLike = (
 
                         reject(500);
                       } else {
-                        let guestSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                        let guestSockets = utils.findSocketsGivenUuid(
                           guestUuid
                         );
-                        let meSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                        let meSockets = utils.findSocketsGivenUuid(
                           userUuid
                         );
                         [...guestSockets, ...meSockets].forEach((e) => {
@@ -389,7 +389,7 @@ const addRowUserLike = (
                     (err, result) => {
                       if (err) reject(500);
                       else {
-                        let guestSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                        let guestSockets = utils.findSocketsGivenUuid(
                           guestUuid
                         );
                         guestSockets.forEach((e) => {
@@ -444,7 +444,7 @@ const deleteRowUserLike = (userId, userLikedId, guestUuid, connection) => {
                     if (err) reject(500);
                     else {
                       connection.release();
-                      let guestSockets = findSocketsGivenUuid.findSocketsGivenUuid(
+                      let guestSockets = utils.findSocketsGivenUuid(
                         guestUuid
                       );
                       guestSockets.forEach((e) => {

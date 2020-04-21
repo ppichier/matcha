@@ -6,6 +6,8 @@ const morgan = require("morgan");
 const chalk = require("chalk");
 const faker = require("./faker");
 const jwt = require("jsonwebtoken");
+const utils = require("./utility/utils");
+
 
 const { getAllMessages, saveMessage } = require("./socket/chat");
 
@@ -49,11 +51,7 @@ Object.filter = (obj, predicate) =>
     .filter((key) => predicate(obj[key]))
     .reduce((res, key) => ((res[key] = obj[key]), res), {});
 
-exports.findSocketsGivenUuid = (uuid) => {
-  let sockets = Object.filter(users_connected, (u) => u === uuid);
-  console.log(Object.keys(sockets));
-  return Object.keys(sockets);
-};
+
 
 io.on("connection", (socket) => {
   console.log(chalk.magenta("connection ws"));
@@ -87,7 +85,7 @@ io.on("connection", (socket) => {
     console.log(chalk.redBright("MON ID: ", userUuid));
     console.log(chalk.redBright("VISIT ID: ", guestUuid));
     socket.join(guestUuid);
-    let guestSockets = findSocketsGivenUuid(guestUuid);
+    let guestSockets = utils.findSocketsGivenUuid(guestUuid);
     [...guestSockets].forEach((e) => {
       io.to(e).emit("receiveNotification");
     });
@@ -109,8 +107,8 @@ io.on("connection", (socket) => {
     try {
       await saveMessage(userUuid, guestUuid, message);
       // await saveLastMessage(userUuid, guestUuid, message);
-      let guestSockets = findSocketsGivenUuid(guestUuid);
-      let meSockets = findSocketsGivenUuid(userUuid);
+      let guestSockets = utils.findSocketsGivenUuid(guestUuid);
+      let meSockets = utils.findSocketsGivenUuid(userUuid);
       [...guestSockets].forEach((e) => {
         io.to(e).emit("receiveNotification");
       });
@@ -129,7 +127,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typingMessage", (userUuid, guestUuid, message, cb) => {
-    let guestSockets = findSocketsGivenUuid(guestUuid);
+    let guestSockets = utils.findSocketsGivenUuid(guestUuid);
     let typingEvent = message.length === 0 ? "stopTyping" : "isTyping";
 
     guestSockets.forEach((e) => {
