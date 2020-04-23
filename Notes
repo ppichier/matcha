@@ -1,66 +1,31 @@
 --------------- SUPER MEGA IMPORTANT POUR CORRECTION ! -------------------
 
 ## DEL .env in .gitignore before push to vogsphere !!!!!
-
+## CLEAN DB (Message, LastMessage, photos reals users, visit, blocked,... ALL SAUF USER )
 
 --------------- IMPORTANT ! -------------------
-## [FRONT] - USER CAN'T LIKE IF NO PROFILE PICTURE
-## [BACK] -  mettre une date au facker pour lastConnection
-## [FRONT] - navbar included one time (layout?)
-## [FRONT] - image size upload width
-## [FRONT] - private route for user
-## [FRONT] - changer logo navabar
-## [FRONT] - selected item navabar bug 
-## [FRONT] - Progress bars for Profil Page  -> https://react-bootstrap.github.io/components/progress/
-## [FRONT / BACK] - if user go to / redirect to login if not auth or match if logged
+## [FRONT] change image default profile
 ## [FRONT] - UI verifyAccount 
-## [FRONT] - Move functions api/auth.js to ?
-## [FRONT] - delete App.jsx App.css
-
-## [FRONT-BACK] - if user auth , could not go to /login
-
-## [BACK] - check type of image upload (png/jpeg ?)
-## [BACK] - language msg -> french
-## [BACK] - error 500 when not logged and go to /match
+## [FRONT] - ANIMATION match
+## [BACK] - check type of image upload (png/jpeg ?) --> PRODUCTION
+## [SOCKET] - Score in MatchMe and Profile socket on/emit if user like // LIMIT MAX PRODUCTION
+## [FRONT] - Display message if user is in Match ALORS QU IL A PAS LE DROIT
 
 
-## [SOCKET] - Score in MatchMe and Profile socket on/emit if user like
-## [SOCKET] - if user like / dislike socket emit on chat appear disapear
+## TO DO BOTH ########################
+## [SOCKET] - if user like / dislike socket emit on chat appear disapear 
+## [FRONT / BACK] - CLEAN CONSOLE
+## [FRONT] - close notifications when click outside
+
 
 
 -------------- Medium features ------------------
-## [FRONT] - spinner loading (Redirect when user log, ...)
-## [FRONT] - alert login page style
-## [FRONT] - Profile.jsx on XS navbar padding right?? 
 ## [FRONT] - 404 page style
 ## [FRONT] - Load more profiles style match
-## [FRONT] - SVG style
-## [FRONT] - spinner when register
-## [FRONT] - profile/me , display firstname if xxxxl
-## [FRONT] - maxwidth minwidth, carousel
-## [FRONT] - score of popularity increment visual speed++ 
-## [BACK] - if user visit his own profile , it should not be in history !! (score++ , ...)
+
 
 
 -----------------Not important--------------
-## [FRONT] Img Login style full height xs
-## [FRONT] spinner loading when disconnect (Navbar.jsx)
 ## [GLOBAL] - finish README.md
 ## [FRONT] - change favicon heart
-## [GLOBAL] - emojis chat
-
-
-
-
------------- Mobile Version ---------------
-##
-## alert login page style
-## navbar one time
-## image size upload width
--------------------------------------------
-
-## Img Login style full height xs
 ## Profile.jsx on XS navbar padding right?? 
------------------------------
-##afficher la date de sa
-dernière visite page profile

@@ -5,7 +5,8 @@ export const verifValidatedPassword = (password) => {
     return { err: "Veuillez remplir tous les champs" };
   } else if (lenPassword < 6 || lenPassword > 30) {
     return {
-      err: "La longueur du mot de passe doit être comprise entre 6 et 30 caractères",
+      err:
+        "La longueur du mot de passe doit être comprise entre 6 et 30 caractères",
     };
   } else if (!rgxpassword.test(password)) {
     return {
@@ -43,15 +44,15 @@ export const verifValidated = (values) => {
       return { err: verifEmail.err };
     } else if (
       lenFirstName < 3 ||
-      lenFirstName > 30 ||
+      lenFirstName > 20 ||
       lenLastName < 3 ||
-      lenLastName > 30 ||
+      lenLastName > 20 ||
       lenPseudo < 3 ||
-      lenPseudo > 30
+      lenPseudo > 20
     ) {
       return {
         err:
-          "Les champs principaux doivent faire plus de 3  et moins de 30 caractères",
+          "Les champs principaux doivent faire plus de 3 et moins de 20 caractères",
       };
     } else if (values.description) {
       if (values.description.length > 1000) {

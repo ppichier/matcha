@@ -57,6 +57,11 @@ const Profile = ({ location, socket }) => {
   let { id } = useParams();
   const fetchData = async () => {
     try {
+      const _id = JSON.parse(localStorage.getItem("jwt")).user._id;
+      if (id === _id) {
+        setInfosUser({ ...infosUser, loading: false, redirect: true });
+        return;
+      }
       const data = await readGuestProfile(id);
       if (data.err) {
         setInfosUser({ ...infosUser, loading: false, redirect: true });

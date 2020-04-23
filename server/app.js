@@ -8,7 +8,6 @@ const faker = require("./faker");
 const jwt = require("jsonwebtoken");
 const utils = require("./utility/utils");
 
-
 const { getAllMessages, saveMessage } = require("./socket/chat");
 
 //app
@@ -25,7 +24,7 @@ const popularityRoutes = require("./routes/popularity");
 const notificationsRoutes = require("./routes/notifications");
 
 //faker
-//faker.generateFakeProfiles();
+faker.generateFakeProfiles();
 
 //middlewares
 app.use(morgan("dev"));
@@ -50,8 +49,6 @@ Object.filter = (obj, predicate) =>
   Object.keys(obj)
     .filter((key) => predicate(obj[key]))
     .reduce((res, key) => ((res[key] = obj[key]), res), {});
-
-
 
 io.on("connection", (socket) => {
   console.log(chalk.magenta("connection ws"));

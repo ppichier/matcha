@@ -21,7 +21,7 @@ exports.generateFakeProfiles = () => {
         } else {
           let commonTags = [];
           if (result.length > 0) {
-            commonTags = result.map(tag => tag.TagId);
+            commonTags = result.map((tag) => tag.TagId);
             let rand = Math.floor(Math.random() * commonTags.length + 1);
             for (let i = 0; i < rand; i++) {
               userTags.push(
@@ -29,7 +29,7 @@ exports.generateFakeProfiles = () => {
               );
             }
           }
-          const lastConnexion = [null, faker.date.recent()];
+          const lastConnection = [null, faker.date.recent()];
           const people = {
             lastName: faker.name.lastName(),
             firstName: faker.name.firstName(),
@@ -40,7 +40,7 @@ exports.generateFakeProfiles = () => {
               "$2b$10$aS80Io9ilmNVSdy1jbJxje6.hKnlWahac8dWNCBp0ETPFDAAw3/ri", // Matcha123+
             emailValidate: 1,
             tags: _.uniq(userTags),
-            lastConnexion: lastConnexion[Math.round(Math.random())], //generate date
+            lastConnection: faker.date.recent(), //generate date
             emailValidate: 1,
             genreId: Math.floor(Math.random() * 6) + 1, // generate random 0-6
             sexualOrientationId: Math.floor(Math.random() * 6) + 1, // generate random 0-6
@@ -52,13 +52,13 @@ exports.generateFakeProfiles = () => {
             lat: Math.random() * (49.026657 - 48.736129) + 48.736129, // generate -90 90
             lng: Math.random() * (2.549672 - 2.10954) + 2.10954, // generate -180 180 48.882072
             localisationActive: 1,
-            popularity: Math.floor(Math.random() * 301)
+            popularity: Math.floor(Math.random() * 301),
           };
           // PARIS 48.881303,2.329421
 
           connection.query(
             //  INSERT INTO User_tag VALUES (?)
-            "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio, Lat, Lng, LocalisationActive, Score, ImageProfile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO User (Uuid, Email, Password, UserName, FirstName, LastName, EmailValidate, GenreId, SexualOrientationId, Age, UserSize, Bio, Lat, Lng, LocalisationActive, Score, ImageProfile, LastConnection) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
               people.uuid,
               people.email,
@@ -76,7 +76,8 @@ exports.generateFakeProfiles = () => {
               people.lng,
               people.localisationActive,
               people.popularity,
-              people.imageProfile
+              people.imageProfile,
+              people.lastConnection,
             ],
             (err, result) => {
               if (err) {
