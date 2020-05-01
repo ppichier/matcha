@@ -15,7 +15,7 @@ import {
 import { heartClick } from "../../api";
 import CustomSpinner from "../auth/Spinner";
 import moment from "moment";
-import iconProfile from "../../images/imgIconProfil.png";
+import iconProfile from "../../images/imageProfilDefault.jpg";
 
 import {
   faHeart,

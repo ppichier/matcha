@@ -24,7 +24,7 @@ const popularityRoutes = require("./routes/popularity");
 const notificationsRoutes = require("./routes/notifications");
 
 //faker
-faker.generateFakeProfiles();
+// faker.generateFakeProfiles();
 
 //middlewares
 app.use(morgan("dev"));

@@ -3,12 +3,8 @@ import { Link } from "react-router-dom";
 import "./CardPicture.css";
 import { Image } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar, faToggleOn, faToggleOff} from "@fortawesome/free-solid-svg-icons";
+import { faStar, faToggleOn} from "@fortawesome/free-solid-svg-icons";
 import { readImage } from "../../api/user";
-import { Row, Col, Form, Button, Container } from "react-bootstrap";
-
-
-
 
 const CardPicture = ({ pseudo, firstName, lastName, age, stateConnection, score, distance, userUuid }) => {
   const [base64Image, setBase64Image] = useState("");

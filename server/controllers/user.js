@@ -127,7 +127,7 @@ exports.uploadSecondaryImages = (req, res) => {
   let image64 = [];
   let files = req.files;
   let userUuid = req.userUuid;
-
+  const types = ['png', 'jpeg', 'gif']
   const len = Object.keys(files).length;
 
   if (len >= 5) {
@@ -137,13 +137,14 @@ exports.uploadSecondaryImages = (req, res) => {
   }
   for (let i = 0; i < len; i++) {
     const key = "photo" + i;
-    const bitmap = fs.readFileSync(
+    if (types.indexOf(files[key].name.substr(7)) !== -1)
+    {
+      const bitmap = fs.readFileSync(
       __dirname + `/../images/${userUuid}/` + files[key].name
     );
     image64.push(new Buffer.from(bitmap).toString("base64"));
 
     let columnImage = "Image" + (i + 1);
-
     pool.getConnection((err, connection) => {
       if (err) {
         return res.status(500).json({
@@ -162,6 +163,7 @@ exports.uploadSecondaryImages = (req, res) => {
         }
       );
     });
+  }
   }
   return res.json({
     images: image64,
@@ -228,6 +230,7 @@ exports.deleteSecondaryImage = (req, res) => {
   const { imageIdRemove } = req.body;
   const userUuid = req.userUuid;
   let deleteImage = "Image" + (imageIdRemove + 1);
+
   pool.getConnection((err, connection) => {
     if (err) {
       error.handleError(res, err, "Internal error", 500, connection);

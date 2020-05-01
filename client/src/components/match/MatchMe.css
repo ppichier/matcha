@@ -77,3 +77,25 @@ background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12ff
   width: 100%;
 }
 
+@keyframes transition2 {
+    from {
+          opacity:1;
+          width:auto;
+          height:auto;
+         }
+    to {
+        height:0;
+        width:0;
+        opacity:0;
+    }
+}
+
+.modals{
+  top:100px;
+  left: 400px;
+  position: fixed;
+  padding: 50px;
+  width:  500px;
+  animation: transition2 5s linear 2s; 
+
+}

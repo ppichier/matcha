@@ -3,6 +3,7 @@ import queryString from "query-string";
 import { verifyAccount } from "../../api/auth";
 import { Redirect } from "react-router-dom";
 import { notificationAlert } from "../functions/notification";
+import imageAccount from "../../images/verifyAccount.png";
 
 const VerifyAccount = ({ location }) => {
   const [redirect, setRedirect] = useState(null);
@@ -33,8 +34,12 @@ const VerifyAccount = ({ location }) => {
     } else if (redirect === false) {
       return (
         <div>
-          Votre compte a été activé. Vous pouvez à présent
-          <a href="/login">vous connecter</a>
+          <img
+            style={{ marginLeft: "40%", paddingTop: "10%"}}
+            alt="connection"
+            src={imageAccount}
+         />
+          <a href="/login">connecter</a>
         </div>
       );
     }

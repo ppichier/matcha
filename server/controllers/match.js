@@ -449,6 +449,7 @@ const deleteRowUserLike = (userId, userLikedId, guestUuid, connection) => {
                       );
                       guestSockets.forEach((e) => {
                         io.to(e).emit("receiveNotification");
+
                       });
                       resolve({ msg: "like" });
                     }

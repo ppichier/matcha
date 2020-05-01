@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Row, Col, Container, Button, ButtonGroup } from "react-bootstrap";
+import { Row, Col, Container, Button, ButtonGroup, Alert, Modal} from "react-bootstrap";
 import CardPicture from "./CardPicture";
 import "./CardPicture.css";
 import NavbarHeader from "../navbar/Navbar";
@@ -12,7 +12,8 @@ import SortProfile from "./SortProfile";
 import { firstFilter, heartClick, filterProfile } from "../../api";
 import _ from "lodash";
 import { faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
-import { notificationAlert } from "../functions/notification";
+import { notificationAlert} from "../functions/notification";
+import matchImage from "../../images/match.png";
 
 const MatchMe = ({ socket }) => {
   const [values, setValues] = useState({
@@ -20,9 +21,10 @@ const MatchMe = ({ socket }) => {
     resultsNumber: 0,
     activateFilter: false,
   });
-
   const [moreProfiles, setMoreProfiles] = useState([0, 0]);
   const [isShow, setIsShow] = useState("match");
+  const [modalshow, setModalShow] = useState(false)
+  const [showAlerte, setShowAlerte] = useState(true);
   const [moreParams, setMoreParams] = useState({
     age: [],
     userSize: [],
@@ -49,6 +51,8 @@ const MatchMe = ({ socket }) => {
           });
           setIsShow("match");
         } else {
+          if(data.stateProfile !== "match" && isShow === "search")
+            notificationAlert("Vous devez compléter votre profile a 60% minimum pour avoir le droit d'accee a la page Match.", "danger", "bottom-center");
           setIsShow("search");
           setValues({
             ...values,
@@ -57,13 +61,22 @@ const MatchMe = ({ socket }) => {
             activateFilter: false,
           });
           document.getElementById("match").classList.remove("btn-active");
-          document.getElementById("search").classList.add("btn-active");
+          document.getElementById("search").classList.add("btn-active");      
         }
       })
       .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShow]);
 
+  // const open_modal = (id) => {
+  //   let e = document.getElementById('modals');
+  //   if(id === "block")
+  //   {
+  //     e.style.display= "block"
+  //   }
+  //   else
+  //     e.style.display = "none"
+  // }
   const handleShow = (showParams) => {
     setIsShow(showParams);
     let btn = showParams === "match" ? "search" : "match";
@@ -168,23 +181,36 @@ const MatchMe = ({ socket }) => {
         notificationAlert(data.err, "danger", "bottom-center");
       } else {
         newProfiles[idx].isLiked = userLiked.isLiked;
+        if(newProfiles[idx].isLiked)
+        {
+          newProfiles[idx].score = newProfiles[idx].score + 10;
+          if(newProfiles[idx].likesMe)
+          {
+             setModalShow(true);
+             let modalsHiden = setTimeout(() => setModalShow(false), 4000) 
+          }
+            
+        }
+        else
+          newProfiles[idx].score = newProfiles[idx].score - 10;
         setValues({ ...values, profiles: newProfiles });
       }
     });
   };
 
+
   const loadProfiles = () => {
     if (values.resultsNumber > 0 && values.resultsNumber > moreProfiles[1] + 20)
       return (
-        <div style={{ display: "flex", width: "50%" }}>
+        <div style={{ width: "50%" }}>
           <Button
             onClick={(e) => onMoreProfiles(e)}
             className="text-uppercase mb-4 center-block"
             variant="outline-info"
-            style={{ letterSpacing: "1px", fontWeight: "bold" }}
+            style={{ letterSpacing: "1px", fontWeight: "bold", marginLeft: '50%'}}
           >
-            <FontAwesomeIcon icon={faArrowAltCircleDown} className="fa-lg " />
-            Charger plus
+            <FontAwesomeIcon icon={faArrowAltCircleDown} className="fa-lg "/>
+             <i> Charger plus</i>
           </Button>
         </div>
       );
@@ -231,7 +257,6 @@ const MatchMe = ({ socket }) => {
   return (
     <Fragment>
       <NavbarHeader socket={socket} />
-
       <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>
           <Col md={3}>
@@ -268,6 +293,7 @@ const MatchMe = ({ socket }) => {
               </Button>
             </ButtonGroup>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
+             {modalshow ? <div><img id="modals" className="modals" alt="" src={matchImage} /></div> : <Fragment></Fragment>}      
             <div> {loadProfiles()} </div>
           </Col>
         </Row>

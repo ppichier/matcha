@@ -19,7 +19,9 @@ exports.checkDatabaseStatus = (req, res, next) => {
 
 exports.createUploadDirectory = (req, res, next) => {
   let form = new formidable.IncomingForm();
+  const types = ["png", "jpeg", "gif"];
   let newName = "";
+  let err = "";
 
   form.parse(req, (err, fields, files) => {
     if (newName === null) {
@@ -27,70 +29,52 @@ exports.createUploadDirectory = (req, res, next) => {
         err: "Internal error : key file is not valid"
       });
     }
-    let keys = Object.keys(files);
-    let maxsize = false;
-    keys.forEach(key => {
-      if (files[key].size > 1000000) maxsize = true;
-    });
-    if (maxsize) {
-      return res.status(400).json({
-        err: "Le poids de l'image doit d'être inférieur à 1mb"
-      });
-    } else {
       req.files = files;
       next();
-    }
   });
-
-  // const types = ["image/png", "image/jpeg", "image/gif"];
-  // files.forEach((file, i) => {
-  //   if (types.every(type => file.type !== type)) {
-  //     return res.status(400).json({
-  //       err: "Format de l'image non valide"
-  //     });
-  //   } else if (file.size > 150000) {
-  //     return res
-  //       .status(400)
-  //       .json({ err: "veuillez choisir une photo plus petit" });
-  //   }
-  // });
-
   form.on("fileBegin", (name, file) => {
-    if (!fs.existsSync(__dirname + "/../images")) {
-      fs.mkdirSync(__dirname + "/../images");
-    }
-    if (!fs.existsSync(__dirname + `/../images/${req.userUuid}`)) {
-      fs.mkdirSync(__dirname + `/../images/${req.userUuid}`);
-    }
-    // randomName = uuidv4();
-    format = file.type.split("/");
-    if (format.length !== 2) {
-      return res.status(400).json({
-        err: "Format de l'image non valide"
-      });
-    }
-    switch (name) {
-      case "photo":
-        newName = "imageProfile";
-        break;
-      case "photo0":
-        newName = "image1";
-        break;
-      case "photo1":
-        newName = "image2";
-        break;
-      case "photo2":
-        newName = "image3";
-        break;
-      case "photo3":
-        newName = "image4";
-        break;
-      default:
-        newName = null;
-    }
-    file.name = newName + "." + file.type.split("/")[1];
-    file.path = __dirname + `/../images/${req.userUuid}/` + file.name;
-  });
+        if (!fs.existsSync(__dirname + "/../images")) {
+          fs.mkdirSync(__dirname + "/../images");
+        }
+        if (!fs.existsSync(__dirname + `/../images/${req.userUuid}`)) {
+          fs.mkdirSync(__dirname + `/../images/${req.userUuid}`);
+        }
+        format = file.type.split("/");
+    if(types.indexOf(format[1]) !== -1)
+      {   
+        if (format.length !== 2) {
+          return res.status(400).json({
+            err: "Format de l'image non valide"
+          });
+        }
+        switch (name) {
+          case "photo":
+            newName = "imageProfile";
+            break;
+          case "photo0":
+            newName = "image1";
+            break;
+          case "photo1":
+            newName = "image2";
+            break;
+          case "photo2":
+            newName = "image3";
+            break;
+          case "photo3":
+            newName = "image4";
+            break;
+          default:
+            newName = null;
+        }
+        file.name = newName + "." + file.type.split("/")[1];
+        file.path = __dirname + `/../images/${req.userUuid}/` + file.name;
+      }
+      else{
+        return res.status(400).json({
+            err: "Format de l'image non valide"
+          });
+      }
+    });
 };
 
 exports.deletePreviousImage = (req, res, next) => {
@@ -140,7 +124,6 @@ const updateUserTags = (req, res, next, connection, myTags) => {
               for (let i = 0; i < myTags.length; i++) {
                 let idx = result[0].findIndex(e => e.Label === myTags[i]);
                 let a = result[0][idx].TagId;
-                // if (result[1].findIndex(e => e.TagId === a) === -1) {
                 connection.query(
                   "INSERT INTO User_tag (userId, tagId) VALUES (?, ?)",
                   [id, a],
@@ -155,7 +138,6 @@ const updateUserTags = (req, res, next, connection, myTags) => {
                       );
                   }
                 );
-                // }
               }
               connection.release();
               next();

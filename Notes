@@ -4,12 +4,12 @@
 ## CLEAN DB (Message, LastMessage, photos reals users, visit, blocked,... ALL SAUF USER )
 
 --------------- IMPORTANT ! -------------------
-## [FRONT] change image default profile
-## [FRONT] - UI verifyAccount 
-## [FRONT] - ANIMATION match
-## [BACK] - check type of image upload (png/jpeg ?) --> PRODUCTION
-## [SOCKET] - Score in MatchMe and Profile socket on/emit if user like // LIMIT MAX PRODUCTION
-## [FRONT] - Display message if user is in Match ALORS QU IL A PAS LE DROIT
+## [FRONT] change image default profile ///ok
+## [FRONT] - UI verifyAccount // ok
+## [FRONT] - ANIMATION match  // ok
+## [BACK] - check type of image upload (png/jpeg ?) --> PRODUCTION/// ok
+## [SOCKET] - Score in MatchMe and Profile socket on/emit if user like // LIMIT MAX PRODUCTION ///ok
+## [FRONT] - Display message if user is in Match ALORS QU IL A PAS LE DROIT ////ok
 
 
 ## TO DO BOTH ########################
@@ -20,8 +20,8 @@
 
 
 -------------- Medium features ------------------
-## [FRONT] - 404 page style
-## [FRONT] - Load more profiles style match
+## [FRONT] - 404 page style /////ok
+## [FRONT] - Load more profiles style match ///ok
 
 
 

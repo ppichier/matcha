@@ -248,7 +248,6 @@ const ProfileUser = ({ props, location, socket }) => {
   const imageSecondarySet = (value) => {
     setImagesChild({ ...imagesChild, secondaryImages: value });
   };
-
   const updateProfilePosition = (coord) => {
     setValues({ ...values, lat: coord.lat, lng: coord.lng });
   };
