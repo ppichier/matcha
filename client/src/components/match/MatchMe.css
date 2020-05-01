@@ -90,6 +90,11 @@ background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12ff
     }
 }
 
+@keyframes transition {
+100% {top:100px;}
+0%   { margin-left: -70px;opacity:0; }
+100% { margin-left: 0;opacity:1; }
+}
 .modals{
   top:100px;
   left: 400px;
@@ -97,5 +102,8 @@ background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12ff
   padding: 50px;
   width:  500px;
   animation: transition2 5s linear 2s; 
+ /* animation: transition 2.0s ease-in-out 0.5s, opacity 0.5s ease-in-out 0.5s;
+  opacity:0;
+  animation: transition 1s ease-in-out 2s forwards;*/
 
 }

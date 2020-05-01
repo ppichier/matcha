@@ -45,7 +45,6 @@ const ProfileUser = ({ props, location, socket }) => {
     profileImage: false,
     secondaryImages: false,
   });
-
   const [widthProgressBar, setWidthProgressBar] = useState(0);
 
   useEffect(() => {

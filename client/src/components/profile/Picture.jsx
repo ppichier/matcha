@@ -23,7 +23,6 @@ const Picture = ({ imageSecondarySet }) => {
   });
 
   const [base64Images, setBase64Images] = useState(["", "", "", ""]);
-
   useEffect(() => {
     readSecondaryImages()
       .then((data) => {

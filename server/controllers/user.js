@@ -2,6 +2,8 @@ const fs = require("fs");
 const error = require("./error");
 const pool = require("../db");
 const utils = require("../utility/utils");
+const _ = require("lodash");
+const path = require('path')
 
 exports.updateProfile = (req, res) => {
   const {
@@ -92,9 +94,13 @@ exports.updateProfile = (req, res) => {
 exports.uploadProfileImage = (req, res) => {
   let userUuid = req.userUuid;
   let file = req.files.photo;
-
+  const types = ['.png', '.jpeg', '.gif']
   //Check format de l image and size
 
+    if(types.indexOf(path.extname(file.name)) === -1)
+      return res.status(400).json({
+          err: "format invalide",
+        });
   var bitmap = fs.readFileSync(
     __dirname + `/../images/${userUuid}/` + file.name
   );
@@ -127,25 +133,28 @@ exports.uploadSecondaryImages = (req, res) => {
   let image64 = [];
   let files = req.files;
   let userUuid = req.userUuid;
-  const types = ['png', 'jpeg', 'gif']
-  const len = Object.keys(files).length;
-
+  const types = ['.png', '.jpeg', '.gif']
+  const len = Object.keys(files).length; 
   if (len >= 5) {
     return res.status(400).json({
       err: "Vous pouvez upload 5 photos maximum",
     });
   }
-  for (let i = 0; i < len; i++) {
-    const key = "photo" + i;
-    if (types.indexOf(files[key].name.substr(7)) !== -1)
-    {
+
+  let newFiles = _.filter(files, image => {
+    return(types.indexOf(path.extname(image.name)) !== -1)
+  });
+  const lenNewFiles = newFiles.length
+  for (let i = 0; i < lenNewFiles; i++) {
+    // const key = "photo" + i;
       const bitmap = fs.readFileSync(
-      __dirname + `/../images/${userUuid}/` + files[key].name
+      __dirname + `/../images/${userUuid}/` + newFiles[i].name
     );
     image64.push(new Buffer.from(bitmap).toString("base64"));
-
-    let columnImage = "Image" + (i + 1);
-    pool.getConnection((err, connection) => {
+    let key = newFiles[i].name.charAt(5)
+    console.log(key);
+    let columnImage = "Image" + key;
+        pool.getConnection((err, connection) => {
       if (err) {
         return res.status(500).json({
           err: "Internal Error",
@@ -153,22 +162,26 @@ exports.uploadSecondaryImages = (req, res) => {
       }
       connection.query(
         `UPDATE User SET ${columnImage} = ? WHERE Uuid= ?`,
-        [files[key].path, req.userUuid],
+        [newFiles[i].path, req.userUuid],
         (err, result) => {
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
           } else {
-            connection.release();
+            connection.release(); 
           }
         }
       );
     });
   }
-  }
-  return res.json({
-    images: image64,
-    msg: "Images uploaded",
-  });
+  if(image64.length === 0)
+    return res.status(400).json({
+          err: "format invalide",
+        });
+ return res.json({
+            images: image64,
+            msg: "Images uploaded",
+            });
+  
 };
 
 exports.deleteProfileImage = (req, res) => {

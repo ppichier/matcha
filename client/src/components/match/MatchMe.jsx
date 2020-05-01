@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Row, Col, Container, Button, ButtonGroup, Alert, Modal} from "react-bootstrap";
+import { Row, Col, Container, Button, ButtonGroup} from "react-bootstrap";
 import CardPicture from "./CardPicture";
 import "./CardPicture.css";
 import NavbarHeader from "../navbar/Navbar";
@@ -24,7 +24,6 @@ const MatchMe = ({ socket }) => {
   const [moreProfiles, setMoreProfiles] = useState([0, 0]);
   const [isShow, setIsShow] = useState("match");
   const [modalshow, setModalShow] = useState(false)
-  const [showAlerte, setShowAlerte] = useState(true);
   const [moreParams, setMoreParams] = useState({
     age: [],
     userSize: [],
@@ -52,7 +51,7 @@ const MatchMe = ({ socket }) => {
           setIsShow("match");
         } else {
           if(data.stateProfile !== "match" && isShow === "search")
-            notificationAlert("Vous devez compléter votre profile a 60% minimum pour avoir le droit d'accee a la page Match.", "danger", "bottom-center");
+            notificationAlert("Vous devez compléter votre profil à 60% minimum pour avoir le droit d'accès à la page match.", "danger", "bottom-center");
           setIsShow("search");
           setValues({
             ...values,
@@ -187,7 +186,7 @@ const MatchMe = ({ socket }) => {
           if(newProfiles[idx].likesMe)
           {
              setModalShow(true);
-             let modalsHiden = setTimeout(() => setModalShow(false), 4000) 
+            setTimeout(() => setModalShow(false), 4000) 
           }
             
         }
