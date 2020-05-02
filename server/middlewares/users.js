@@ -42,7 +42,6 @@ exports.createUploadDirectory = (req, res, next) => {
         format = file.type.split("/");
     if(types.indexOf(format[1]) !== -1)
       {   
-  
         switch (name) {
           case "photo":
             newName = "imageProfile";
@@ -65,11 +64,6 @@ exports.createUploadDirectory = (req, res, next) => {
         file.name = newName + "." + file.type.split("/")[1];
         file.path = __dirname + `/../images/${req.userUuid}/` + file.name;
       }
-      // else{
-      //   return res.status(400).json({
-      //       err: "Format de l'image non valide"
-      //     });
-      // }
     });
 };
 

@@ -140,20 +140,17 @@ exports.uploadSecondaryImages = (req, res) => {
       err: "Vous pouvez upload 5 photos maximum",
     });
   }
-
-  let newFiles = _.filter(files, image => {
-    return(types.indexOf(path.extname(image.name)) !== -1)
-  });
-  const lenNewFiles = newFiles.length
-  for (let i = 0; i < lenNewFiles; i++) {
-    // const key = "photo" + i;
+  for (let i = 0; i < len; i++) {
+    const key = "photo" + i;
+    if(types.indexOf(path.extname(files[key].name)) === -1)
+      image64.push("");  
+    else
+    {
       const bitmap = fs.readFileSync(
-      __dirname + `/../images/${userUuid}/` + newFiles[i].name
+      __dirname + `/../images/${userUuid}/` + files[key].name
     );
     image64.push(new Buffer.from(bitmap).toString("base64"));
-    let key = newFiles[i].name.charAt(5)
-    console.log(key);
-    let columnImage = "Image" + key;
+    let columnImage = "Image" + files[key].name.charAt(5);
         pool.getConnection((err, connection) => {
       if (err) {
         return res.status(500).json({
@@ -162,7 +159,7 @@ exports.uploadSecondaryImages = (req, res) => {
       }
       connection.query(
         `UPDATE User SET ${columnImage} = ? WHERE Uuid= ?`,
-        [newFiles[i].path, req.userUuid],
+        [files[key].path, req.userUuid],
         (err, result) => {
           if (err) {
             error.handleError(res, err, "Intenal error", 500, connection);
@@ -172,6 +169,7 @@ exports.uploadSecondaryImages = (req, res) => {
         }
       );
     });
+    }
   }
   if(image64.length === 0)
     return res.status(400).json({
