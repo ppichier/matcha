@@ -8,6 +8,8 @@
 ## [FRONT] - ANIMATION match  // ok
 ## [BACK] - check type of image upload (png/jpeg ?) --> PRODUCTION/// ok
 
+## [FRONT - BACK] - animation when user A like B. B go to match. B see blue heart. A dislike B. B see blue heart and like = Match
+## [FRONT] - animation match delete settimeout -> css
 
 ## TO DO BOTH ########################
 ## [SOCKET] - if user like / dislike socket emit on chat appear disapear 
@@ -20,3 +22,5 @@
 -----------------Not important--------------
 ## [GLOBAL] - finish README.md
 ## Profile.jsx on XS navbar padding right?? 
+
+

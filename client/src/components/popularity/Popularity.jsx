@@ -7,7 +7,7 @@ import { getUserLike, getUserVisit } from "../../api/popularity";
 import { readImage } from "../../api/user";
 import { notificationAlert } from "../functions/notification";
 
-const Popularity = () => {
+const Popularity = ({ socket }) => {
   const [peopleLike, setPeopleLike] = useState([]);
   const [peopleVisit, setPeopleVisit] = useState([]);
 
@@ -76,7 +76,7 @@ const Popularity = () => {
 
   return (
     <Fragment>
-      <NavbarHeader />
+      <NavbarHeader socket={socket} />
 
       <Container fluid className="my-2">
         {/* <h3>Score de popularité :</h3> */}

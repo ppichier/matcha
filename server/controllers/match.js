@@ -351,7 +351,7 @@ const addRowUserLike = (
                   connection.query(
                     `INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?);
                     INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?);
-                    UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ? AND UserId = ? ;
+                    UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ? OR UserId = ? ;
                     `,
                     [
                       userId,
@@ -372,24 +372,20 @@ const addRowUserLike = (
                         let guestSockets = utils.findSocketsGivenUuid(
                           guestUuid
                         );
-                        let meSockets = utils.findSocketsGivenUuid(
-                          userUuid
-                        );
+                        let meSockets = utils.findSocketsGivenUuid(userUuid);
                         console.log("++++++++++++++++++++++++");
                         console.log(userUuid);
                         console.log(guestUuid);
                         [...guestSockets, ...meSockets].forEach((e) => {
                           io.to(e).emit("receiveNotification");
-                  
                         });
-                        // [...guestSockets, ...meSockets].forEach((e) => {
-                        //   io.to(e).emit("addMatch", {
-                        //     online: null,
-                        //     userName,
-                        //     uuid: userUuid,
-                        //   })
-                  
-                        // });
+                        [...guestSockets, ...meSockets].forEach((e) => {
+                          io.to(e).emit("addMatch", {
+                            online: null, //Online not use in chat
+                            userName,
+                            uuid: userUuid,
+                          });
+                        });
                         connection.release();
                         resolve({ msg: "like" });
                       }
@@ -423,7 +419,13 @@ const addRowUserLike = (
   });
 };
 
-const deleteRowUserLike = (userId, userLikedId, userUuid, guestUuid, connection) => {
+const deleteRowUserLike = (
+  userId,
+  userLikedId,
+  userUuid,
+  guestUuid,
+  connection
+) => {
   // Checi if B likes A -> yes : socketio emit notif - delete messages
   return new Promise((resolve, reject) => {
     connection.query(
@@ -457,17 +459,13 @@ const deleteRowUserLike = (userId, userLikedId, userUuid, guestUuid, connection)
                     if (err) reject(500);
                     else {
                       connection.release();
-                      let guestSockets = utils.findSocketsGivenUuid(
-                        guestUuid
-                      );
+                      let guestSockets = utils.findSocketsGivenUuid(guestUuid);
                       guestSockets.forEach((e) => {
                         io.to(e).emit("receiveNotification");
-
                       });
-                      // guestSockets.forEach((e) => {
-                      //   io.to(e).emit("deleteMatch", userUuid)
-
-                      // });
+                      guestSockets.forEach((e) => {
+                        io.to(e).emit("deleteMatch", userUuid);
+                      });
                       resolve({ msg: "like" });
                     }
                   }

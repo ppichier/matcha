@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { Navbar, NavDropdown, Badge, Nav } from "react-bootstrap";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,11 +29,11 @@ const NavbarHeader = ({ socket }) => {
         setNotificationsNumber(notificationsNumber + 1);
       });
     }
-    return () => {
-      if (socket) {
-        socket.off();
-      }
-    };
+    // return () => {
+    //   if (socket) {
+    //     socket.off();
+    //   }
+    // };
   }, [notificationsNumber]);
 
   const handleLogout = () => {

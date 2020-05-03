@@ -64,9 +64,9 @@ const ChatMessages = ({
       }
     });
 
-    return () => {
-      socket.off();
-    };
+    // return () => {
+    //   socket.off();
+    // };
   }, [
     socket,
     guestInfos.uuid,
