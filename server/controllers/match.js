@@ -321,6 +321,7 @@ exports.firstFilter = (req, res) => {
 };
 
 const addRowUserLike = (
+  userName,
   userId,
   userLikedId,
   userUuid,
@@ -374,9 +375,21 @@ const addRowUserLike = (
                         let meSockets = utils.findSocketsGivenUuid(
                           userUuid
                         );
+                        console.log("++++++++++++++++++++++++");
+                        console.log(userUuid);
+                        console.log(guestUuid);
                         [...guestSockets, ...meSockets].forEach((e) => {
                           io.to(e).emit("receiveNotification");
+                  
                         });
+                        // [...guestSockets, ...meSockets].forEach((e) => {
+                        //   io.to(e).emit("addMatch", {
+                        //     online: null,
+                        //     userName,
+                        //     uuid: userUuid,
+                        //   })
+                  
+                        // });
                         connection.release();
                         resolve({ msg: "like" });
                       }
@@ -410,7 +423,7 @@ const addRowUserLike = (
   });
 };
 
-const deleteRowUserLike = (userId, userLikedId, guestUuid, connection) => {
+const deleteRowUserLike = (userId, userLikedId, userUuid, guestUuid, connection) => {
   // Checi if B likes A -> yes : socketio emit notif - delete messages
   return new Promise((resolve, reject) => {
     connection.query(
@@ -451,6 +464,10 @@ const deleteRowUserLike = (userId, userLikedId, guestUuid, connection) => {
                         io.to(e).emit("receiveNotification");
 
                       });
+                      // guestSockets.forEach((e) => {
+                      //   io.to(e).emit("deleteMatch", userUuid)
+
+                      // });
                       resolve({ msg: "like" });
                     }
                   }
@@ -494,7 +511,7 @@ exports.heartClick = (req, res) => {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       try {
-        let { userId, userLikedId } = await utils.getIds(
+        let { userName, userId, userLikedId } = await utils.getIds(
           req.userUuid,
           req.body.userUuid,
           connection
@@ -509,6 +526,7 @@ exports.heartClick = (req, res) => {
         }
         if (req.body.isLiked) {
           p = await addRowUserLike(
+            userName,
             userId,
             userLikedId,
             req.userUuid,
@@ -519,6 +537,7 @@ exports.heartClick = (req, res) => {
           p = await deleteRowUserLike(
             userId,
             userLikedId,
+            req.userUuid,
             req.body.userUuid,
             connection
           );

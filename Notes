@@ -13,10 +13,9 @@
 ## [SOCKET] - if user like / dislike socket emit on chat appear disapear 
 ## [FRONT / BACK] - CLEAN CONSOLE
 ## [FRONT] - close notifications when click outside
-
-
-
-
+## [FRONT / Back] - if user blocked / remove chat and match
+## [back] - user blocked not send notifications
+### [Front] profile user test n'aparaissent pas dans page user Match 
 
 -----------------Not important--------------
 ## [GLOBAL] - finish README.md

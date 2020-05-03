@@ -27,6 +27,7 @@ const ChatPeople = ({
           // console.log(data);
           setMatchPeople([...data.matchPeople]);
           setLastMessages([...data.lastMessages]);
+          console.log(data.matchPeople)
         }
       })
       .catch((err) => console.log(err));
@@ -54,6 +55,17 @@ const ChatPeople = ({
   }, [lastMessage]);
 
   useEffect(() => {
+    // socket.on("addMatch", (match) => {
+    //   let newMatchPeople = [...matchPeople]
+    //   newMatchPeople.push(match)
+    //   setMatchPeople(newMatchPeople);
+    // })
+    // socket.on("deleteMatch", (guestUuid) => {
+    //   console.log("delete")
+    //   let newMatchPeople = matchPeople.filter(e => e.uuid !== guestUuid);
+    //   setMatchPeople(newMatchPeople);
+    // })
+
     if (matchPeople.length !== 0) {
       let promises = matchPeople.map((people) => readImage(people.uuid));
       Promise.all(promises)
@@ -65,7 +77,13 @@ const ChatPeople = ({
         })
         .catch((err) => console.log(err));
     }
+    // return () => {
+    //   if (socket) {
+    //     socket.off();
+    //   }
+    // };
   }, [matchPeople]);
+
 
   const updateIndex = (index) => {
     let guestDiv = document.getElementsByClassName("chat-people-item");

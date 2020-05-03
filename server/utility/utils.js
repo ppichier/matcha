@@ -85,12 +85,13 @@ exports.getIds = (userUuid, userLikedUuid, connection) => {
   return new Promise((resolve, reject) => {
     connection.query(
       // We have to check limit score
-      "SELECT UserId FROM user WHERE Uuid = ?; SELECT UserId FROM user WHERE Uuid = ?",
+      "SELECT UserName, UserId FROM user WHERE Uuid = ?; SELECT UserId FROM user WHERE Uuid = ?",
       [[userUuid], [userLikedUuid]],
       (err, result) => {
         if (err) reject(500);
         else {
           resolve({
+            userName: result[0][0].UserName,
             userId: result[0][0].UserId,
             userLikedId: result[1][0].UserId,
           });
