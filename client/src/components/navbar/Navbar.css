@@ -87,3 +87,6 @@ sup {
   user-select: none;
   position: relative;
 }
+.dropdown-toggle::after {
+  content: normal !important;
+}

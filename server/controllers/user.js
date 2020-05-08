@@ -540,6 +540,18 @@ exports.userBlocked = (req, res) => {
             (err, result) => {
               if (err) reject(500);
               else {
+                // let guestSockets = utils.findSocketsGivenUuid(
+                //   req.body.userUuid
+                // );
+                // guestSockets.forEach((e) => {
+                //   io.to(e).emit("deleteMatch", req.userUuid);
+                // });
+                // let meSockets = utils.findSocketsGivenUuid(
+                //   req.userUuid
+                // );
+                // meSockets.forEach((e) => {
+                //   io.to(e).emit("deleteMatch", req.body.userUuid);
+                // });
                 connection.release();
                 p = { msg: "user est bloque" };
               }

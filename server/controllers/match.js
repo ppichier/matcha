@@ -1,34 +1,34 @@
-const error = require("./error");
-const pool = require("../db");
-const utils = require("../utility/utils");
-const _ = require("lodash");
-const chalk = require("chalk");
+const error = require('./error')
+const pool = require('../db')
+const utils = require('../utility/utils')
+const _ = require('lodash')
+const chalk = require('chalk')
 // const findSocketsGivenUuid = require("../app");
 
 exports.readCommonTag = async (req, res) => {
   pool.getConnection((err, connection) => {
     if (err) {
-      error.handleError(res, err, "Internal error", 500, connection);
+      error.handleError(res, err, 'Internal error', 500, connection)
     } else {
       connection.query(`SELECT tag.Label FROM  tag`, (err, result) => {
         if (err) {
-          error.handleError(res, err, "Intenal error", 500, connection);
+          error.handleError(res, err, 'Intenal error', 500, connection)
         } else {
-          connection.release();
+          connection.release()
           let commonTags = result.map((e) => {
             return {
               value: e.Label,
               label: e.Label,
-            };
-          });
+            }
+          })
           return res.json({
             commonTags: commonTags,
-          });
+          })
         }
-      });
+      })
     }
-  });
-};
+  })
+}
 
 exports.filterProfile = (req, res) => {
   const {
@@ -39,70 +39,68 @@ exports.filterProfile = (req, res) => {
     selectedTags,
     moreProfiles,
     searchActif,
-  } = req.body;
-  const userUuid = req.userUuid;
-  let tagsParams = [];
+  } = req.body
+  const userUuid = req.userUuid
+  let tagsParams = []
   pool.getConnection((err, connection) => {
     if (err) {
-      error.handleError(res, err, "Internal error", 500, connection);
+      error.handleError(res, err, 'Internal error', 500, connection)
     } else {
       connection.query(
-        "SELECT * FROM  user WHERE Uuid = ?",
+        'SELECT * FROM  user WHERE Uuid = ?',
         [userUuid],
         async (err, result) => {
           if (err) {
-            error.handleError(res, err, "Intenal error", 500, connection);
+            error.handleError(res, err, 'Intenal error', 500, connection)
           } else {
-            let tagsTmp = [];
+            let tagsTmp = []
             if (selectedTags.length === 0) {
               try {
-                tagsTmp = await utils.getUserTags(userUuid);
+                tagsTmp = await utils.getUserTags(userUuid)
               } catch {
-                error.handleError(res, err, "Intenal error", 500, connection);
+                error.handleError(res, err, 'Intenal error', 500, connection)
               }
-              tagsParams = [0];
+              tagsParams = [0]
               if (tagsTmp.length > 0) {
-                let tags = tagsTmp.map((tag) => tag.TagId);
-                tagsParams = tags.join();
+                let tags = tagsTmp.map((tag) => tag.TagId)
+                tagsParams = tags.join()
               }
             } else {
               try {
-                let tagsTmp = await utils.validatorFilter(selectedTags);
-                tagsParams = tagsTmp.map((tag) => tag.TagId).join();
+                let tagsTmp = await utils.validatorFilter(selectedTags)
+                tagsParams = tagsTmp.map((tag) => tag.TagId).join()
               } catch {
-                error.handleError(res, err, "Intenal error", 500, connection);
+                error.handleError(res, err, 'Intenal error', 500, connection)
               }
             }
-            let ageFilter = age[0] === 17 && age[1] === 17 ? [17, 66] : age;
+            let ageFilter = age[0] === 17 && age[1] === 17 ? [17, 66] : age
             const locationFilter =
-              location[0] === 0 && location[1] === 0 ? [0, 100] : location;
+              location[0] === 0 && location[1] === 0 ? [0, 100] : location
             const scoreFilter =
-              score[0] === 0 && score[1] === 0 ? [0, 1000] : score;
+              score[0] === 0 && score[1] === 0 ? [0, 1000] : score
             const userSizeFilter =
-              userSize[0] === 129 && userSize[1] === 129
-                ? [129, 230]
-                : userSize;
-            const lat = result[0].Lat;
-            const lng = result[0].Lng;
-            const userIdUser = result[0].UserId;
+              userSize[0] === 129 && userSize[1] === 129 ? [129, 230] : userSize
+            const lat = result[0].Lat
+            const lng = result[0].Lng
+            const userIdUser = result[0].UserId
             const genreId =
               result[0].GenreId === 6 ||
               result[0].GenreId === 5 ||
-              searchActif === "search"
+              searchActif === 'search'
                 ? [1, 2, 5, 6]
-                : result[0].GenreId;
+                : result[0].GenreId
             const sexualOrientationId =
               result[0].SexualOrientationId === 6 ||
               result[0].SexualOrientationId === 5 ||
-              searchActif === "search"
+              searchActif === 'search'
                 ? [1, 2, 5, 6]
-                : result[0].SexualOrientationId;
+                : result[0].SexualOrientationId
             const offset =
               selectedTags.length === 0
                 ? `LIMIT 20 OFFSET ${moreProfiles[1]}`
-                : "";
+                : ''
             const reqSql =
-              "GenreId IN (?) AND SexualOrientationId IN (?) AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And UserSize <= ? AND UserId <> ?";
+              'GenreId IN (?) AND SexualOrientationId IN (?) AND age >= ? AND age <= ? AND score >= ? And score <= ? AND userSize >= ? And UserSize <= ? AND UserId <> ?'
             connection.query(
               `SELECT *, (SELECT count(*) FROM user WHERE ${reqSql} ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE ${reqSql} ORDER BY DISTANCE ASC ${offset};
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
@@ -132,37 +130,37 @@ exports.filterProfile = (req, res) => {
                 userIdUser,
                 userIdUser,
               ],
-              (err, result) => {
+              async (err, result) => {
                 if (err) {
-                  error.handleError(res, err, "Intenal error", 500, connection);
+                  error.handleError(res, err, 'Intenal error', 500, connection)
                 } else {
-                  connection.release();
-                  let resultsNumber = 0;
+                  connection.release()
+                  let resultsNumber = 0
                   if (
                     result[0].length > 0 &&
                     result[0][0].resultsNumber !== undefined &&
                     selectedTags.length === 0
                   )
-                    resultsNumber = result[0][0].resultsNumber;
+                    resultsNumber = result[0][0].resultsNumber
                   else if (
                     result[0].length > 0 &&
                     result[0][0].resultsNumber !== undefined &&
                     selectedTags.length !== 0
                   )
-                    resultsNumber = result[1].length;
-                  let a = [];
+                    resultsNumber = result[1].length
+                  let a = []
                   for (let i = 0; i < result.length; i++) {
                     a[i] = _.chain(result[i])
                       .map((r) => ({ ...r }))
-                      .value();
+                      .value()
                   }
                   let merged = _.chain(
                     _.merge(
-                      _.keyBy(a[0], "UserId"),
-                      _.keyBy(a[1], "UserId"),
-                      _.keyBy(a[2], "UserId"),
-                      _.keyBy(a[3], "UserId")
-                    )
+                      _.keyBy(a[0], 'UserId'),
+                      _.keyBy(a[1], 'UserId'),
+                      _.keyBy(a[2], 'UserId'),
+                      _.keyBy(a[3], 'UserId'),
+                    ),
                   )
                     .map((e) => ({
                       pseudo: e.UserName,
@@ -175,79 +173,81 @@ exports.filterProfile = (req, res) => {
                       likesMe: e.likesMe ? 1 : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,
+                      userId: e.UserId,
                     }))
                     .filter(
                       (e) =>
                         e.distance >= locationFilter[0] &&
                         e.distance <= locationFilter[1] &&
-                        (selectedTags.length === 0 || e.tagsNumber > 0)
+                        (selectedTags.length === 0 || e.tagsNumber > 0),
                     )
-                    .value();
-                  let profiles = utils.sortProfile(merged);
+                    .value()
+                  const usersBlocked = await utils.getUsersBlocked(userIdUser)
+                  let profiles = utils.sortProfile(merged, usersBlocked)
                   if (selectedTags.length > 0 && profiles.length > 0) {
                     const end =
                       moreProfiles[1] + 20 > profiles.length
                         ? profiles.length
-                        : moreProfiles[1] + 20;
-                    profiles = _.slice(profiles, moreProfiles[1], end);
+                        : moreProfiles[1] + 20
+                    profiles = _.slice(profiles, moreProfiles[1], end)
                   }
                   return res.json({
                     profiles,
                     resultsNumber,
-                  });
+                  })
                 }
-              }
-            );
+              },
+            )
           }
-        }
-      );
+        },
+      )
     }
-  });
-};
+  })
+}
 
 exports.sortProfile = (req, res) => {
-  const { sort } = req.body;
-};
+  const { sort } = req.body
+}
 
 exports.firstFilter = (req, res) => {
-  let moreProfiles = req.body.moreProfiles;
-  const userUuid = req.userUuid;
+  let moreProfiles = req.body.moreProfiles
+  const userUuid = req.userUuid
   pool.getConnection((err, connection) => {
     if (err) {
-      error.handleError(res, err, "Internal error", 500, connection);
+      error.handleError(res, err, 'Internal error', 500, connection)
     } else {
       connection.query(
-        "SELECT * FROM  user WHERE Uuid = ?",
+        'SELECT * FROM  user WHERE Uuid = ?',
         [userUuid],
         async (err, result) => {
           if (err) {
-            error.handleError(res, err, "Intenal error", 500, connection);
+            error.handleError(res, err, 'Intenal error', 500, connection)
           } else {
-            let tagsTmp = [];
+            let tagsTmp = []
             try {
-              tagsTmp = await utils.getUserTags(userUuid);
+              tagsTmp = await utils.getUserTags(userUuid)
             } catch {
-              error.handleError(res, err, "Intenal error", 500, connection);
+              error.handleError(res, err, 'Intenal error', 500, connection)
             }
-            let tagsParams = [0];
+            let tagsParams = [0]
             if (tagsTmp.length > 0) {
-              let tags = tagsTmp.map((tag) => tag.TagId);
-              tagsParams = tags.join();
+              let tags = tagsTmp.map((tag) => tag.TagId)
+              tagsParams = tags.join()
             }
             const stateProfile =
-              result[0].StateProfile >= 60 ? "match" : "search";
-            const lat = result[0].Lat;
-            const lng = result[0].Lng;
-            const userIdUser = result[0].UserId;
+              result[0].StateProfile >= 60 ? 'match' : 'search'
+            const lat = result[0].Lat
+            const lng = result[0].Lng
+            const userIdUser = result[0].UserId
             const genreId =
               result[0].GenreId === 6 || result[0].GenreId === 5
                 ? [1, 2, 5, 6]
-                : result[0].GenreId;
+                : result[0].GenreId
             const sexualOrientationId =
               result[0].SexualOrientationId === 6 ||
               result[0].SexualOrientationId === 5
                 ? [1, 2, 5, 6]
-                : result[0].SexualOrientationId;
+                : result[0].SexualOrientationId
             connection.query(
               `SELECT *,( SELECT count(*) FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) ) AS resultsNumber, ( 6371 * ACOS( COS(RADIANS(${lat})) * COS(RADIANS(Lat)) * COS(RADIANS(Lng) - RADIANS(${lng})) + SIN(RADIANS(${lat})) * SIN(RADIANS(Lat)))) AS DISTANCE FROM user WHERE GenreId IN (?) AND SexualOrientationId IN (?) AND UserId <> ? ORDER BY DISTANCE ASC LIMIT 20 OFFSET ?;
                SELECT count(*) AS TagsNumber , T.UserId FROM user_tag T, user U WHERE tagId IN (${tagsParams}) AND U.UserId = T.UserId AND U.GenreId IN (?) AND U.SexualOrientationId IN (?) GROUP BY T.UserId ORDER BY count(*) DESC;
@@ -268,28 +268,28 @@ exports.firstFilter = (req, res) => {
               ],
               async (err, result) => {
                 if (err) {
-                  error.handleError(res, err, "Intenal error", 500, connection);
+                  error.handleError(res, err, 'Intenal error', 500, connection)
                 } else {
-                  connection.release();
-                  let resultsNumber = 0;
+                  connection.release()
+                  let resultsNumber = 0
                   if (
                     result[0].length > 0 &&
                     result[0][0].resultsNumber !== undefined
                   )
-                    resultsNumber = result[0][0].resultsNumber;
-                  let a = [];
+                    resultsNumber = result[0][0].resultsNumber
+                  let a = []
                   for (let i = 0; i < result.length; i++) {
                     a[i] = _.chain(result[i])
                       .map((r) => ({ ...r }))
-                      .value();
+                      .value()
                   }
                   let merged = _.chain(
                     _.merge(
-                      _.keyBy(a[0], "UserId"),
-                      _.keyBy(a[1], "UserId"),
-                      _.keyBy(a[2], "UserId"),
-                      _.keyBy(a[3], "UserId")
-                    )
+                      _.keyBy(a[0], 'UserId'),
+                      _.keyBy(a[1], 'UserId'),
+                      _.keyBy(a[2], 'UserId'),
+                      _.keyBy(a[3], 'UserId'),
+                    ),
                   )
                     .map((e) => ({
                       pseudo: e.UserName,
@@ -302,50 +302,53 @@ exports.firstFilter = (req, res) => {
                       likesMe: e.likesMe ? 1 : 0,
                       tagsNumber: e.TagsNumber ? e.TagsNumber : 0,
                       userSize: e.UserSize,
+                      userId: e.UserId,
                     }))
-                    .value();
-                  let profiles = utils.sortProfile(merged);
+                    .value()
+                  const usersBlocked = await utils.getUsersBlocked(userIdUser)
+                  let profiles = utils.sortProfile(merged, usersBlocked)
                   return res.json({
                     profiles,
                     resultsNumber,
                     stateProfile,
-                  });
+                  })
                 }
-              }
-            );
+              },
+            )
           }
-        }
-      );
+        },
+      )
     }
-  });
-};
+  })
+}
 
 const addRowUserLike = (
   userName,
+  guestName,
   userId,
   userLikedId,
   userUuid,
   guestUuid,
-  connection
+  connection,
 ) => {
   // Check if B likes A -> yes : socketio emit notif
   return new Promise((resolve, reject) => {
     connection.query(
-      "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?",
+      'SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?',
       [userId, userLikedId],
       (err, result) => {
-        if (err) reject(500);
+        if (err) reject(500)
         else if (result.length !== 0) {
-          connection.release();
-          resolve({ msg: "like" });
+          connection.release()
+          resolve({ msg: 'like' })
         } else {
           connection.query(
             //We have to check if score is 0.
-            "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?; INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?); UPDATE USER SET Score = Score + 10 WHERE UserId = ?",
+            'SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?; INSERT INTO user_like (LikeSender, LikeReceiver) VALUES (?, ?); UPDATE USER SET Score = Score + 10 WHERE UserId = ?',
             [userLikedId, userId, userId, userLikedId, userLikedId],
             (err, result) => {
               if (err) {
-                reject(500);
+                reject(500)
               } else {
                 if (result[0].length > 0) {
                   connection.query(
@@ -365,71 +368,71 @@ const addRowUserLike = (
                     ],
                     (err, result) => {
                       if (err) {
-                        console.log(err);
+                        console.log(err)
 
-                        reject(500);
+                        reject(500)
                       } else {
-                        let guestSockets = utils.findSocketsGivenUuid(
-                          guestUuid
-                        );
-                        let meSockets = utils.findSocketsGivenUuid(userUuid);
-                        console.log("++++++++++++++++++++++++");
-                        console.log(userUuid);
-                        console.log(guestUuid);
-                        [...guestSockets, ...meSockets].forEach((e) => {
-                          io.to(e).emit("receiveNotification");
-                        });
-                        [...guestSockets, ...meSockets].forEach((e) => {
-                          io.to(e).emit("addMatch", {
+                        let guestSockets = utils.findSocketsGivenUuid(guestUuid)
+                        let meSockets = utils.findSocketsGivenUuid(userUuid)
+                        ;[...guestSockets, ...meSockets].forEach((e) => {
+                          io.to(e).emit('receiveNotification')
+                        })
+                        guestSockets.forEach((e) => {
+                          io.to(e).emit('addMatch', {
                             online: null, //Online not use in chat
                             userName,
                             uuid: userUuid,
-                          });
-                        });
-                        connection.release();
-                        resolve({ msg: "like" });
+                          })
+                        })
+                        meSockets.forEach((e) => {
+                          io.to(e).emit('addMatch', {
+                            online: null, //Online not use in chat
+                            userName: guestName,
+                            uuid: guestUuid,
+                          })
+                        })
+                        connection.release()
+                        resolve({ msg: 'like' })
                       }
-                    }
-                  );
+                    },
+                  )
                 } else {
                   connection.query(
                     `INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;`,
                     [userId, userLikedId, 2, userLikedId],
                     (err, result) => {
-                      if (err) reject(500);
+                      if (err) reject(500)
                       else {
-                        let guestSockets = utils.findSocketsGivenUuid(
-                          guestUuid
-                        );
+                        let guestSockets = utils.findSocketsGivenUuid(guestUuid)
                         guestSockets.forEach((e) => {
-                          io.to(e).emit("receiveNotification");
-                        });
-                        connection.release();
-                        resolve({ msg: "like" });
+                          io.to(e).emit('receiveNotification')
+                        })
+                        connection.release()
+                        resolve({ msg: 'like' })
                       }
-                    }
-                  );
+                    },
+                  )
                 }
               }
-            }
-          );
+            },
+          )
         }
-      }
-    );
-  });
-};
+      },
+    )
+  })
+}
 
 const deleteRowUserLike = (
   userId,
   userLikedId,
   userUuid,
   guestUuid,
-  connection
+  connection,
 ) => {
   // Checi if B likes A -> yes : socketio emit notif - delete messages
   return new Promise((resolve, reject) => {
     connection.query(
-      "DELETE FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?; DELETE FROM message WHERE (MessageSender = ? AND MessageReceiver = ?) OR (MessageSender = ? AND MessageReceiver = ?);DELETE FROM last_message WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?)",
+      'DELETE FROM user_like WHERE LikeSender = ? AND LikeReceiver = ?; DELETE FROM message WHERE (MessageSender = ? AND MessageReceiver = ?) OR (MessageSender = ? AND MessageReceiver = ?);DELETE FROM last_message WHERE (LastMessageFrom = ? AND LastMessageTo = ?) OR (LastMessageFrom = ? AND LastMessageTo = ?)',
       [
         userId,
         userLikedId,
@@ -444,108 +447,113 @@ const deleteRowUserLike = (
       ],
       (err, result) => {
         if (err) {
-          reject(500);
+          reject(500)
         } else if (result[0].affectedRows > 0) {
           connection.query(
-            "SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ? ;UPDATE USER SET Score = Score - 10 WHERE UserId = ?",
+            'SELECT * FROM user_like WHERE LikeSender = ? AND LikeReceiver = ? ;UPDATE USER SET Score = Score - 10 WHERE UserId = ?',
             [userLikedId, userId, userLikedId],
             (err, result) => {
-              if (err) reject(500);
+              if (err) reject(500)
               else if (result[0].length > 0) {
                 connection.query(
-                  "INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;",
+                  'INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ?;',
                   [userId, userLikedId, 5, userLikedId],
                   (err, result) => {
-                    if (err) reject(500);
+                    if (err) reject(500)
                     else {
-                      connection.release();
-                      let guestSockets = utils.findSocketsGivenUuid(guestUuid);
+                      connection.release()
+                      let guestSockets = utils.findSocketsGivenUuid(guestUuid)
                       guestSockets.forEach((e) => {
-                        io.to(e).emit("receiveNotification");
-                      });
+                        io.to(e).emit('receiveNotification')
+                      })
                       guestSockets.forEach((e) => {
-                        io.to(e).emit("deleteMatch", userUuid);
-                      });
-                      resolve({ msg: "like" });
+                        io.to(e).emit('deleteMatch', userUuid)
+                      })
+                      let meSockets = utils.findSocketsGivenUuid(userUuid)
+                      meSockets.forEach((e) => {
+                        io.to(e).emit('deleteMatch', guestUuid)
+                      })
+                      resolve({ msg: 'like' })
                     }
-                  }
-                );
+                  },
+                )
               } else {
-                connection.release();
-                resolve({ msg: "dislike" });
+                connection.release()
+                resolve({ msg: 'dislike' })
               }
-            }
-          );
+            },
+          )
         } else {
-          connection.release();
-          resolve({ msg: "dislike" });
+          connection.release()
+          resolve({ msg: 'dislike' })
         }
-      }
-    );
-  });
-};
+      },
+    )
+  })
+}
 
 const checkProfileImage = (userId, connection) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      "SELECT ImageProfile, Image1, Image2, Image3, Image4 FROM user WHERE UserId = ?",
+      'SELECT ImageProfile, Image1, Image2, Image3, Image4 FROM user WHERE UserId = ?',
       [userId],
       (err, result) => {
-        if (err) reject(500);
+        if (err) reject(500)
         else {
           for (let [key, value] of Object.entries(result[0])) {
-            if (value !== null) resolve(true);
+            if (value !== null) resolve(true)
           }
-          resolve(false);
+          resolve(false)
         }
-      }
-    );
-  });
-};
+      },
+    )
+  })
+}
 
 exports.heartClick = (req, res) => {
   pool.getConnection(async (err, connection) => {
     if (err) {
-      error.handleError(res, err, "Internal error", 500, connection);
+      error.handleError(res, err, 'Internal error', 500, connection)
     } else {
       try {
-        let { userName, userId, userLikedId } = await utils.getIds(
+        let { userName, guestName, userId, userLikedId } = await utils.getIds(
           req.userUuid,
           req.body.userUuid,
-          connection
-        );
-        let p = {};
-        let userHasImages = await checkProfileImage(userId, connection);
+          connection,
+        )
+        let p = {}
+        let userHasImages = await checkProfileImage(userId, connection)
         if (!userHasImages) {
-          connection.release();
+          connection.release()
           return res.status(403).json({
-            err: "Vous devez avoir au moins une photo pour pouvoir liker.",
-          });
+            err: 'Vous devez avoir au moins une photo pour pouvoir liker.',
+          })
         }
         if (req.body.isLiked) {
           p = await addRowUserLike(
             userName,
+            guestName,
             userId,
             userLikedId,
             req.userUuid,
             req.body.userUuid,
-            connection
-          );
+            connection,
+          )
         } else {
           p = await deleteRowUserLike(
             userId,
             userLikedId,
             req.userUuid,
             req.body.userUuid,
-            connection
-          );
+            connection,
+          )
         }
-        return res.json(p);
+        return res.json(p)
       } catch (err) {
-        error.handleError(res, err, "Internal error", 500, connection);
+        error.handleError(res, err, 'Internal error', 500, connection)
       }
     }
-  });
-};
+  })
+}
 
 /* end user_like */

@@ -107,11 +107,12 @@ const Profile = ({ location, socket }) => {
   };
 
   const isUserBlocked = (i) => {
-    setInfoSeconder({ ...infoSeconder, userBlocked: i });
+    setInfoSeconder({ ...infoSeconder, userBlocked: i, like: 0 });
     userBlocked({
       userUuid: id,
       userBlocked: i,
     }).then(() => {});
+    heartClick({userUuid: id, isLiked: 0}).then(() => {});
   };
 
   const onHeartClick = (i) => {
@@ -126,6 +127,7 @@ const Profile = ({ location, socket }) => {
   };
 
   const handleIconLike = () => {
+    
     if (infoSeconder.like === 1)
       return (
         <FontAwesomeIcon

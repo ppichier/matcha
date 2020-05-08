@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Navbar, NavDropdown, Badge, Nav } from "react-bootstrap";
+import React, { useEffect, Fragment } from "react";
+import { Navbar, NavDropdown, Badge, Nav, Dropdown } from "react-bootstrap";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
@@ -48,11 +48,6 @@ const NavbarHeader = ({ socket }) => {
     }
   };
 
-  const handleNotifications = () => {
-    setShowNotifications(!showNotifications);
-    setNotificationsNumber(0); // ! only check if showNotification become true
-  };
-
   return (
     <Navbar variant="dark" expand="md" className="navbar-main">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -71,29 +66,27 @@ const NavbarHeader = ({ socket }) => {
       </Navbar.Collapse>
       <Navbar.Collapse className="justify-content-end">
         <Nav className="navbar-container">
-          <div
-            className="notifications-container"
-            onClick={() => handleNotifications()}
+          <div style={{position: "relative"}}
+          className="notifications-container"
+          onClick={() => setNotificationsNumber(0)}
           >
-            <FontAwesomeIcon
-              icon={faBell}
-              className="fa-lg mr-0 navbar-tab icon"
-            />
-            <sup className="sup-notification-icon">
+          <NavDropdown
+            className="mt-1"
+            title={
+              <Fragment>
+              <FontAwesomeIcon icon={faBell} className="fa-lg navbar-tab icon" />
+              <sup className="sup-notification-icon">
               <Badge pill>
-                {notificationsNumber ? notificationsNumber : null}
+                {notificationsNumber ? notificationsNumber : 0}
               </Badge>
             </sup>
-            <div
-              style={{
-                position: "absolute",
-                top: "50px",
-                right: "14px",
-                zIndex: "1000",
-              }}
-            >
-              <Notifications showNotifications={showNotifications} />
-            </div>
+            </Fragment>
+            }
+            id="basic-nav-dropdown"
+            alignRight
+          >
+            <Notifications showNotifications={true} />
+          </NavDropdown>
           </div>
           <NavDropdown
             className="mt-1"
