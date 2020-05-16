@@ -18,7 +18,7 @@ const {
   userReport,
 } = require("../controllers/user");
 
-const { getUserId } = require("../middlewares");
+const { getUserId, userIsBlocked } = require("../middlewares");
 
 const {
   createUploadDirectory,
@@ -34,6 +34,7 @@ router.post("/changePage", verifyToken, changePage);
 router.post(
   "/profile/updateProfile",
   verifyToken,
+
   updateProfileValidator,
   updateTags,
   updateProfile
@@ -73,6 +74,7 @@ router.post(
   "/profile/readGuestProfile",
   verifyToken,
   getUserId,
+  // userIsBlocked,
   readGuestProfile
 );
 router.post("/profile/userBlocked", verifyToken, userBlocked);

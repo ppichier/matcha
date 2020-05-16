@@ -1,5 +1,6 @@
 const pool = require("../db");
 const error = require("../controllers/error");
+const utils = require("../utility/utils");
 
 exports.getUserId = (req, res, next) => {
   pool.getConnection((err, connection) => {
@@ -19,6 +20,38 @@ exports.getUserId = (req, res, next) => {
           }
         }
       );
+    }
+  });
+};
+
+exports.userIsBlocked = (req, res, next) => {
+  // req.body.userUuid
+  let userUuid = req.userUuid;
+  let guestUuid = req.body.guestUuid || req.body.userUuid; //TODO attention checker variable !!!!!!
+  pool.getConnection(async (err, connection) => {
+    if (err) {
+      error.handleError(res, err, "Internal error", 500, connection);
+    } else {
+      try {
+        let { userId, userLikedId } = await utils.getIds(
+          userUuid,
+          guestUuid,
+          connection
+        );
+        connection.release();
+        let usersBlockedByGuest = await utils.getUsersBlocked(userLikedId);
+        if (
+          usersBlockedByGuest.findIndex(
+            (x) => x.UserBlockedReceiver === userId
+          ) !== -1
+        ) {
+          return res.status(401).json({ err: "Unauthorized" });
+        } else {
+          next();
+        }
+      } catch (e) {
+        return res.status(401).json({ err: "Unauthorized" });
+      }
     }
   });
 };

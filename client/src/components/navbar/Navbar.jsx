@@ -31,7 +31,7 @@ const NavbarHeader = ({ socket }) => {
     }
     // return () => {
     //   if (socket) {
-    //     socket.off();
+    //     socket.off("receiveNotification");
     //   }
     // };
   }, [notificationsNumber]);
@@ -66,27 +66,31 @@ const NavbarHeader = ({ socket }) => {
       </Navbar.Collapse>
       <Navbar.Collapse className="justify-content-end">
         <Nav className="navbar-container">
-          <div style={{position: "relative"}}
-          className="notifications-container"
-          onClick={() => setNotificationsNumber(0)}
+          <div
+            style={{ position: "relative" }}
+            className="notifications-container"
+            onClick={() => setNotificationsNumber(0)}
           >
-          <NavDropdown
-            className="mt-1"
-            title={
-              <Fragment>
-              <FontAwesomeIcon icon={faBell} className="fa-lg navbar-tab icon" />
-              <sup className="sup-notification-icon">
-              <Badge pill>
-                {notificationsNumber ? notificationsNumber : 0}
-              </Badge>
-            </sup>
-            </Fragment>
-            }
-            id="basic-nav-dropdown"
-            alignRight
-          >
-            <Notifications showNotifications={true} />
-          </NavDropdown>
+            <NavDropdown
+              className="mt-1"
+              title={
+                <Fragment>
+                  <FontAwesomeIcon
+                    icon={faBell}
+                    className="fa-lg navbar-tab icon"
+                  />
+                  <sup className="sup-notification-icon">
+                    <Badge pill>
+                      {notificationsNumber ? notificationsNumber : 0}
+                    </Badge>
+                  </sup>
+                </Fragment>
+              }
+              id="basic-nav-dropdown"
+              alignRight
+            >
+              <Notifications showNotifications={true} />
+            </NavDropdown>
           </div>
           <NavDropdown
             className="mt-1"

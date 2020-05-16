@@ -468,6 +468,7 @@ exports.readGuestProfile = async (req, res) => {
           } else if (result[0].length === 0) {
             error.handleError(res, err, "invalid uuid", 404, connection);
           } else {
+
             connection.query(
               "INSERT INTO user_visit (UserVisitor, UserVisited) VALUES (?, ?); UPDATE USER SET Score = Score + 1 WHERE UserId = ?; INSERT INTO notification (NotificationSender, NotificationReceiver, NotificationType) VALUES (?,?,?); UPDATE user SET NotificationNumber = NotificationNumber + 1 WHERE UserId = ? ", // We have to check limit score
               [

@@ -511,6 +511,7 @@ const checkProfileImage = (userId, connection) => {
 }
 
 exports.heartClick = (req, res) => {
+  // return
   pool.getConnection(async (err, connection) => {
     if (err) {
       error.handleError(res, err, 'Internal error', 500, connection)

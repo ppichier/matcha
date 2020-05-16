@@ -63,6 +63,7 @@ const ChatPeople = ({
       console.log("delete");
       let newMatchPeople = matchPeople.filter((e) => e.uuid !== guestUuid);
       setMatchPeople(newMatchPeople);
+      sendGuestInfos(null);
     });
     if (matchPeople.length !== 0) {
       let promises = matchPeople.map((people) => readImage(people.uuid));
@@ -79,7 +80,7 @@ const ChatPeople = ({
 
   const updateIndex = (index) => {
     let guestDiv = document.getElementsByClassName("chat-people-item");
-    if (guestIndex !== null) {
+    if (guestIndex !== null && guestDiv[guestIndex]) {
       guestDiv[guestIndex].classList.remove("chat-people-item-selected");
       socket.emit(
         "typingMessage",

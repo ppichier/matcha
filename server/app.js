@@ -22,6 +22,8 @@ const matchRoutes = require("./routes/match");
 const chatRoutes = require("./routes/chat");
 const popularityRoutes = require("./routes/popularity");
 const notificationsRoutes = require("./routes/notifications");
+const error = require("./controllers/error");
+const pool = require("./db");
 
 //faker
 // faker.generateFakeProfiles();
@@ -81,10 +83,46 @@ io.on("connection", (socket) => {
   socket.on("visit", (userUuid, guestUuid, cb) => {
     console.log(chalk.redBright("MON ID: ", userUuid));
     console.log(chalk.redBright("VISIT ID: ", guestUuid));
-    socket.join(guestUuid);
-    let guestSockets = utils.findSocketsGivenUuid(guestUuid);
-    [...guestSockets].forEach((e) => {
-      io.to(e).emit("receiveNotification");
+    // get ids
+    pool.getConnection(async (err, connection) => {
+      if (err) {
+        connection.release();
+      } else {
+        try {
+          let { userId, userLikedId } = await utils.getIds(
+            userUuid,
+            guestUuid,
+            connection
+          );
+          connection.release();
+          let usersBlockedByGuest = await utils.getUsersBlocked(userLikedId);
+          // let usersBlockedByMe = await utils.getUsersBlocked(userId);
+          console.log(usersBlockedByGuest);
+          if (
+            usersBlockedByGuest.findIndex(
+              (x) => x.UserBlockedReceiver === userId
+            ) !== -1
+          ) {
+            return;
+          }
+          // } else if (
+          //   usersBlockedByMe.findIndex(
+          //     (x) => x.UserBlockedReceiver === userLikedId
+          //   ) !== -1
+          // ) {
+          //   return;
+          // }
+          socket.join(guestUuid);
+          let guestSockets = utils.findSocketsGivenUuid(guestUuid);
+          [...guestSockets].forEach((e) => {
+            io.to(e).emit("receiveNotification");
+          });
+        } catch (e) {
+          console.log(e);
+          connection.release();
+          return;
+        }
+      }
     });
   });
 

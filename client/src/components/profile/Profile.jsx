@@ -111,8 +111,12 @@ const Profile = ({ location, socket }) => {
     userBlocked({
       userUuid: id,
       userBlocked: i,
-    }).then(() => {});
-    heartClick({userUuid: id, isLiked: 0}).then(() => {});
+    })
+      .then(() => {})
+      .catch((e) => console.error(e));
+    heartClick({ userUuid: id, isLiked: 0 })
+      .then(() => {})
+      .catch((e) => console.error(e));
   };
 
   const onHeartClick = (i) => {
@@ -122,12 +126,13 @@ const Profile = ({ location, socket }) => {
         userUuid: id,
         isLiked: i,
       };
-      heartClick(userLiked).then(() => {});
+      heartClick(userLiked)
+        .then(() => {})
+        .catch((e) => console.error(e));
     }
   };
 
   const handleIconLike = () => {
-    
     if (infoSeconder.like === 1)
       return (
         <FontAwesomeIcon
