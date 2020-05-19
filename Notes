@@ -27,3 +27,10 @@
 ## Profile.jsx on XS navbar padding right?? 
 
 
+-- BUG SOCKET -- 
+TESTER AU MAX TOUTES LES NOTIFS
+Twice notif ?
+delete match / add match  -> chatPeople ancien message affiché
+delete match -> user redirect to image even if on another chat
+
+

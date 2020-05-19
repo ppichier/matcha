@@ -13,7 +13,9 @@ const { getAllMessages, saveMessage } = require("./socket/chat");
 //app
 const app = express();
 const http = require("http").createServer(app);
-global.io = require("socket.io")(http);
+global.io = require("socket.io")(http, {
+  pingTimeout: 60000,
+});
 
 //import routes
 const authRoutes = require("./routes/auth");
@@ -97,12 +99,15 @@ io.on("connection", (socket) => {
           connection.release();
           let usersBlockedByGuest = await utils.getUsersBlocked(userLikedId);
           // let usersBlockedByMe = await utils.getUsersBlocked(userId);
+          console.log("+++++++++++++++++");
           console.log(usersBlockedByGuest);
+          console.log("+++++++++++++++++");
           if (
             usersBlockedByGuest.findIndex(
               (x) => x.UserBlockedReceiver === userId
             ) !== -1
           ) {
+            console.log("User is block - visit emit not sent");
             return;
           }
           // } else if (
@@ -114,7 +119,9 @@ io.on("connection", (socket) => {
           // }
           socket.join(guestUuid);
           let guestSockets = utils.findSocketsGivenUuid(guestUuid);
+          console.log("YO", guestSockets);
           [...guestSockets].forEach((e) => {
+            console.log("emit to:", e);
             io.to(e).emit("receiveNotification");
           });
         } catch (e) {

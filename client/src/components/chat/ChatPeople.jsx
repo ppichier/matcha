@@ -54,16 +54,23 @@ const ChatPeople = ({
   }, [lastMessage]);
 
   useEffect(() => {
+    console.log("JE GENERE");
     socket.on("addMatch", (match) => {
+      console.log("ADD");
       let newMatchPeople = [...matchPeople];
+      // console.log(match);
       newMatchPeople.push(match);
       setMatchPeople(newMatchPeople);
     });
     socket.on("deleteMatch", (guestUuid) => {
+      // console.log(lastMessages);
       console.log("delete");
       let newMatchPeople = matchPeople.filter((e) => e.uuid !== guestUuid);
+      let newLastMessages = lastMessages.filter((e) => e.with !== guestUuid);
+
       setMatchPeople(newMatchPeople);
-      sendGuestInfos(null);
+      setLastMessages(newLastMessages);
+      sendGuestInfos(null); // TODO  bug if i am on another chat
     });
     if (matchPeople.length !== 0) {
       let promises = matchPeople.map((people) => readImage(people.uuid));
@@ -76,6 +83,10 @@ const ChatPeople = ({
         })
         .catch((err) => console.log(err));
     }
+    return () => {
+      socket.removeListener("addMatch");
+      socket.removeListener("deleteMatch");
+    };
   }, [matchPeople]);
 
   const updateIndex = (index) => {

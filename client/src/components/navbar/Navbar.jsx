@@ -10,7 +10,18 @@ import { getNotificationsNumber } from "../../api/notifications";
 
 const NavbarHeader = ({ socket }) => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notificationsNumber, setNotificationsNumber] = useState(0);
+  const [notificationsNumber, setNotificationsNumber] = useState(null);
+
+  const a = () => {
+    console.log("je recois receive notifications");
+    console.log(notificationsNumber);
+    // if (notificationsNumber === null)
+    setNotificationsNumber((x) => {
+      if (x === null) return 0;
+      else return x + 1;
+    });
+    // else setNotificationsNumber(notificationsNumber + 1);
+  };
 
   useEffect(() => {
     getNotificationsNumber().then((data) => {
@@ -24,17 +35,14 @@ const NavbarHeader = ({ socket }) => {
   }, []);
 
   useEffect(() => {
-    if (socket) {
-      socket.on("receiveNotification", () => {
-        setNotificationsNumber(notificationsNumber + 1);
-      });
-    }
-    // return () => {
-    //   if (socket) {
-    //     socket.off("receiveNotification");
-    //   }
-    // };
-  }, [notificationsNumber]);
+    console.log(notificationsNumber);
+    console.log("init receive notifications: ", socket);
+    socket.on("receiveNotification", a);
+    return () => {
+      console.log("remove receive notifications");
+      socket.removeListener("receiverNotification", a);
+    };
+  }, [socket]);
 
   const handleLogout = () => {
     if (typeof window != "undefined") {
