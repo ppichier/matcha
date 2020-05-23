@@ -71,8 +71,8 @@ const Routes = () => {
             component={Chat}
             socket={socket}
           ></PrivateRoute>
-          ;<Route path="/verifyAccount" exact component={VerifyAccount}></Route>
-          ;
+          <Route path="/verifyAccount" exact component={VerifyAccount}></Route>
+          {/* <Route path="/admin" exact component={Admin}></Route> */}
           <Route
             path="/recoverPassword"
             exact

@@ -12,20 +12,16 @@ const Notifications = ({ showNotifications }) => {
   moment().locale("fr", localization).format("LLL");
 
   useEffect(() => {
-    if (showNotifications) {
-      readNotifications().then((data) => {
-        if (!data) return;
-        else if (data.err) {
-          console.log(data.err);
-          //notifaction erreur
-        } else {
-          setlistNotifications(data.listNotifications);
-        }
-      });
-
-      //fetchAllNotification
-      //spinner fecthing !
-    }
+    readNotifications().then((data) => {
+      if (!data) return;
+      else if (data.err) {
+        console.log(data.err);
+        //notifaction erreur
+      } else {
+        console.log(data.listNotifications);
+        setlistNotifications(data.listNotifications);
+      }
+    });
   }, [showNotifications]);
 
   const notifications = () => {
@@ -49,7 +45,7 @@ const Notifications = ({ showNotifications }) => {
     );
   };
 
-  return <div>{showNotifications ? notifications() : null}</div>;
+  return <div>{notifications()}</div>;
 };
 
 export default Notifications;

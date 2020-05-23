@@ -1,5 +1,5 @@
 import React, { useEffect, Fragment } from "react";
-import { Navbar, NavDropdown, Badge, Nav, Dropdown } from "react-bootstrap";
+import { Navbar, NavDropdown, Badge, Nav } from "react-bootstrap";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
@@ -13,14 +13,12 @@ const NavbarHeader = ({ socket }) => {
   const [notificationsNumber, setNotificationsNumber] = useState(null);
 
   const a = () => {
-    console.log("je recois receive notifications");
-    console.log(notificationsNumber);
-    // if (notificationsNumber === null)
+    // console.log("je recois receive notifications");
+    // console.log(notificationsNumber);
     setNotificationsNumber((x) => {
       if (x === null) return 0;
       else return x + 1;
     });
-    // else setNotificationsNumber(notificationsNumber + 1);
   };
 
   useEffect(() => {
@@ -35,11 +33,11 @@ const NavbarHeader = ({ socket }) => {
   }, []);
 
   useEffect(() => {
-    console.log(notificationsNumber);
-    console.log("init receive notifications: ", socket);
+    // console.log(notificationsNumber);
+    // console.log("init receive notifications: ", socket);
     socket.on("receiveNotification", a);
     return () => {
-      console.log("remove receive notifications");
+      // console.log("remove receive notifications");
       socket.removeListener("receiverNotification", a);
     };
   }, [socket]);
@@ -77,7 +75,10 @@ const NavbarHeader = ({ socket }) => {
           <div
             style={{ position: "relative" }}
             className="notifications-container"
-            onClick={() => setNotificationsNumber(0)}
+            onClick={() => {
+              setNotificationsNumber(0);
+              setShowNotifications(!showNotifications);
+            }}
           >
             <NavDropdown
               className="mt-1"
@@ -97,7 +98,7 @@ const NavbarHeader = ({ socket }) => {
               id="basic-nav-dropdown"
               alignRight
             >
-              <Notifications showNotifications={true} />
+              <Notifications showNotifications={showNotifications} />
             </NavDropdown>
           </div>
           <NavDropdown

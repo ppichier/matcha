@@ -1,76 +1,76 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import { Row, Col, Container, Button, ButtonGroup } from 'react-bootstrap'
-import CardPicture from './CardPicture'
-import './CardPicture.css'
-import NavbarHeader from '../navbar/Navbar'
-import FilterProfile from './FilterProfile'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
-import 'rc-slider/assets/index.css'
-import './MatchMe.css'
-import SortProfile from './SortProfile'
-import { firstFilter, heartClick, filterProfile } from '../../api'
-import _ from 'lodash'
-import { faArrowAltCircleDown } from '@fortawesome/free-solid-svg-icons'
-import { notificationAlert } from '../functions/notification'
-import matchImage from '../../images/match.png'
+import React, { useState, useEffect, Fragment } from "react";
+import { Row, Col, Container, Button, ButtonGroup } from "react-bootstrap";
+import CardPicture from "./CardPicture";
+import "./CardPicture.css";
+import NavbarHeader from "../navbar/Navbar";
+import FilterProfile from "./FilterProfile";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import "rc-slider/assets/index.css";
+import "./MatchMe.css";
+import SortProfile from "./SortProfile";
+import { firstFilter, heartClick, filterProfile } from "../../api";
+import _ from "lodash";
+import { faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
+import { notificationAlert } from "../functions/notification";
+import matchImage from "../../images/match.png";
 
 const MatchMe = ({ socket }) => {
   const [values, setValues] = useState({
     profiles: [],
     resultsNumber: 0,
     activateFilter: false,
-  })
-  const [moreProfiles, setMoreProfiles] = useState([0, 0])
-  const [isShow, setIsShow] = useState('match')
-  const [modalshow, setModalShow] = useState(false)
+  });
+  const [moreProfiles, setMoreProfiles] = useState([0, 0]);
+  const [isShow, setIsShow] = useState("match");
+  const [modalshow, setModalShow] = useState(false);
   const [moreParams, setMoreParams] = useState({
     age: [],
     userSize: [],
     location: [],
     score: [],
     selectedTags: [],
-  })
+  });
 
   useEffect(() => {
     firstFilter(moreProfiles)
       .then((data) => {
-        console.log(data)
+        // console.log(data)
         if (!data) {
-          notificationAlert('Server down', 'danger', 'bottom-center')
-          return
+          notificationAlert("Server down", "danger", "bottom-center");
+          return;
         } else if (data.err) {
-          notificationAlert(data.err, 'danger', 'bottom-center')
-          return
+          notificationAlert(data.err, "danger", "bottom-center");
+          return;
         }
-        if (isShow === 'match' && data.stateProfile === 'match') {
+        if (isShow === "match" && data.stateProfile === "match") {
           setValues({
             ...values,
             profiles: data.profiles,
             resultsNumber: data.resultsNumber,
-          })
-          setIsShow('match')
+          });
+          setIsShow("match");
         } else {
-          if (data.stateProfile !== 'match' && isShow === 'search')
+          if (data.stateProfile !== "match" && isShow === "search")
             notificationAlert(
               "Vous devez compléter votre profil à 60% minimum pour avoir le droit d'accès à la page match.",
-              'danger',
-              'bottom-center',
-            )
-          setIsShow('search')
+              "danger",
+              "bottom-center"
+            );
+          setIsShow("search");
           setValues({
             ...values,
             profiles: [],
             resultsNumber: 0,
             activateFilter: false,
-          })
-          document.getElementById('match').classList.remove('btn-active')
-          document.getElementById('search').classList.add('btn-active')
+          });
+          document.getElementById("match").classList.remove("btn-active");
+          document.getElementById("search").classList.add("btn-active");
         }
       })
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isShow])
+  }, [isShow]);
 
   // const open_modal = (id) => {
   //   let e = document.getElementById('modals');
@@ -82,35 +82,35 @@ const MatchMe = ({ socket }) => {
   //     e.style.display = "none"
   // }
   const handleShow = (showParams) => {
-    setIsShow(showParams)
-    let btn = showParams === 'match' ? 'search' : 'match'
-    document.getElementById(btn).classList.remove('btn-active')
-    document.getElementById(showParams).classList.add('btn-active')
-  }
+    setIsShow(showParams);
+    let btn = showParams === "match" ? "search" : "match";
+    document.getElementById(btn).classList.remove("btn-active");
+    document.getElementById(showParams).classList.add("btn-active");
+  };
 
   const setFirstFilter = (event, moreProfiles) => {
-    if (event) event.preventDefault()
+    if (event) event.preventDefault();
     firstFilter(moreProfiles)
       .then((data) => {
         if (!data) {
-          return
+          return;
         } else if (data.err) {
-          notificationAlert(data.err, 'danger', 'bottom-center')
+          notificationAlert(data.err, "danger", "bottom-center");
         } else {
-          let profiles = values.profiles
-          profiles = profiles.concat(data.profiles)
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
           setValues({
             ...values,
-            profiles: _.uniqBy(profiles, 'pseudo'),
+            profiles: _.uniqBy(profiles, "pseudo"),
             resultsNumber: data.resultsNumber,
-          })
+          });
         }
       })
-      .catch((err) => console.log(err))
-  }
+      .catch((err) => console.log(err));
+  };
 
   const setFilterParams = (event, filterParams, moreProfiles) => {
-    if (event) event.preventDefault()
+    if (event) event.preventDefault();
     filterProfile({
       age: filterParams.age,
       userSize: filterParams.userSize,
@@ -121,10 +121,10 @@ const MatchMe = ({ socket }) => {
       searchActif: isShow,
     })
       .then((data) => {
-        if (!data) return
+        if (!data) return;
         else if (data.err) {
-          notificationAlert('Server down', 'danger', 'bottom-center')
-          return
+          notificationAlert("Server down", "danger", "bottom-center");
+          return;
         }
         if (moreProfiles[0] === 0) {
           setValues({
@@ -132,8 +132,8 @@ const MatchMe = ({ socket }) => {
             profiles: data.profiles,
             resultsNumber: data.resultsNumber,
             activateFilter: true,
-          })
-          setMoreProfiles(moreProfiles)
+          });
+          setMoreProfiles(moreProfiles);
           setMoreParams({
             ...moreParams,
             age: filterParams.age,
@@ -141,83 +141,83 @@ const MatchMe = ({ socket }) => {
             location: filterParams.location,
             score: filterParams.score,
             selectedTags: filterParams.selectedTags,
-          })
+          });
         } else {
-          let profiles = values.profiles
-          profiles = profiles.concat(data.profiles)
+          let profiles = values.profiles;
+          profiles = profiles.concat(data.profiles);
           setValues({
             ...values,
-            profiles: _.uniqBy(profiles, 'pseudo'),
+            profiles: _.uniqBy(profiles, "pseudo"),
             resultsNumber: data.resultsNumber,
-          })
+          });
         }
       })
-      .catch((err) => console.log(err))
-  }
+      .catch((err) => console.log(err));
+  };
 
   const setSortParams = (sortParams) => (event) => {
     const profiles = _.orderBy(
       values.profiles,
       [sortParams.name],
-      [sortParams.order],
-    )
-    setValues({ ...values, profiles })
-  }
+      [sortParams.order]
+    );
+    setValues({ ...values, profiles });
+  };
 
   const onMoreProfiles = (event) => {
-    let moreProfilesTmp = moreProfiles.map((x) => x + 20)
-    setMoreProfiles(moreProfilesTmp)
+    let moreProfilesTmp = moreProfiles.map((x) => x + 20);
+    setMoreProfiles(moreProfilesTmp);
     if (values.activateFilter === true)
-      setFilterParams(event, moreParams, moreProfilesTmp)
-    else setFirstFilter(event, moreProfilesTmp)
-  }
+      setFilterParams(event, moreParams, moreProfilesTmp);
+    else setFirstFilter(event, moreProfilesTmp);
+  };
 
   const onHeartClick = (i, uuid) => {
-    let newProfiles = [...values.profiles]
-    let idx = newProfiles.findIndex((p) => p.userUuid === uuid)
+    let newProfiles = [...values.profiles];
+    let idx = newProfiles.findIndex((p) => p.userUuid === uuid);
     let userLiked = {
       userUuid: uuid,
       isLiked: !newProfiles[idx].isLiked,
-    }
+    };
     heartClick(userLiked).then((data) => {
-      if (!data) return
+      if (!data) return;
       else if (data.err) {
-        notificationAlert(data.err, 'danger', 'bottom-center')
+        notificationAlert(data.err, "danger", "bottom-center");
       } else {
-        newProfiles[idx].isLiked = userLiked.isLiked
+        newProfiles[idx].isLiked = userLiked.isLiked;
         if (newProfiles[idx].isLiked) {
-          newProfiles[idx].score = newProfiles[idx].score + 10
+          newProfiles[idx].score = newProfiles[idx].score + 10;
           if (newProfiles[idx].likesMe) {
-            setModalShow(true)
-            setTimeout(() => setModalShow(false), 4000)
+            setModalShow(true);
+            setTimeout(() => setModalShow(false), 4000);
           }
-        } else newProfiles[idx].score = newProfiles[idx].score - 10
-        setValues({ ...values, profiles: newProfiles })
+        } else newProfiles[idx].score = newProfiles[idx].score - 10;
+        setValues({ ...values, profiles: newProfiles });
       }
-    })
-  }
+    });
+  };
 
   const loadProfiles = () => {
     if (values.resultsNumber > 0 && values.resultsNumber > moreProfiles[1] + 20)
       return (
-        <div style={{ width: '50%' }}>
+        <div style={{ width: "50%" }}>
           <Button
             onClick={(e) => onMoreProfiles(e)}
             className="text-uppercase mb-4 center-block"
             variant="outline-info"
             style={{
-              letterSpacing: '1px',
-              fontWeight: 'bold',
-              marginLeft: '50%',
+              letterSpacing: "1px",
+              fontWeight: "bold",
+              marginLeft: "50%",
             }}
           >
             <FontAwesomeIcon icon={faArrowAltCircleDown} className="fa-lg " />
             <i> Charger plus</i>
           </Button>
         </div>
-      )
-    else return <Fragment></Fragment>
-  }
+      );
+    else return <Fragment></Fragment>;
+  };
 
   const card = () => {
     return values.profiles.map((profile, i) => {
@@ -236,30 +236,30 @@ const MatchMe = ({ socket }) => {
               variant={
                 profile.likesMe || profile.isLiked
                   ? profile.isLiked
-                    ? 'danger'
-                    : 'info'
-                  : 'outline-secondary'
+                    ? "danger"
+                    : "info"
+                  : "outline-secondary"
               }
               onClick={() => onHeartClick(i, profile.userUuid)}
               style={{
-                border: '2px solid',
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
+                border: "2px solid",
+                borderRadius: "50%",
+                width: "50px",
+                height: "50px",
               }}
             >
               <FontAwesomeIcon icon={faHeart} className="love" />
             </Button>
           </div>
         </div>
-      )
-    })
-  }
+      );
+    });
+  };
 
   return (
     <Fragment>
       <NavbarHeader socket={socket} />
-      <Container fluid className="mt-3" style={{ color: '#545454' }}>
+      <Container fluid className="mt-3" style={{ color: "#545454" }}>
         <Row>
           <Col md={3}>
             <SortProfile
@@ -275,13 +275,13 @@ const MatchMe = ({ socket }) => {
             <ButtonGroup
               variant="outline-info"
               className="style-menu px-4 py-4 my-3 "
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             >
               <Button
                 variant="outline-info"
                 className="btn-switsh btn-active"
                 id="match"
-                onClick={() => handleShow('match')}
+                onClick={() => handleShow("match")}
               >
                 Match
               </Button>
@@ -289,12 +289,12 @@ const MatchMe = ({ socket }) => {
                 variant="outline-info"
                 className="btn-switsh "
                 id="search"
-                onClick={() => handleShow('search')}
+                onClick={() => handleShow("search")}
               >
                 Recherche
               </Button>
             </ButtonGroup>
-            <Row style={{ justifyContent: 'center' }}>{card()}</Row>
+            <Row style={{ justifyContent: "center" }}>{card()}</Row>
             {modalshow ? (
               <div>
                 <img id="modals" className="modals" alt="" src={matchImage} />
@@ -307,6 +307,6 @@ const MatchMe = ({ socket }) => {
         </Row>
       </Container>
     </Fragment>
-  )
-}
-export default MatchMe
+  );
+};
+export default MatchMe;

@@ -8,7 +8,7 @@ exports.getNotifications = (req, res) => {
       error.handleError(res, err, "Internal error", 500, connection);
     } else {
       connection.query(
-        "SELECT NotificationSender, NotificationType, NotificationDate, user.UserName FROM notification INNER JOIN user ON user.UserId = NotificationSender  WHERE NotificationReceiver = ? ORDER BY NotificationDate DESC; UPDATE user SET NotificationNumber = 0",
+        "SELECT NotificationSender, NotificationType, NotificationDate, user.UserName FROM notification INNER JOIN user ON user.UserId = NotificationSender  WHERE NotificationReceiver = ? ORDER BY NotificationDate DESC LIMIT 30; UPDATE user SET NotificationNumber = 0",
         [userId],
         (err, result) => {
           if (err)

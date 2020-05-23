@@ -54,23 +54,26 @@ const ChatPeople = ({
   }, [lastMessage]);
 
   useEffect(() => {
-    console.log("JE GENERE");
+    // console.log("JE GENERE");
     socket.on("addMatch", (match) => {
-      console.log("ADD");
+      // console.log("ADD");
       let newMatchPeople = [...matchPeople];
-      // console.log(match);
       newMatchPeople.push(match);
       setMatchPeople(newMatchPeople);
     });
     socket.on("deleteMatch", (guestUuid) => {
-      // console.log(lastMessages);
-      console.log("delete");
+      // console.log("delete");
       let newMatchPeople = matchPeople.filter((e) => e.uuid !== guestUuid);
       let newLastMessages = lastMessages.filter((e) => e.with !== guestUuid);
 
       setMatchPeople(newMatchPeople);
       setLastMessages(newLastMessages);
-      sendGuestInfos(null); // TODO  bug if i am on another chat
+      // console.log(matchPeople);
+      // console.log(guestIndex);
+      if (guestIndex !== null && matchPeople[guestIndex].uuid === guestUuid) {
+        sendGuestInfos(null);
+        setGuestIndex(null);
+      }
     });
     if (matchPeople.length !== 0) {
       let promises = matchPeople.map((people) => readImage(people.uuid));
@@ -87,7 +90,8 @@ const ChatPeople = ({
       socket.removeListener("addMatch");
       socket.removeListener("deleteMatch");
     };
-  }, [matchPeople]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket, matchPeople, guestIndex]);
 
   const updateIndex = (index) => {
     let guestDiv = document.getElementsByClassName("chat-people-item");

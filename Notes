@@ -4,33 +4,36 @@
 ## CLEAN DB (Message, LastMessage, photos reals users, visit, blocked,... ALL SAUF USER )
 
 --------------- IMPORTANT ! -------------------
-## [FRONT] - UI verifyAccount // ok
-## [FRONT] - ANIMATION match  // ok
 
 ## [FRONT - BACK] - animation when user A like B. B go to match. B see blue heart. A dislike B. B see blue heart and like = Match
 ## [FRONT] - animation match delete settimeout -> css
-
-## TO DO BOTH ########################
 ## [FRONT / BACK] - CLEAN CONSOLE
-
-
-## [FRONT / Back] - if user blocked / remove chat and match // OK ? A TESTER
-
-## [back] - user blocked not send notifications
+### [FRONT] profile user test n'aparaissent pas dans page user Match 
 
 
 
-### [Front] profile user test n'aparaissent pas dans page user Match 
+
+--------------- TEST ! -------------------
+
+-> TESTER AU MAX TOUTES LES NOTIFS
+-> Tester les cas à NULL (par exemple user sans match, puis avec 1 et + de match, ...)
+
+------------
+## [FRONT] changer l image par defaut profile (petit ecran flou)
+## [FRONT] socket pour online dans Profile  ----------- OK
+## [FRONT] delete match -> user redirect to image even if on another chat ----------- OK
+## [FRONT] bug display notif state ----------- OK
+## [FRONT] settimeout animation matchme warning console
+Twice notif ?
+## [FRONT] 404 page mobile
+## [FRONT BACK] if user no photo, he can t block other user 
+
+
+---------------
+TODO page admin
+
+
 
 -----------------Not important--------------
 ## [GLOBAL] - finish README.md
 ## Profile.jsx on XS navbar padding right?? 
-
-
--- BUG SOCKET -- 
-TESTER AU MAX TOUTES LES NOTIFS
-Twice notif ?
-delete match / add match  -> chatPeople ancien message affiché
-delete match -> user redirect to image even if on another chat
-
-
