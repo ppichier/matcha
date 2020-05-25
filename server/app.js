@@ -24,6 +24,7 @@ const matchRoutes = require("./routes/match");
 const chatRoutes = require("./routes/chat");
 const popularityRoutes = require("./routes/popularity");
 const notificationsRoutes = require("./routes/notifications");
+const adminRoutes = require("./routes/admin");
 const error = require("./controllers/error");
 const pool = require("./db");
 
@@ -42,6 +43,7 @@ app.use("/api", matchRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", popularityRoutes);
 app.use("/api", notificationsRoutes);
+app.use("/api", adminRoutes);
 
 const port = process.env.PORT || 8000;
 

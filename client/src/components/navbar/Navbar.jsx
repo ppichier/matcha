@@ -75,13 +75,13 @@ const NavbarHeader = ({ socket }) => {
           <div
             style={{ position: "relative" }}
             className="notifications-container"
-            onClick={() => {
-              setNotificationsNumber(0);
-              setShowNotifications(!showNotifications);
-            }}
           >
             <NavDropdown
               className="mt-1"
+              onClick={() => {
+                setNotificationsNumber(0);
+                setShowNotifications(!showNotifications);
+              }}
               title={
                 <Fragment>
                   <FontAwesomeIcon

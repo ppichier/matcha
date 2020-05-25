@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { isAuthenticated } from "../../api/auth";
+import { isAdmin } from "../../api/admin";
 import CustomSpinner from "./Spinner";
 
-const CustomRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = ({ component: Component, socket, ...rest }) => {
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(false);
 
   useEffect(() => {
     if (typeof window != "undefined") {
       if (localStorage.getItem("jwt")) {
-        isAuthenticated()
+        isAdmin()
           .then((data) => {
             if (!data) {
               console.error("Server down");
               return;
-            } else if (data.auth) {
+            } else if (data && data.auth) {
               setAuth(true);
             }
             setLoading(false);
@@ -27,19 +27,13 @@ const CustomRoute = ({ component: Component, ...rest }) => {
     }
   }, []);
 
-  // const isAuth = await isAuthenticated();
-
   if (loading) {
     return <CustomSpinner />;
   } else if (auth) {
     return (
       <Route
         {...rest}
-        render={(props) => (
-          <Redirect
-            to={{ pathname: "/match", state: { from: props.location } }}
-          />
-        )}
+        render={(props) => <Component {...props} socket={socket} />}
       />
     );
   } else {
@@ -56,4 +50,4 @@ const CustomRoute = ({ component: Component, ...rest }) => {
   }
 };
 
-export default CustomRoute;
+export default PrivateRoute;

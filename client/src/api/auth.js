@@ -1,5 +1,8 @@
 import { API } from "../config";
 
+
+
+
 export const isAuthenticated = () => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/changePage`, {
