@@ -16,9 +16,7 @@ const Notifications = ({ showNotifications }) => {
       if (!data) return;
       else if (data.err) {
         console.log(data.err);
-        //notifaction erreur
       } else {
-        console.log(data.listNotifications);
         setlistNotifications(data.listNotifications);
       }
     });

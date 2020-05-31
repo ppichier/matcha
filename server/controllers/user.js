@@ -484,7 +484,6 @@ exports.readGuestProfile = async (req, res) => {
                 if (err)
                   error.handleError(res, err, "Intenal error", 500, connection);
                 else {
-                  console.log(result[5][0].DISTANCE);
                   connection.release();
                   const myTags = result[1].map((e) => e.TagLabel);
                   let dataUser = {

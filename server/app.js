@@ -78,16 +78,13 @@ io.on("connection", (socket) => {
     cb(users_connected);
   });
 
-  socket.on("logout", (userUuid, cb) => {
-    //
-    // if user click on deconnect delete all row with user_id concerned
-    // and emit event offline user
-  });
+  // socket.on("logout", (userUuid, cb) => {
+  //   //
+  //   // if user click on deconnect delete all row with user_id concerned
+  //   // and emit event offline user
+  // });
 
   socket.on("visit", (userUuid, guestUuid, cb) => {
-    console.log(chalk.redBright("MON ID: ", userUuid));
-    console.log(chalk.redBright("VISIT ID: ", guestUuid));
-    // get ids
     pool.getConnection(async (err, connection) => {
       if (err) {
         connection.release();
@@ -101,9 +98,6 @@ io.on("connection", (socket) => {
           connection.release();
           let usersBlockedByGuest = await utils.getUsersBlocked(userLikedId);
           // let usersBlockedByMe = await utils.getUsersBlocked(userId);
-          console.log("+++++++++++++++++");
-          console.log(usersBlockedByGuest);
-          console.log("+++++++++++++++++");
           if (
             usersBlockedByGuest.findIndex(
               (x) => x.UserBlockedReceiver === userId
@@ -121,9 +115,7 @@ io.on("connection", (socket) => {
           // }
           socket.join(guestUuid);
           let guestSockets = utils.findSocketsGivenUuid(guestUuid);
-          console.log("YO", guestSockets);
           [...guestSockets].forEach((e) => {
-            console.log("emit to:", e);
             io.to(e).emit("receiveNotification");
           });
         } catch (e) {
@@ -147,10 +139,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async (userUuid, guestUuid, message, cb) => {
-    // socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
     try {
       await saveMessage(userUuid, guestUuid, message);
-      // await saveLastMessage(userUuid, guestUuid, message);
       let guestSockets = utils.findSocketsGivenUuid(guestUuid);
       let meSockets = utils.findSocketsGivenUuid(userUuid);
       [...guestSockets].forEach((e) => {

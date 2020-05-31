@@ -17,21 +17,11 @@
 
 -> TESTER AU MAX TOUTES LES NOTIFS
 -> Tester les cas à NULL (par exemple user sans match, puis avec 1 et + de match, ...)
+--> Double message envoi/reception Message ?
+--> TESTER SUR CHROME ET FIREFOX (STYLES)
 
 ------------
-## [FRONT] changer l image par defaut profile (petit ecran flou)
-## [FRONT] socket pour online dans Profile  ----------- OK
-## [FRONT] delete match -> user redirect to image even if on another chat ----------- OK
-## [FRONT] bug display notif state ----------- OK
 ## [FRONT] settimeout animation matchme warning console
-Twice notif ?
-## [FRONT] 404 page mobile
-## [FRONT BACK] if user no photo, he can t block other user 
-
-
----------------
-TODO page admin
-
 
 
 -----------------Not important--------------

@@ -187,11 +187,20 @@ const MatchMe = ({ socket }) => {
         newProfiles[idx].isLiked = userLiked.isLiked;
         if (newProfiles[idx].isLiked) {
           newProfiles[idx].score = newProfiles[idx].score + 10;
-          if (newProfiles[idx].likesMe) {
-            setModalShow(true);
-            setTimeout(() => setModalShow(false), 4000);
-          }
         } else newProfiles[idx].score = newProfiles[idx].score - 10;
+        if (data.match) {
+          setModalShow(true);
+          const cardBorderAnimate = document.getElementById("card-" + i);
+          const cardHeartAnimate = document.getElementById("heart-" + i);
+          const classAnimate = ["heart-initial", "heart-animate"];
+          cardBorderAnimate.classList.add("card-border-animate");
+          cardHeartAnimate.classList.add(...classAnimate);
+          setTimeout(() => {
+            setModalShow(false);
+            cardBorderAnimate.classList.remove("card-border-animate");
+            cardHeartAnimate.classList.remove(...classAnimate);
+          }, 3500);
+        }
         setValues({ ...values, profiles: newProfiles });
       }
     });
@@ -222,7 +231,7 @@ const MatchMe = ({ socket }) => {
   const card = () => {
     return values.profiles.map((profile, i) => {
       return (
-        <div className="styleCard py-3 px-3 mx-3 my-3" key={i}>
+        <div id={"card-" + i} className="styleCard py-3 px-3 mx-3 my-3" key={i}>
           <CardPicture
             firstName={profile.firstName}
             pseudo={profile.pseudo}
@@ -249,6 +258,11 @@ const MatchMe = ({ socket }) => {
               }}
             >
               <FontAwesomeIcon icon={faHeart} className="love" />
+              {modalshow ? (
+                <div id={"heart-" + i}></div>
+              ) : (
+                <Fragment></Fragment>
+              )}
             </Button>
           </div>
         </div>
@@ -259,7 +273,11 @@ const MatchMe = ({ socket }) => {
   return (
     <Fragment>
       <NavbarHeader socket={socket} />
-      <Container fluid className="mt-3" style={{ color: "#545454" }}>
+      <Container
+        fluid
+        className="mt-3"
+        style={{ color: "#545454", position: "relative" }}
+      >
         <Row>
           <Col md={3}>
             <SortProfile
@@ -295,13 +313,7 @@ const MatchMe = ({ socket }) => {
               </Button>
             </ButtonGroup>
             <Row style={{ justifyContent: "center" }}>{card()}</Row>
-            {modalshow ? (
-              <div>
-                <img id="modals" className="modals" alt="" src={matchImage} />
-              </div>
-            ) : (
-              <Fragment></Fragment>
-            )}
+
             <div> {loadProfiles()} </div>
           </Col>
         </Row>

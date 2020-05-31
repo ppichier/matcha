@@ -371,7 +371,6 @@ const addRowUserLike = (
                     (err, result) => {
                       if (err) {
                         console.log(err);
-
                         reject(500);
                       } else {
                         let guestSockets = utils.findSocketsGivenUuid(
@@ -396,7 +395,7 @@ const addRowUserLike = (
                           });
                         });
                         connection.release();
-                        resolve({ msg: "like" });
+                        resolve({ msg: "like", match: true });
                       }
                     }
                   );
@@ -414,7 +413,7 @@ const addRowUserLike = (
                           io.to(e).emit("receiveNotification");
                         });
                         connection.release();
-                        resolve({ msg: "like" });
+                        resolve({ msg: "like", match: false });
                       }
                     }
                   );
