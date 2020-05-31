@@ -5,25 +5,15 @@
 
 --------------- IMPORTANT ! -------------------
 
-## [FRONT - BACK] - animation when user A like B. B go to match. B see blue heart. A dislike B. B see blue heart and like = Match
-## [FRONT] - animation match delete settimeout -> css
-## [FRONT / BACK] - CLEAN CONSOLE
 ### [FRONT] profile user test n'aparaissent pas dans page user Match 
-
-
-
 
 --------------- TEST ! -------------------
 
--> TESTER AU MAX TOUTES LES NOTIFS
--> Tester les cas à NULL (par exemple user sans match, puis avec 1 et + de match, ...)
+--> TESTER AU MAX TOUTES LES NOTIFS
+--> Tester les cas à NULL (par exemple user sans match, puis avec 1 et + de match, ...)
 --> Double message envoi/reception Message ?
 --> TESTER SUR CHROME ET FIREFOX (STYLES)
-
-------------
-## [FRONT] settimeout animation matchme warning console
-
+## [FRONT / BACK] - CLEAN CONSOLE
 
 -----------------Not important--------------
 ## [GLOBAL] - finish README.md
-## Profile.jsx on XS navbar padding right?? 
