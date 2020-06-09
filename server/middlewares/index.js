@@ -45,12 +45,14 @@ exports.userIsBlocked = (req, res, next) => {
             (x) => x.UserBlockedReceiver === userId
           ) !== -1
         ) {
-          return res.status(401).json({ err: "Unauthorized" });
+          return res
+            .status(401)
+            .json({ err: "Cette action n'est pas disponible" });
         } else {
           next();
         }
       } catch (e) {
-        return res.status(401).json({ err: "Unauthorized" });
+        return res.status(404).json({ err: "Content Not found" });
       }
     }
   });

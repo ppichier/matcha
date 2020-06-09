@@ -16,6 +16,7 @@ import { heartClick } from "../../api";
 import CustomSpinner from "../auth/Spinner";
 import moment from "moment";
 import iconProfile from "../../images/imageProfilDefault.jpg";
+import { notificationAlert } from "../functions/notification";
 
 import {
   faHeart,
@@ -25,7 +26,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Profile = ({ location, socket }) => {
+const Profile = ({ socket }) => {
   const [values, setValues] = useState({
     indexImages: 0,
     directionImages: null,
@@ -68,13 +69,6 @@ const Profile = ({ location, socket }) => {
       } else {
         const uuid = JSON.parse(localStorage.getItem("jwt")).user._id;
         socket.emit("visit", uuid, id, () => {});
-        socket.on("online", () => {
-          console.log(`${id} est en ligne`);
-        });
-        // return socket  clean after render !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        socket.on("offline", () => {
-          console.log(`${id} est hors ligne`);
-        });
         setInfosUser({ ...data.dataUser, loading: false });
         setInfoSeconder({ ...data.dataLike });
         const secImg = await readSecondaryImages(id); // SECONDARY UUID NOT IMPLEMENTED
@@ -95,7 +89,24 @@ const Profile = ({ location, socket }) => {
     } else {
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    socket.on("online", () => {
+      // console.log(`${id} est en ligne`);
+      setInfoSeconder({ ...infoSeconder, logout: null });
+    });
+    socket.on("offline", () => {
+      // console.log(`${id} est hors ligne`);
+      setInfoSeconder({ ...infoSeconder, logout: Date.now() });
+    });
+    return () => {
+      socket.removeListener("online");
+      socket.removeListener("offline");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket, infoSeconder.logout]);
 
   const handleSelect = (selectedIndex, e) => {
     const tmp = {
@@ -114,20 +125,25 @@ const Profile = ({ location, socket }) => {
     })
       .then(() => {})
       .catch((e) => console.error(e));
-    heartClick({ userUuid: id, isLiked: 0 })
+    heartClick({ userUuid: id, isLiked: 0, blockAction: true })
       .then(() => {})
       .catch((e) => console.error(e));
   };
 
   const onHeartClick = (i) => {
     if (infoSeconder.userBlocked !== 1) {
-      setInfoSeconder({ ...infoSeconder, like: i });
       let userLiked = {
         userUuid: id,
         isLiked: i,
       };
       heartClick(userLiked)
-        .then(() => {})
+        .then((data) => {
+          if (data.err) {
+            notificationAlert(data.err, "danger", "bottom-center");
+          } else {
+            setInfoSeconder({ ...infoSeconder, like: i });
+          }
+        })
         .catch((e) => console.error(e));
     }
   };

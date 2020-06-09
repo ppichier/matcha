@@ -1,46 +1,46 @@
 import { API } from "../config";
 
-export const updateProfile = data => {
+export const updateProfile = (data) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/updateProfile`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt.token}`
+      Authorization: `Bearer ${jwt.token}`,
     },
-    body: JSON.stringify({ ...data, userUuid: jwt.user._id })
+    body: JSON.stringify({ ...data, userUuid: jwt.user._id }),
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
-export const uploadProfileImage = data => {
+export const uploadProfileImage = (data) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/uploadProfileImage`, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      Authorization: `Bearer ${jwt.token}`
+      Authorization: `Bearer ${jwt.token}`,
     },
-    body: data
+    body: data,
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
-export const uploadSecondaryImages = data => {
+export const uploadSecondaryImages = (data) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/uploadSecondaryImages`, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      Authorization: `Bearer ${jwt.token}`
+      Authorization: `Bearer ${jwt.token}`,
     },
-    body: data
+    body: data,
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
 export const deleteProfileImage = () => {
@@ -50,26 +50,26 @@ export const deleteProfileImage = () => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt.token}`
-    }
+      Authorization: `Bearer ${jwt.token}`,
+    },
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
-export const deleteSecondaryImage = data => {
+export const deleteSecondaryImage = (data) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/deleteSecondaryImage`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt.token}`
+      Authorization: `Bearer ${jwt.token}`,
     },
-    body: JSON.stringify({ ...data })
+    body: JSON.stringify({ ...data }),
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
 export const readSecondaryImages = (guestUuid) => {
@@ -79,13 +79,12 @@ export const readSecondaryImages = (guestUuid) => {
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ guestUuid })
-    
+    body: JSON.stringify({ guestUuid }),
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
 export const readImage = (guestUuid = null) => {
@@ -96,12 +95,12 @@ export const readImage = (guestUuid = null) => {
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ guestUuid })
+    body: JSON.stringify({ guestUuid }),
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
 export const readProfile = () => {
@@ -111,70 +110,69 @@ export const readProfile = () => {
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ uuid: "TESTUUID" }) // delete body and POST -> GET
+    body: JSON.stringify({ uuid: "TESTUUID" }), // delete body and POST -> GET
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
-export const readGuestProfile = guestUuid => {
+export const readGuestProfile = (guestUuid) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/readGuestProfile`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ guestUuid })
+    body: JSON.stringify({ guestUuid }),
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
-export const Picture = data => {
+export const Picture = (data) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/Picture`, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      Authorization: `Bearer ${jwt.token}`
+      Authorization: `Bearer ${jwt.token}`,
     },
-    body: data
+    body: data,
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
-export const userBlocked = userBlocked => {
+export const userBlocked = (userBlocked) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/userBlocked`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ ...userBlocked })
+    body: JSON.stringify({ ...userBlocked }),
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };
 
-export const userReport = userReport => {
-  console.log(userReport)
+export const userReport = (userReport) => {
   let jwt = JSON.parse(localStorage.getItem("jwt"));
   return fetch(`${API}/profile/userReport`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${jwt.token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ ...userReport })
+    body: JSON.stringify({ ...userReport }),
   })
-    .then(res => res.json())
-    .catch(err => console.log(err));
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 };

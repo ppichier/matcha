@@ -91,8 +91,6 @@ exports.signup = (req, res) => {
                           connection
                         );
                       } else {
-                        console.log("1 record inserted");
-                        //connection release
                         connection.query(
                           "SELECT UserId FROM User WHERE UserName = ?",
                           [pseudo],

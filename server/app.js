@@ -13,7 +13,9 @@ const { getAllMessages, saveMessage } = require("./socket/chat");
 //app
 const app = express();
 const http = require("http").createServer(app);
-global.io = require("socket.io")(http);
+global.io = require("socket.io")(http, {
+  pingTimeout: 60000,
+});
 
 //import routes
 const authRoutes = require("./routes/auth");
@@ -22,6 +24,7 @@ const matchRoutes = require("./routes/match");
 const chatRoutes = require("./routes/chat");
 const popularityRoutes = require("./routes/popularity");
 const notificationsRoutes = require("./routes/notifications");
+const adminRoutes = require("./routes/admin");
 const error = require("./controllers/error");
 const pool = require("./db");
 
@@ -40,6 +43,7 @@ app.use("/api", matchRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", popularityRoutes);
 app.use("/api", notificationsRoutes);
+app.use("/api", adminRoutes);
 
 const port = process.env.PORT || 8000;
 
@@ -74,16 +78,13 @@ io.on("connection", (socket) => {
     cb(users_connected);
   });
 
-  socket.on("logout", (userUuid, cb) => {
-    //
-    // if user click on deconnect delete all row with user_id concerned
-    // and emit event offline user
-  });
+  // socket.on("logout", (userUuid, cb) => {
+  //   //
+  //   // if user click on deconnect delete all row with user_id concerned
+  //   // and emit event offline user
+  // });
 
   socket.on("visit", (userUuid, guestUuid, cb) => {
-    console.log(chalk.redBright("MON ID: ", userUuid));
-    console.log(chalk.redBright("VISIT ID: ", guestUuid));
-    // get ids
     pool.getConnection(async (err, connection) => {
       if (err) {
         connection.release();
@@ -97,12 +98,12 @@ io.on("connection", (socket) => {
           connection.release();
           let usersBlockedByGuest = await utils.getUsersBlocked(userLikedId);
           // let usersBlockedByMe = await utils.getUsersBlocked(userId);
-          console.log(usersBlockedByGuest);
           if (
             usersBlockedByGuest.findIndex(
               (x) => x.UserBlockedReceiver === userId
             ) !== -1
           ) {
+            console.log("User is block - visit emit not sent");
             return;
           }
           // } else if (
@@ -138,10 +139,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async (userUuid, guestUuid, message, cb) => {
-    // socket.emit("message", { from: userUuid, to: guestUuid, msg: message });
     try {
       await saveMessage(userUuid, guestUuid, message);
-      // await saveLastMessage(userUuid, guestUuid, message);
       let guestSockets = utils.findSocketsGivenUuid(guestUuid);
       let meSockets = utils.findSocketsGivenUuid(userUuid);
       [...guestSockets].forEach((e) => {

@@ -2,21 +2,20 @@
   background-color: white;
   border-radius: 6px;
 }
-
 .btn-outline-info {
   width: 100%;
 }
-
 .btn-active {
-  box-shadow:         inset 0 0 12px #17a2b8;
- /*box-shadow: 0px 0px 12px 2px rgb(23, 162, 184, 0.6)  inset;*/
+  box-shadow: inset 0 0 12px #17a2b8;
+  /*box-shadow: 0px 0px 12px 2px rgb(23, 162, 184, 0.6)  inset;*/
 }
-.love:hover{
-
-    animation: beat .25s infinite alternate;
+.love:hover {
+  animation: beat 0.25s infinite alternate;
 }
-@keyframes beat{
-  to { transform: scale(1.4); }
+@keyframes beat {
+  to {
+    transform: scale(1.4);
+  }
 }
 .styleCard {
   position: relative;
@@ -24,16 +23,20 @@
   border-radius: 6px;
   box-shadow: 2px 4px 1px 2px rgba(160, 160, 160, 0.1);
 }
-
 .styleCard:hover {
-background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12fff7 )!important;
+  background: linear-gradient(
+    -225deg,
+    #92fe9d,
+    #fffeff,
+    #d5dee7,
+    #fffeff,
+    #12fff7
+  ) !important;
   cursor: pointer;
   animation: colorcard;
   animation-duration: 2s;
   animation-name: colorcard;
 }
-
-
 @keyframes colorcard {
   0% {
     opacity: 0.5;
@@ -46,64 +49,91 @@ background: linear-gradient(-225deg, #92fe9d ,  #FFFEFF, #d5dee7, #FFFEFF, #12ff
   75% {
     transform: rotate(-3deg);
   }
-
   100% {
     opacity: 1;
     transform: rotate(0deg);
   }
 }
-
-
 .heart-container {
   position: absolute;
   bottom: 0px;
   right: 0px;
 }
-.btn-switsh:after{
+.btn-switsh:after {
   position: absolute;
   content: "";
   top: 0;
   left: 0;
   width: 0;
   height: 100%;
-   background: linear-gradient(-225deg, #92fe9d , #FFFEFF, transparent, #FFFEFF, #12fff7 )!important;
-  transition: all .35s;
+  background: linear-gradient(
+    -225deg,
+    #92fe9d,
+    #fffeff,
+    transparent,
+    #fffeff,
+    #12fff7
+  ) !important;
+  transition: all 0.35s;
 }
-
-.btn-switsh:hover{
-}
-
-.btn-switsh:hover:after{
+.btn-switsh:hover:after {
   width: 100%;
 }
 
-@keyframes transition2 {
-    from {
-          opacity:1;
-          width:auto;
-          height:auto;
-         }
-    to {
-        height:0;
-        width:0;
-        opacity:0;
-    }
-}
-
 @keyframes transition {
-100% {top:100px;}
-0%   { margin-left: -70px;opacity:0; }
-100% { margin-left: 0;opacity:1; }
+  0% {
+    margin-left: -50%;
+    opacity: 0;
+  }
+  100% {
+    margin-left: 0;
+    opacity: 1;
+  }
 }
-.modals{
-  top:100px;
-  left: 400px;
-  position: fixed;
-  padding: 50px;
-  width:  500px;
-  animation: transition2 5s linear 2s; 
- /* animation: transition 2.0s ease-in-out 0.5s, opacity 0.5s ease-in-out 0.5s;
-  opacity:0;
-  animation: transition 1s ease-in-out 2s forwards;*/
 
+@keyframes border-transition {
+  0% {
+    box-shadow: 4px 6px 3px 4px rgba(220, 53, 69, 0.3);
+  }
+  20% {
+    box-shadow: 4px 6px 3px 4px rgba(220, 53, 69, 0.3);
+  }
+  80% {
+    box-shadow: 4px 6px 3px 4px rgba(220, 53, 69, 0.2);
+  }
+  100% {
+    box-shadow: 4px 6px 3px 4px rgba(220, 53, 69, 0);
+  }
+}
+
+.card-border-animate {
+  /* border: 2px solid #dc3545; */
+  animation: 3s border-transition;
+}
+
+.heart-initial {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: url(https://cssanimation.rocks/images/posts/steps/heart.png)
+    no-repeat;
+  background-position: 0 0;
+  cursor: pointer;
+  animation: fave-heart 1s steps(28);
+  z-index: 1000;
+}
+.heart-animate {
+  background-position: -2800px 0;
+  transition: background 1s steps(28);
+}
+@keyframes fave-heart {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -2800px 0;
+  }
 }

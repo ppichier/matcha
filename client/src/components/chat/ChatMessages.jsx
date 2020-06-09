@@ -15,66 +15,80 @@ const ChatMessages = ({
   const [message, setMessage] = useState("");
   const [guestTyping, setGuestTyping] = useState([]);
 
+  const eventOnMessage = (message) => {
+    // console.log("Reception du message: ", message);
+    const idx = guestTyping.indexOf(message.from);
+    if (idx !== -1) {
+      const guestTypingTmp = [...guestTyping];
+      guestTypingTmp.splice(idx, 1);
+      setGuestTyping(guestTypingTmp);
+    }
+    if (
+      (message.from === guestInfos.uuid && message.to === uuid) ||
+      (message.from === uuid && message.to === guestInfos.uuid)
+    ) {
+      setAllMessages([...allMessages, message]);
+    } else {
+      sendMessageNotification(message.from);
+    }
+    sendLastMessage({
+      with: message.from === uuid ? message.to : message.from,
+      from: message.from,
+      msg: message.msg,
+    });
+  };
+
+  const eventOnTyping = (t) => {
+    // console.log("is typing");
+    if (guestTyping.indexOf(t) === -1) setGuestTyping([...guestTyping, t]);
+  };
+
+  const eventStopTyping = (t) => {
+    const idx = guestTyping.indexOf(t);
+    if (idx !== -1) {
+      const guestTypingTmp = [...guestTyping];
+      guestTypingTmp.splice(idx, 1);
+      setGuestTyping(guestTypingTmp);
+    }
+  };
+
   useEffect(() => {
     if (uuid && guestInfos.uuid) {
       setMessage("");
       socket.emit("join", uuid, guestInfos.uuid, (messages) => {
+        // console.log("je join la room");
         setAllMessages([...messages]);
       });
-      // return () => {
-      //   socket.off();
-      // };
     }
   }, [socket, uuid, guestInfos.uuid]);
 
   useEffect(() => {
-    socket.on("message", (message) => {
-      // console.log("Reception du message: ", message);
-      const idx = guestTyping.indexOf(message.from);
-      if (idx !== -1) {
-        const guestTypingTmp = [...guestTyping];
-        guestTypingTmp.splice(idx, 1);
-        setGuestTyping(guestTypingTmp);
-      }
-      if (
-        (message.from === guestInfos.uuid && message.to === uuid) ||
-        (message.from === uuid && message.to === guestInfos.uuid)
-      ) {
-        setAllMessages([...allMessages, message]);
-      } else {
-        sendMessageNotification(message.from);
-      }
-      sendLastMessage({
-        with: message.from === uuid ? message.to : message.from,
-        from: message.from,
-        msg: message.msg,
-      });
-    });
+    // console.log(allMessages);
 
-    socket.on("isTyping", (t) => {
-      if (guestTyping.indexOf(t) === -1) setGuestTyping([...guestTyping, t]);
-    });
+    socket.on("message", eventOnMessage);
 
-    socket.on("stopTyping", (t) => {
-      const idx = guestTyping.indexOf(t);
-      if (idx !== -1) {
-        const guestTypingTmp = [...guestTyping];
-        guestTypingTmp.splice(idx, 1);
-        setGuestTyping(guestTypingTmp);
-      }
-    });
+    socket.on("isTyping", eventOnTyping);
 
-    // return () => {
-    //   socket.off();
-    // };
+    socket.on("stopTyping", eventStopTyping);
+
+    return () => {
+      socket.removeListener("message", eventOnMessage);
+      socket.removeListener("isTyping", eventOnTyping);
+      socket.removeListener("stopTyping", eventStopTyping);
+      // socket.off("message");
+      // socket.off("isTyping");
+      // socket.off("stopTyping");
+      // socket.off();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     socket,
     guestInfos.uuid,
-    uuid,
+    // uuid,
     allMessages,
-    sendMessageNotification,
+    // sendMessageNotification,
     guestTyping,
-    sendLastMessage,
+    // sendLastMessage,
   ]);
 
   const sendMessage = (e) => {
@@ -87,7 +101,6 @@ const ChatMessages = ({
   };
 
   const sendTypingEvent = (e) => {
-    // console.log(e);
     socket.emit(
       "typingMessage",
       uuid,

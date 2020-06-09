@@ -12,11 +12,14 @@ import NotFound from "./components/404/NotFound";
 import CustomRoute from "./components/auth/CustomRoute";
 // import ProfileMap from "./components/profile/ProfileMap";
 import Chat from "./components/chat/Chat";
+import AdminRoute from "./components/auth/AdminRoute";
+import Admin from "./components/admin/Admin";
 import { API } from "./config";
 import SocketContext from "./socket/socket-context";
 import io from "socket.io-client";
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
+import Dashboard from "./components/admin/Dashboard";
 
 const socket = io("http://localhost:8000");
 
@@ -71,8 +74,13 @@ const Routes = () => {
             component={Chat}
             socket={socket}
           ></PrivateRoute>
-          ;<Route path="/verifyAccount" exact component={VerifyAccount}></Route>
-          ;
+          <Route path="/verifyAccount" exact component={VerifyAccount}></Route>
+          <Route path="/admin" exact component={Admin}></Route>
+          <AdminRoute
+            path="/admin/dashboard"
+            exact
+            component={Dashboard}
+          ></AdminRoute>
           <Route
             path="/recoverPassword"
             exact

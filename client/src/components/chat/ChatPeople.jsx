@@ -54,16 +54,26 @@ const ChatPeople = ({
   }, [lastMessage]);
 
   useEffect(() => {
+    // console.log("JE GENERE");
     socket.on("addMatch", (match) => {
+      // console.log("ADD");
       let newMatchPeople = [...matchPeople];
       newMatchPeople.push(match);
       setMatchPeople(newMatchPeople);
     });
     socket.on("deleteMatch", (guestUuid) => {
-      console.log("delete");
+      // console.log("delete");
       let newMatchPeople = matchPeople.filter((e) => e.uuid !== guestUuid);
+      let newLastMessages = lastMessages.filter((e) => e.with !== guestUuid);
+
       setMatchPeople(newMatchPeople);
-      sendGuestInfos(null);
+      setLastMessages(newLastMessages);
+      // console.log(matchPeople);
+      // console.log(guestIndex);
+      if (guestIndex !== null && matchPeople[guestIndex].uuid === guestUuid) {
+        sendGuestInfos(null);
+        setGuestIndex(null);
+      }
     });
     if (matchPeople.length !== 0) {
       let promises = matchPeople.map((people) => readImage(people.uuid));
@@ -76,7 +86,12 @@ const ChatPeople = ({
         })
         .catch((err) => console.log(err));
     }
-  }, [matchPeople]);
+    return () => {
+      socket.removeListener("addMatch");
+      socket.removeListener("deleteMatch");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket, matchPeople, guestIndex]);
 
   const updateIndex = (index) => {
     let guestDiv = document.getElementsByClassName("chat-people-item");

@@ -14,6 +14,6 @@ router.post("/match/filterProfile", verifyToken, filterProfile);
 router.post("/match/sortProfile", verifyToken, sortProfile);
 router.post("/match/readCommonTag", verifyToken, readCommonTag);
 router.post("/match/firstFilter", verifyToken, firstFilter);
-router.post("/match/heartClick", verifyToken, heartClick);
-// router.post("/match/heartClick", verifyToken, userIsBlocked, heartClick);
+// router.post("/match/heartClick", verifyToken, heartClick);
+router.post("/match/heartClick", verifyToken, userIsBlocked, heartClick);
 module.exports = router;

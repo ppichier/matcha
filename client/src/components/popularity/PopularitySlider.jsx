@@ -68,7 +68,9 @@ const PopularitySlider = ({ people }) => {
               <div className="popularity-slider-container py-3 px-3">
                 {imageProfile(p)}
                 <div className="popularity-slider-pseudo">{p.pseudo}</div>
-                <div className="popularity-slider-age">{p.age} ans</div>
+                <div className="popularity-slider-age">
+                  {p.age === 17 ? null : `${p.age} ans`}
+                </div>
                 <div className="popularity-slider-date">
                   {moment(p.date).fromNow()}
                 </div>

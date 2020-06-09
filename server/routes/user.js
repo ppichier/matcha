@@ -74,7 +74,7 @@ router.post(
   "/profile/readGuestProfile",
   verifyToken,
   getUserId,
-  // userIsBlocked,
+  userIsBlocked,
   readGuestProfile
 );
 router.post("/profile/userBlocked", verifyToken, userBlocked);

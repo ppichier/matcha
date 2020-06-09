@@ -85,7 +85,6 @@ exports.generateFakeProfiles = () => {
                 connection.release();
                 return;
               } else {
-                console.log(result.insertId);
                 const tags = _.uniq(userTags);
                 let tagsParamQuery = "";
                 for (const tag of tags) {
@@ -95,7 +94,6 @@ exports.generateFakeProfiles = () => {
                   0,
                   tagsParamQuery.length - 1
                 );
-                console.log(tagsParamQuery);
                 connection.query(
                   `INSERT INTO User_tag VALUES ${tagsParamQuery}`,
                   [],
@@ -115,7 +113,6 @@ exports.generateFakeProfiles = () => {
               inc++;
             }
           );
-          console.log(people);
           return;
         }
       });

@@ -11,7 +11,7 @@ const CustomRoute = ({ component: Component, ...rest }) => {
     if (typeof window != "undefined") {
       if (localStorage.getItem("jwt")) {
         isAuthenticated()
-          .then(data => {
+          .then((data) => {
             if (!data) {
               console.error("Server down");
               return;
@@ -20,7 +20,7 @@ const CustomRoute = ({ component: Component, ...rest }) => {
             }
             setLoading(false);
           })
-          .catch(err => console.log(err));
+          .catch((err) => console.log(err));
       } else {
         setLoading(false);
       }
@@ -35,7 +35,7 @@ const CustomRoute = ({ component: Component, ...rest }) => {
     return (
       <Route
         {...rest}
-        render={props => (
+        render={(props) => (
           <Redirect
             to={{ pathname: "/match", state: { from: props.location } }}
           />
@@ -46,7 +46,7 @@ const CustomRoute = ({ component: Component, ...rest }) => {
     return (
       <Route
         {...rest}
-        render={props => (
+        render={(props) => (
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}
           />

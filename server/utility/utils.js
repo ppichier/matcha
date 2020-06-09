@@ -95,7 +95,6 @@ exports.getUsersBlocked = (userId) => {
 };
 
 exports.sortProfile = (profiles, usersBlocked) => {
-  // console.log(usersBlocked)
   profiles = profiles
     .map((r) => ({ ...r }))
     .filter(
@@ -106,7 +105,6 @@ exports.sortProfile = (profiles, usersBlocked) => {
     .map((e) => {
       return { ...e, userId: undefined };
     });
-  console.log(profiles);
   return _.orderBy(
     profiles,
     ["distance", "tagsNumber", "score"],
@@ -123,7 +121,6 @@ exports.getIds = (userUuid, userLikedUuid, connection) => {
       (err, result) => {
         if (err) reject(500);
         else {
-          console.log(result);
           if (result[0].length === 0 || result[1].length === 0) {
             reject(401);
           } else {
@@ -142,6 +139,6 @@ exports.getIds = (userUuid, userLikedUuid, connection) => {
 
 exports.findSocketsGivenUuid = (uuid) => {
   let sockets = Object.filter(users_connected, (u) => u === uuid);
-  console.log(Object.keys(sockets));
+  // console.log(Object.keys(sockets));
   return Object.keys(sockets);
 };
