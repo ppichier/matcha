@@ -2,8 +2,9 @@
 
 This project is about creating a dating website.
 A user will be able to register, connect, fill his/her profile, search and look into the profile of other users, chat with those that "liked" back and more !,imi
-<img src="https://files.slack.com/files-pri/T039P7U66-F01539W5WN6/capture_d___e__cran_2020-06-09_a___15.41.45.png" alt="Page Prfil et match" />
-<img src="https://files.slack.com/files-pri/T039P7U66-F014WHRHRAS/capture_d___e__cran_2020-06-09_a___15.51.02.png" alt="Page Popularite et Chat" />
+![alt text](http://https://github.com/warharra/Matcha/img1)
+![alt text](http://https://github.com/warharra/Matcha/img2)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development.
