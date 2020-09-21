@@ -1,58 +1,53 @@
-import React, { useEffect, Fragment } from "react";
-import { Navbar, NavDropdown, Badge, Nav } from "react-bootstrap";
-import "./Navbar.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
-import { logout } from "../../api/auth";
-import { useState } from "react";
-import Notifications from "./Notifications";
-import { getNotificationsNumber } from "../../api/notifications";
+import React, { useEffect, Fragment } from 'react'
+import { Navbar, NavDropdown, Badge, Nav } from 'react-bootstrap'
+import './Navbar.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell, faCog } from '@fortawesome/free-solid-svg-icons'
+import { logout } from '../../api/auth'
+import { useState } from 'react'
+import Notifications from './Notifications'
+import { getNotificationsNumber } from '../../api/notifications'
 
 const NavbarHeader = ({ socket }) => {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [notificationsNumber, setNotificationsNumber] = useState(null);
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notificationsNumber, setNotificationsNumber] = useState(null)
 
   const a = () => {
-    // console.log("je recois receive notifications");
-    // console.log(notificationsNumber);
     setNotificationsNumber((x) => {
-      if (x === null) return 0;
-      else return x + 1;
-    });
-  };
+      if (x === null) return 0
+      else return x + 1
+    })
+  }
 
   useEffect(() => {
     getNotificationsNumber().then((data) => {
-      if (!data) return;
+      if (!data) return
       else if (data.err) {
         //err
       } else {
-        setNotificationsNumber(data.notificationsNumber);
+        setNotificationsNumber(data.notificationsNumber)
       }
-    });
-  }, []);
+    })
+  }, [])
 
   useEffect(() => {
-    // console.log(notificationsNumber);
-    // console.log("init receive notifications: ", socket);
-    socket.on("receiveNotification", a);
+    socket.on('receiveNotification', a)
     return () => {
-      // console.log("remove receive notifications");
-      socket.removeListener("receiverNotification", a);
-    };
-  }, [socket]);
+      socket.removeListener('receiverNotification', a)
+    }
+  }, [socket])
 
   const handleLogout = () => {
-    if (typeof window != "undefined") {
-      if (localStorage.getItem("jwt")) {
+    if (typeof window != 'undefined') {
+      if (localStorage.getItem('jwt')) {
         logout()
           .then((data) => {
-            localStorage.removeItem("jwt");
+            localStorage.removeItem('jwt')
           })
-          .catch((err) => console.log(err));
+          .catch((err) => console.log(err))
       }
     }
-  };
+  }
 
   return (
     <Navbar variant="dark" expand="md" className="navbar-main">
@@ -73,14 +68,14 @@ const NavbarHeader = ({ socket }) => {
       <Navbar.Collapse className="justify-content-end">
         <Nav className="navbar-container">
           <div
-            style={{ position: "relative" }}
+            style={{ position: 'relative' }}
             className="notifications-container"
           >
             <NavDropdown
               className="mt-1"
               onClick={() => {
-                setNotificationsNumber(0);
-                setShowNotifications(!showNotifications);
+                setNotificationsNumber(0)
+                setShowNotifications(!showNotifications)
               }}
               title={
                 <Fragment>
@@ -124,6 +119,6 @@ const NavbarHeader = ({ socket }) => {
         </Nav>
       </Navbar.Collapse>
     </Navbar>
-  );
-};
-export default NavbarHeader;
+  )
+}
+export default NavbarHeader
